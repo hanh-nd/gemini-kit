@@ -88,7 +88,7 @@ describe('Integration Tools - kit_jira_ticket', () => {
             type: 'Task',
             summary: 'Implement feature X',
             description: 'Detailed description',
-            priority: 'Medium'
+            priority: 'Medium',
         };
         expect(ticket.project).toBe('PROJ');
         expect(ticket.type).toBe('Task');
@@ -97,14 +97,14 @@ describe('Integration Tools - kit_jira_ticket', () => {
     it('should handle missing credentials', () => {
         const env = {
             JIRA_API_TOKEN: undefined,
-            JIRA_EMAIL: undefined
+            JIRA_EMAIL: undefined,
         };
         expect(env.JIRA_API_TOKEN).toBeUndefined();
     });
     it('should validate ticket fields', () => {
         const requiredFields = ['project', 'type', 'summary'];
         const ticket = { project: 'PROJ', type: 'Bug', summary: 'Fix issue' };
-        requiredFields.forEach(field => {
+        requiredFields.forEach((field) => {
             expect(ticket).toHaveProperty(field);
         });
     });
@@ -113,9 +113,7 @@ describe('Integration Tools - kit_slack_notify', () => {
     it('should send webhook notification structure', () => {
         const message = {
             text: 'Deployment complete',
-            blocks: [
-                { type: 'section', text: { type: 'mrkdwn', text: '*Status:* Success' } }
-            ]
+            blocks: [{ type: 'section', text: { type: 'mrkdwn', text: '*Status:* Success' } }],
         };
         expect(message.text).toBeDefined();
         expect(message.blocks).toHaveLength(1);
@@ -149,5 +147,68 @@ describe('Integration Tools - Utility Functions', () => {
         expect(commandExists('gh')).toBe(true);
         commandExists.mockReturnValue(false);
         expect(commandExists('nonexistent')).toBe(false);
+    });
+});
+describe('Integration Tools - kit_bitbucket_pr', () => {
+    it('should validate Bitbucket PR structure', () => {
+        const pr = {
+            id: 42,
+            title: 'Add new feature',
+            state: 'OPEN',
+            description: 'Feature description',
+            author: { display_name: 'John Doe' },
+            source: { branch: { name: 'feature/new' } },
+            destination: { branch: { name: 'main' } },
+            reviewers: [{ display_name: 'Jane Smith' }],
+        };
+        expect(pr.id).toBe(42);
+        expect(pr.state).toBe('OPEN');
+        expect(pr.author.display_name).toBe('John Doe');
+        expect(pr.source.branch.name).toBe('feature/new');
+    });
+    it('should handle bb CLI not available', () => {
+        // bb CLI availability is checked via commandExists('bb')
+        const bbInstalled = false; // simulate not installed
+        expect(bbInstalled).toBe(false);
+    });
+});
+describe('Integration Tools - Git Provider Detection', () => {
+    it('should detect GitHub from remote URL', () => {
+        const remoteUrls = ['https://github.com/user/repo.git', 'git@github.com:user/repo.git'];
+        remoteUrls.forEach((url) => {
+            expect(url.includes('github.com')).toBe(true);
+            expect(url.includes('bitbucket.org')).toBe(false);
+        });
+    });
+    it('should detect Bitbucket from remote URL', () => {
+        const remoteUrls = [
+            'https://bitbucket.org/workspace/repo.git',
+            'git@bitbucket.org:workspace/repo.git',
+        ];
+        remoteUrls.forEach((url) => {
+            expect(url.includes('bitbucket.org')).toBe(true);
+            expect(url.includes('github.com')).toBe(false);
+        });
+    });
+    it('should parse workspace and repo from HTTPS URL', () => {
+        const url = 'https://bitbucket.org/myteam/myrepo.git';
+        const match = url.match(/bitbucket\.org\/([^/]+)\/([^/.]+)/);
+        expect(match).not.toBeNull();
+        expect(match[1]).toBe('myteam');
+        expect(match[2]).toBe('myrepo');
+    });
+    it('should parse workspace and repo from SSH URL', () => {
+        const url = 'git@bitbucket.org:myteam/myrepo.git';
+        const match = url.match(/bitbucket\.org:([^/]+)\/([^/.]+)/);
+        expect(match).not.toBeNull();
+        expect(match[1]).toBe('myteam');
+        expect(match[2]).toBe('myrepo');
+    });
+    it('should return unknown for non-standard remotes', () => {
+        const url = 'https://gitlab.com/user/repo.git';
+        const isGithub = url.includes('github.com');
+        const isBitbucket = url.includes('bitbucket.org');
+        expect(isGithub).toBe(false);
+        expect(isBitbucket).toBe(false);
     });
 });

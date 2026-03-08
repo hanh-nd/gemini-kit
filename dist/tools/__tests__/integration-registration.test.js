@@ -10,6 +10,7 @@ vi.mock('child_process', () => ({
 // Mock security
 vi.mock('../security.js', () => ({
     safeGh: vi.fn().mockReturnValue('https://github.com/user/repo/pull/1'),
+    safeBb: vi.fn().mockReturnValue('https://bitbucket.org/team/repo/pull-requests/1'),
     commandExists: vi.fn().mockReturnValue(true),
     sanitize: vi.fn((x) => x),
 }));
@@ -32,6 +33,8 @@ describe('registerIntegrationTools - Full Coverage', () => {
         expect(registeredTools.has('kit_github_get_pr')).toBe(true);
         expect(registeredTools.has('kit_jira_get_ticket')).toBe(true);
         expect(registeredTools.has('kit_github_get_issue')).toBe(true);
+        expect(registeredTools.has('kit_bitbucket_get_pr')).toBe(true);
+        expect(registeredTools.has('kit_bitbucket_create_pr')).toBe(true);
     });
     describe('kit_github_create_pr', () => {
         it('should create PR successfully', async () => {
@@ -44,7 +47,7 @@ describe('registerIntegrationTools - Full Coverage', () => {
             const result = await tool.handler({
                 title: 'Test PR',
                 body: 'Test body',
-                draft: false
+                draft: false,
             });
             expect(result.content[0].text).toBeDefined();
         });
@@ -119,6 +122,50 @@ describe('registerIntegrationTools - Full Coverage', () => {
             const tool = registeredTools.get('kit_jira_get_ticket');
             const result = await tool.handler({ ticketId: 'PROJ-123' });
             expect(result.content[0].text).toBeDefined();
+        });
+    });
+    describe('kit_bitbucket_get_pr', () => {
+        it('should handle bb not installed', async () => {
+            const security = await import('../security.js');
+            vi.mocked(security.commandExists).mockReturnValue(false);
+            const { registerIntegrationTools } = await import('../integration.js');
+            registerIntegrationTools(mockServer);
+            const tool = registeredTools.get('kit_bitbucket_get_pr');
+            const result = await tool.handler({ prId: 1 });
+            expect(result.content[0].text).toContain('bb) not installed');
+        });
+        it('should handle bb CLI errors', async () => {
+            const security = await import('../security.js');
+            vi.mocked(security.commandExists).mockReturnValue(true);
+            vi.mocked(security.safeBb).mockImplementation(() => {
+                throw new Error('Bitbucket CLI failed: not authenticated');
+            });
+            const { registerIntegrationTools } = await import('../integration.js');
+            registerIntegrationTools(mockServer);
+            const tool = registeredTools.get('kit_bitbucket_get_pr');
+            const result = await tool.handler({ prId: 1 });
+            expect(result.content[0].text).toContain('Error');
+        });
+    });
+    describe('kit_bitbucket_create_pr', () => {
+        it('should handle bb not installed', async () => {
+            const security = await import('../security.js');
+            vi.mocked(security.commandExists).mockReturnValue(false);
+            const { registerIntegrationTools } = await import('../integration.js');
+            registerIntegrationTools(mockServer);
+            const tool = registeredTools.get('kit_bitbucket_create_pr');
+            const result = await tool.handler({ title: 'Test PR' });
+            expect(result.content[0].text).toContain('bb) not installed');
+        });
+        it('should create PR successfully', async () => {
+            const security = await import('../security.js');
+            vi.mocked(security.commandExists).mockReturnValue(true);
+            vi.mocked(security.safeBb).mockReturnValue('https://bitbucket.org/team/repo/pull-requests/42');
+            const { registerIntegrationTools } = await import('../integration.js');
+            registerIntegrationTools(mockServer);
+            const tool = registeredTools.get('kit_bitbucket_create_pr');
+            const result = await tool.handler({ title: 'Test PR' });
+            expect(result.content[0].text).toContain('Pull Request created');
         });
     });
 });

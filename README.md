@@ -37,14 +37,14 @@
 
 **Gemini-Kit** transforms Gemini CLI into a **virtual engineering team** with:
 
-| Feature | Count | Description |
-|---------|-------|-------------|
-| 🤖 **AI Agents** | 27 | Specialized roles (Security, Frontend, Backend, DevOps...) |
-| 🛠️ **Skills** | 15 | Knowledge modules (React, Next.js, Docker, Security...) |
-| ⌨️ **Commands** | 45 | Slash commands for every workflow |
-| 🔄 **Workflows** | 33 | Structured development workflows |
-| 🔒 **Security** | 30+ | Secret detection patterns |
-| 📜 **Scripts** | 50+ | Automation scripts |
+| Feature          | Count | Description                                                |
+| ---------------- | ----- | ---------------------------------------------------------- |
+| 🤖 **AI Agents** | 27    | Specialized roles (Security, Frontend, Backend, DevOps...) |
+| 🛠️ **Skills**    | 15    | Knowledge modules (React, Next.js, Docker, Security...)    |
+| ⌨️ **Commands**  | 45    | Slash commands for every workflow                          |
+| 🔄 **Workflows** | 33    | Structured development workflows                           |
+| 🔒 **Security**  | 30+   | Secret detection patterns                                  |
+| 📜 **Scripts**   | 50+   | Automation scripts                                         |
 
 ### Key Features
 
@@ -62,11 +62,11 @@
 
 ### Prerequisites
 
-| Requirement | Version | Check |
-|-------------|---------|-------|
-| Node.js | ≥ 18.0 | `node --version` |
-| Git | ≥ 2.0 | `git --version` |
-| Gemini CLI | Latest | `gemini --version` |
+| Requirement | Version | Check              |
+| ----------- | ------- | ------------------ |
+| Node.js     | ≥ 18.0  | `node --version`   |
+| Git         | ≥ 2.0   | `git --version`    |
+| Gemini CLI  | Latest  | `gemini --version` |
 
 ### Installation (2 minutes)
 
@@ -112,50 +112,50 @@ git pull && npm install && npm run build
 
 #### Core Development (5)
 
-| Agent | Role | When to Use |
-|-------|------|-------------|
-| 📋 **Planner** | Create detailed plans | Starting new features |
-| 🔍 **Scout** | Explore codebase | New projects, onboarding |
-| 💻 **Coder** | Write clean code | Implementing features |
-| 🧪 **Tester** | Write & run tests | Quality assurance |
-| 👀 **Reviewer** | Code review | Before merging PRs |
+| Agent           | Role                  | When to Use              |
+| --------------- | --------------------- | ------------------------ |
+| 📋 **Planner**  | Create detailed plans | Starting new features    |
+| 🔍 **Scout**    | Explore codebase      | New projects, onboarding |
+| 💻 **Coder**    | Write clean code      | Implementing features    |
+| 🧪 **Tester**   | Write & run tests     | Quality assurance        |
+| 👀 **Reviewer** | Code review           | Before merging PRs       |
 
 #### Specialists (12) - NEW in v4.0
 
-| Agent | Role | When to Use |
-|-------|------|-------------|
-| 🔐 **Security Auditor** | Security audit, OWASP | Security reviews |
-| ⚛️ **Frontend Specialist** | React, Next.js, UI/UX | Frontend development |
-| 🖥️ **Backend Specialist** | API, Database, Docker | Backend development |
-| 🚀 **DevOps Engineer** | CI/CD, K8s, GitHub Actions | Infrastructure |
-| 🐛 **Debugger** | Root cause analysis | Runtime errors |
-| 🗄️ **Database Admin** | Schema, migrations | Database work |
-| 🎨 **UI Designer** | Design, animations | UI/UX |
-| 🌐 **Fullstack** | End-to-end | Full features |
-| 📱 **Mobile Developer** | React Native, Flutter | Mobile apps |
-| 🎮 **Game Developer** | Unity, Godot | Game development |
-| ⚡ **Performance Optimizer** | Core Web Vitals, profiling | Performance issues |
-| 🔓 **Penetration Tester** | Security testing | Pentest |
+| Agent                        | Role                       | When to Use          |
+| ---------------------------- | -------------------------- | -------------------- |
+| 🔐 **Security Auditor**      | Security audit, OWASP      | Security reviews     |
+| ⚛️ **Frontend Specialist**   | React, Next.js, UI/UX      | Frontend development |
+| 🖥️ **Backend Specialist**    | API, Database, Docker      | Backend development  |
+| 🚀 **DevOps Engineer**       | CI/CD, K8s, GitHub Actions | Infrastructure       |
+| 🐛 **Debugger**              | Root cause analysis        | Runtime errors       |
+| 🗄️ **Database Admin**        | Schema, migrations         | Database work        |
+| 🎨 **UI Designer**           | Design, animations         | UI/UX                |
+| 🌐 **Fullstack**             | End-to-end                 | Full features        |
+| 📱 **Mobile Developer**      | React Native, Flutter      | Mobile apps          |
+| 🎮 **Game Developer**        | Unity, Godot               | Game development     |
+| ⚡ **Performance Optimizer** | Core Web Vitals, profiling | Performance issues   |
+| 🔓 **Penetration Tester**    | Security testing           | Pentest              |
 
 #### Support & Management (6)
 
-| Agent | Role | When to Use |
-|-------|------|-------------|
-| 🔀 **Git Manager** | Commits, branches | Version control |
-| 📝 **Docs Manager** | Documentation | README, API docs |
-| 🔬 **Researcher** | Research | Technology decisions |
-| 💡 **Brainstormer** | Ideas | Problem solving |
-| 📊 **Project Manager** | Sprint planning | Project management |
-| ✍️ **Copywriter** | Marketing copy | Content |
+| Agent                  | Role              | When to Use          |
+| ---------------------- | ----------------- | -------------------- |
+| 🔀 **Git Manager**     | Commits, branches | Version control      |
+| 📝 **Docs Manager**    | Documentation     | README, API docs     |
+| 🔬 **Researcher**      | Research          | Technology decisions |
+| 💡 **Brainstormer**    | Ideas             | Problem solving      |
+| 📊 **Project Manager** | Sprint planning   | Project management   |
+| ✍️ **Copywriter**      | Marketing copy    | Content              |
 
 #### Specialized (4)
 
-| Agent | Role | When to Use |
-|-------|------|-------------|
-| 🎯 **Orchestrator** | Multi-agent coordination | Complex tasks |
-| 🏺 **Code Archaeologist** | Legacy code analysis | Refactoring old code |
-| 👤 **Product Owner** | Requirements, backlog | Product decisions |
-| 📈 **SEO Specialist** | SEO/GEO optimization | SEO work |
+| Agent                     | Role                     | When to Use          |
+| ------------------------- | ------------------------ | -------------------- |
+| 🎯 **Orchestrator**       | Multi-agent coordination | Complex tasks        |
+| 🏺 **Code Archaeologist** | Legacy code analysis     | Refactoring old code |
+| 👤 **Product Owner**      | Requirements, backlog    | Product decisions    |
+| 📈 **SEO Specialist**     | SEO/GEO optimization     | SEO work             |
 
 ### How to Use Agents
 
@@ -176,38 +176,38 @@ Skills are loaded automatically based on context and agent configuration.
 
 #### Frontend (4)
 
-| Skill | Content |
-|-------|---------|
+| Skill              | Content                                        |
+| ------------------ | ---------------------------------------------- |
 | **react-patterns** | Hooks, state management, component composition |
-| **nextjs** | App Router, Server Components, data fetching |
-| **tailwind** | Tailwind CSS v4, responsive design |
-| **performance** | Core Web Vitals, caching, optimization |
+| **nextjs**         | App Router, Server Components, data fetching   |
+| **tailwind**       | Tailwind CSS v4, responsive design             |
+| **performance**    | Core Web Vitals, caching, optimization         |
 
 #### Backend (3)
 
-| Skill | Content |
-|-------|---------|
-| **api-design** | RESTful patterns, validation, rate limiting |
-| **docker** | Multi-stage builds, Compose, container security |
-| **security** | OWASP Top 10, JWT, XSS/CSRF prevention |
+| Skill          | Content                                         |
+| -------------- | ----------------------------------------------- |
+| **api-design** | RESTful patterns, validation, rate limiting     |
+| **docker**     | Multi-stage builds, Compose, container security |
+| **security**   | OWASP Top 10, JWT, XSS/CSRF prevention          |
 
 #### Mobile & Testing (2)
 
-| Skill | Content |
-|-------|---------|
-| **mobile** | React Native, Flutter, mobile performance |
-| **testing** | Vitest, MSW, snapshot testing |
+| Skill       | Content                                   |
+| ----------- | ----------------------------------------- |
+| **mobile**  | React Native, Flutter, mobile performance |
+| **testing** | Vitest, MSW, snapshot testing             |
 
 #### Workflow (6)
 
-| Skill | Content |
-|-------|---------|
-| **code-review** | Review checklist, patterns |
-| **debug** | 4-phase debugging methodology |
-| **session-resume** | Context recovery |
-| **compound-docs** | Knowledge documentation |
-| **file-todos** | Task tracking |
-| **examples** | Supabase, integrations |
+| Skill              | Content                       |
+| ------------------ | ----------------------------- |
+| **code-review**    | Review checklist, patterns    |
+| **debug**          | 4-phase debugging methodology |
+| **session-resume** | Context recovery              |
+| **compound-docs**  | Knowledge documentation       |
+| **file-todos**     | Task tracking                 |
+| **examples**       | Supabase, integrations        |
 
 ---
 
@@ -233,104 +233,104 @@ Skills are loaded automatically based on context and agent configuration.
 
 ### 💻 Development
 
-| Command | Description | Example |
-|---------|-------------|---------|
-| `/code` | Write code for a task | `/code Create UserService class` |
-| `/code-preview` | Preview code before applying | `/code-preview` |
-| `/cook` | Full development cycle (plan→code→test→review) | `/cook Add login feature` |
-| `/debug` | Debug issues with root cause analysis | `/debug Why API returns 500?` |
-| `/fix` | Quick fix for errors | `/fix ESLint errors in src/utils` |
-| `/test` | Write and run tests | `/test Write tests for UserService` |
-| `/fullstack` | End-to-end feature development | `/fullstack Build user dashboard` |
+| Command         | Description                                    | Example                             |
+| --------------- | ---------------------------------------------- | ----------------------------------- |
+| `/code`         | Write code for a task                          | `/code Create UserService class`    |
+| `/code-preview` | Preview code before applying                   | `/code-preview`                     |
+| `/cook`         | Full development cycle (plan→code→test→review) | `/cook Add login feature`           |
+| `/debug`        | Debug issues with root cause analysis          | `/debug Why API returns 500?`       |
+| `/fix`          | Quick fix for errors                           | `/fix ESLint errors in src/utils`   |
+| `/test`         | Write and run tests                            | `/test Write tests for UserService` |
+| `/fullstack`    | End-to-end feature development                 | `/fullstack Build user dashboard`   |
 
 ### 📚 Documentation & Content
 
-| Command | Description | Example |
-|---------|-------------|---------|
-| `/doc` | Update folder documentation | `/doc src/services` |
-| `/docs` | Generate documentation | `/docs Create API reference` |
-| `/adr` | Create Architecture Decision Record | `/adr Use PostgreSQL over MySQL` |
-| `/changelog` | Generate changelog from commits | `/changelog` |
-| `/content` | Create content (tutorials, guides) | `/content Write auth tutorial` |
-| `/copywrite` | Marketing copy | `/copywrite Landing page hero text` |
-| `/journal` | Development journal | `/journal` |
+| Command      | Description                         | Example                             |
+| ------------ | ----------------------------------- | ----------------------------------- |
+| `/doc`       | Update folder documentation         | `/doc src/services`                 |
+| `/docs`      | Generate documentation              | `/docs Create API reference`        |
+| `/adr`       | Create Architecture Decision Record | `/adr Use PostgreSQL over MySQL`    |
+| `/changelog` | Generate changelog from commits     | `/changelog`                        |
+| `/content`   | Create content (tutorials, guides)  | `/content Write auth tutorial`      |
+| `/copywrite` | Marketing copy                      | `/copywrite Landing page hero text` |
+| `/journal`   | Development journal                 | `/journal`                          |
 
 ### 🔀 Git & PR
 
-| Command | Description | Example |
-|---------|-------------|---------|
-| `/git` | Git operations | `/git commit "feat: add auth"` |
-| `/pr` | Create Pull Request | `/pr Create PR for feature` |
-| `/review-pr` | Review Pull Request | `/review-pr 123` |
+| Command      | Description         | Example                        |
+| ------------ | ------------------- | ------------------------------ |
+| `/git`       | Git operations      | `/git commit "feat: add auth"` |
+| `/pr`        | Create Pull Request | `/pr Create PR for feature`    |
+| `/review-pr` | Review Pull Request | `/review-pr 123`               |
 
 ### 🔍 Exploration & Research
 
-| Command | Description | Example |
-|---------|-------------|---------|
-| `/scout` | Explore codebase structure | `/scout src/services` |
-| `/scout-ext` | Extended scout with dependencies | `/scout-ext` |
-| `/research` | Research technologies | `/research Compare React vs Vue` |
-| `/brainstorm` | Brainstorm ideas | `/brainstorm Authentication approaches` |
+| Command       | Description                      | Example                                 |
+| ------------- | -------------------------------- | --------------------------------------- |
+| `/scout`      | Explore codebase structure       | `/scout src/services`                   |
+| `/scout-ext`  | Extended scout with dependencies | `/scout-ext`                            |
+| `/research`   | Research technologies            | `/research Compare React vs Vue`        |
+| `/brainstorm` | Brainstorm ideas                 | `/brainstorm Authentication approaches` |
 
 ### 🎨 Design & UI
 
-| Command | Description | Example |
-|---------|-------------|---------|
-| `/design` | UI/UX design guidance | `/design Create dashboard layout` |
-| `/video` | Video content planning | `/video` |
-| `/screenshot` | Screenshot annotation | `/screenshot` |
+| Command       | Description            | Example                           |
+| ------------- | ---------------------- | --------------------------------- |
+| `/design`     | UI/UX design guidance  | `/design Create dashboard layout` |
+| `/video`      | Video content planning | `/video`                          |
+| `/screenshot` | Screenshot annotation  | `/screenshot`                     |
 
 ### 🗄️ Database & Integration
 
-| Command | Description | Example |
-|---------|-------------|---------|
-| `/db` | Database operations | `/db Design user schema` |
-| `/integrate` | Integration planning | `/integrate Stripe payment` |
-| `/ticket` | Get ticket details (Jira/Linear) | `/ticket ABC-123` |
+| Command      | Description                      | Example                     |
+| ------------ | -------------------------------- | --------------------------- |
+| `/db`        | Database operations              | `/db Design user schema`    |
+| `/integrate` | Integration planning             | `/integrate Stripe payment` |
+| `/ticket`    | Get ticket details (Jira/Linear) | `/ticket ABC-123`           |
 
 ### 🛠️ Project Management
 
-| Command | Description | Example |
-|---------|-------------|---------|
-| `/pm` | Project management | `/pm Sprint planning` |
-| `/project` | Project overview | `/project` |
-| `/status` | Show project status | `/status` |
-| `/kit-setup` | Initialize project context | `/kit-setup` |
+| Command      | Description                | Example               |
+| ------------ | -------------------------- | --------------------- |
+| `/pm`        | Project management         | `/pm Sprint planning` |
+| `/project`   | Project overview           | `/project`            |
+| `/status`    | Show project status        | `/status`             |
+| `/kit-setup` | Initialize project context | `/kit-setup`          |
 
 ### ⚡ Workflows (via `/workflow` command)
 
 > **Note**: These are workflow guides in `.agent/workflows/`. Run them using `/workflow [name]` or just type the workflow name as a prompt.
 
-| Workflow | Description |
-|----------|-------------|
-| `explore` | Deep research before planning |
-| `plan-compound` | Create plan with solution search |
-| `work` | Execute plan step by step |
-| `review-compound` | Multi-pass code review |
-| `compound` | Document solution for reuse |
-| `housekeeping` | Cleanup before git push |
-| `specs` | Create multi-session specifications |
-| `triage` | Triage review findings |
-| `report-bug` | Report bugs with reproduction steps |
-| `adr` | Create Architecture Decision Record |
-| `changelog` | Generate changelog from commits |
-| `kit-setup` | Initialize project context |
+| Workflow          | Description                         |
+| ----------------- | ----------------------------------- |
+| `explore`         | Deep research before planning       |
+| `plan-compound`   | Create plan with solution search    |
+| `work`            | Execute plan step by step           |
+| `review-compound` | Multi-pass code review              |
+| `compound`        | Document solution for reuse         |
+| `housekeeping`    | Cleanup before git push             |
+| `specs`           | Create multi-session specifications |
+| `triage`          | Triage review findings              |
+| `report-bug`      | Report bugs with reproduction steps |
+| `adr`             | Create Architecture Decision Record |
+| `changelog`       | Generate changelog from commits     |
+| `kit-setup`       | Initialize project context          |
 
 ### 🔧 Utilities
 
-| Command | Description |
-|---------|-------------|
-| `/help` | Show all commands |
-| `/ask` | Quick Q&A |
-| `/chat` | Free chat |
-| `/do` | Execute task |
-| `/use` | Use specific agent |
-| `/session` | Manage session |
-| `/team` | Team orchestration |
+| Command     | Description           |
+| ----------- | --------------------- |
+| `/help`     | Show all commands     |
+| `/ask`      | Quick Q&A             |
+| `/chat`     | Free chat             |
+| `/do`       | Execute task          |
+| `/use`      | Use specific agent    |
+| `/session`  | Manage session        |
+| `/team`     | Team orchestration    |
 | `/workflow` | Run specific workflow |
-| `/mcp` | MCP tool operations |
-| `/skill` | View/manage skills |
-| `/watzup` | Quick status check |
+| `/mcp`      | MCP tool operations   |
+| `/skill`    | View/manage skills    |
+| `/watzup`   | Quick status check    |
 
 ---
 
@@ -338,29 +338,35 @@ Skills are loaded automatically based on context and agent configuration.
 
 ### Core Tools
 
-| Tool | Function |
-|------|----------|
-| `kit_create_checkpoint` | Git checkpoint before changes |
-| `kit_restore_checkpoint` | Rollback to checkpoint |
-| `kit_get_project_context` | Get project information |
-| `kit_handoff_agent` | Transfer context between agents |
+| Tool                      | Function                        |
+| ------------------------- | ------------------------------- |
+| `kit_create_checkpoint`   | Git checkpoint before changes   |
+| `kit_restore_checkpoint`  | Rollback to checkpoint          |
+| `kit_get_project_context` | Get project information         |
+| `kit_handoff_agent`       | Transfer context between agents |
 
 ### Knowledge Tools
 
-| Tool | Function |
-|------|----------|
-| `kit_save_learning` | Save feedback for AI learning |
-| `kit_get_learnings` | Get saved learnings |
-| `kit_index_codebase` | Index codebase for search |
-| `kit_keyword_search` | Search in codebase |
+| Tool                 | Function                      |
+| -------------------- | ----------------------------- |
+| `kit_save_learning`  | Save feedback for AI learning |
+| `kit_get_learnings`  | Get saved learnings           |
+| `kit_index_codebase` | Index codebase for search     |
+| `kit_keyword_search` | Search in codebase            |
 
 ### Integration Tools
 
-| Tool | Function |
-|------|----------|
-| `kit_github_create_pr` | Create GitHub PR |
-| `kit_github_get_issue` | Get issue details |
-| `kit_jira_get_ticket` | Get Jira ticket info |
+| Tool                      | Function                 |
+| ------------------------- | ------------------------ |
+| `kit_github_create_pr`    | Create GitHub PR         |
+| `kit_github_get_pr`       | Get GitHub PR details    |
+| `kit_github_get_issue`    | Get GitHub issue details |
+| `kit_bitbucket_get_pr`    | Get Bitbucket PR details |
+| `kit_bitbucket_create_pr` | Create Bitbucket PR      |
+| `kit_jira_get_ticket`     | Get Jira ticket info     |
+
+> **Note**: PR commands (`/review-pr`, `/pr`) auto-detect GitHub vs Bitbucket from git remote.
+> For Bitbucket, install `bkt` CLI (`brew install avivsinai/tap/bitbucket-cli`) and run `bkt auth login`.
 
 ---
 
@@ -370,15 +376,15 @@ Skills are loaded automatically based on context and agent configuration.
 
 Real-time blocking BEFORE AI writes code:
 
-| Category | Patterns |
-|----------|----------|
-| Cloud | AWS Access Keys, AWS Secrets |
-| Code Hosting | GitHub PAT, GitLab Tokens, npm tokens |
-| AI Providers | OpenAI, Anthropic, Google API Keys |
-| Auth | Bearer tokens, JWT secrets |
-| Keys | RSA, SSH, EC Private Keys |
-| Database | MongoDB, PostgreSQL, MySQL connection strings |
-| Communication | Slack tokens, webhooks |
+| Category      | Patterns                                      |
+| ------------- | --------------------------------------------- |
+| Cloud         | AWS Access Keys, AWS Secrets                  |
+| Code Hosting  | GitHub PAT, GitLab Tokens, npm tokens         |
+| AI Providers  | OpenAI, Anthropic, Google API Keys            |
+| Auth          | Bearer tokens, JWT secrets                    |
+| Keys          | RSA, SSH, EC Private Keys                     |
+| Database      | MongoDB, PostgreSQL, MySQL connection strings |
+| Communication | Slack tokens, webhooks                        |
 
 ### Command Blocking
 
@@ -398,10 +404,10 @@ Real-time blocking BEFORE AI writes code:
 
 ## 📢 Notifications
 
-| Integration | Description |
-|-------------|-------------|
-| 💬 **Discord** | Webhook notifications |
-| ✉️ **Telegram** | Bot notifications |
+| Integration          | Description                |
+| -------------------- | -------------------------- |
+| 💬 **Discord**       | Webhook notifications      |
+| ✉️ **Telegram**      | Bot notifications          |
 | 🔔 **Session Hooks** | Before/After agent actions |
 
 ---
@@ -409,31 +415,35 @@ Real-time blocking BEFORE AI writes code:
 ## ❓ FAQ
 
 ### Is Gemini-Kit free?
+
 ✅ **Yes**, completely free and open source (MIT License).
 
 ### Do I need an API key?
+
 Configure **Gemini CLI** with your Google account. No separate API key needed.
 
 ### Which languages are supported?
+
 ✅ TypeScript, JavaScript, Python, Go, Rust, Java, C++, and more.
 
 ### Which OS is supported?
+
 ✅ macOS, Linux, Windows (WSL recommended)
 
 ---
 
 ## 📊 Stats (v4.0.0)
 
-| Metric | Value |
-|--------|-------|
-| Tests | 291 passing |
-| Lint | 0 errors |
-| Agents | 27 |
-| Skills | 15 categories |
-| Commands | 45 |
-| Workflows | 33 |
-| Scripts | 50+ |
-| Coverage | ~81% |
+| Metric    | Value         |
+| --------- | ------------- |
+| Tests     | 291 passing   |
+| Lint      | 0 errors      |
+| Agents    | 27            |
+| Skills    | 15 categories |
+| Commands  | 45            |
+| Workflows | 33            |
+| Scripts   | 50+           |
+| Coverage  | ~81%          |
 
 ---
 

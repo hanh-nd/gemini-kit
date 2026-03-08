@@ -1,9 +1,9 @@
 /**
- * Integration Tools - GitHub, Jira
- * Tools 14, 15, 16, 17
+ * Integration Tools - GitHub, Bitbucket, Jira
+ * Tools 14, 15, 16, 17, 18, 19
  */
 import { z } from 'zod';
-import { sanitize, safeGh, commandExists } from './security.js';
+import { sanitize, safeGh, safeBb, commandExists } from './security.js';
 // Zod schemas for GitHub CLI responses (MEDIUM 3: Validate JSON)
 const PrDetailSchema = z.object({
     title: z.string(),
@@ -24,11 +24,13 @@ const PrListItemSchema = z.object({
 // MEDIUM 2: Jira ticket schema for runtime validation
 // ADF (Atlassian Document Format) can have many nested content types
 // We use a more permissive schema that accepts any ADF structure
-const AdfContentSchema = z.object({
+const AdfContentSchema = z
+    .object({
     type: z.string().optional(),
     content: z.array(z.unknown()).optional(),
     text: z.string().optional(),
-}).passthrough();
+})
+    .passthrough();
 const JiraFieldsSchema = z.object({
     summary: z.string(),
     status: z.object({ name: z.string() }).optional(),
@@ -37,14 +39,19 @@ const JiraFieldsSchema = z.object({
     reporter: z.object({ displayName: z.string() }).nullable().optional(),
     issuetype: z.object({ name: z.string() }).optional(),
     // Handle both plain string and ADF (Atlassian Document Format) structures
-    description: z.union([
+    description: z
+        .union([
         z.string(),
-        z.object({
+        z
+            .object({
             type: z.string().optional(),
             version: z.number().optional(),
             content: z.array(AdfContentSchema).optional(),
-        }).passthrough(), // Accept any additional ADF fields
-    ]).nullable().optional(),
+        })
+            .passthrough(), // Accept any additional ADF fields
+    ])
+        .nullable()
+        .optional(),
     labels: z.array(z.string()).optional(),
 });
 const JiraTicketSchema = z.object({
@@ -81,14 +88,23 @@ export function registerIntegrationTools(server) {
     server.tool('kit_github_create_pr', 'Create a Pull Request on GitHub using gh CLI', {
         title: z.string().max(256).describe('PR title'),
         body: z.string().max(65536).describe('PR description/body'),
-        base: z.string().regex(/^[a-zA-Z0-9_\-./]+$/).optional().default('main').describe('Base branch'),
+        base: z
+            .string()
+            .regex(/^[a-zA-Z0-9_\-./]+$/)
+            .optional()
+            .default('main')
+            .describe('Base branch'),
         draft: z.boolean().optional().default(false).describe('Create as draft PR'),
-        labels: z.array(z.string().regex(/^[a-zA-Z0-9_-]+$/)).optional().describe('Labels to add'),
+        labels: z
+            .array(z.string().regex(/^[a-zA-Z0-9_-]+$/))
+            .optional()
+            .describe('Labels to add'),
     }, async ({ title, body, base = 'main', draft = false, labels }) => {
         try {
             if (!commandExists('gh')) {
                 return {
-                    content: [{
+                    content: [
+                        {
                             type: 'text',
                             text: `❌ GitHub CLI (gh) not installed.
 
@@ -97,8 +113,9 @@ Install it with:
 - Linux: https://github.com/cli/cli/blob/trunk/docs/install_linux.md
 
 Then authenticate:
-gh auth login`
-                        }]
+gh auth login`,
+                        },
+                    ],
                 };
             }
             try {
@@ -106,15 +123,26 @@ gh auth login`
             }
             catch {
                 return {
-                    content: [{
+                    content: [
+                        {
                             type: 'text',
                             text: `❌ Not authenticated with GitHub.
 
-Run: gh auth login`
-                        }]
+Run: gh auth login`,
+                        },
+                    ],
                 };
             }
-            const args = ['pr', 'create', '--title', sanitize(title), '--body', body, '--base', base];
+            const args = [
+                'pr',
+                'create',
+                '--title',
+                sanitize(title),
+                '--body',
+                body,
+                '--base',
+                base,
+            ];
             if (draft)
                 args.push('--draft');
             // Issue 3 FIX: gh CLI requires separate --label flags, not comma-joined
@@ -125,10 +153,12 @@ Run: gh auth login`
             }
             const result = safeGh(args);
             return {
-                content: [{
+                content: [
+                    {
                         type: 'text',
-                        text: `✅ Pull Request created!\n\n${result}`
-                    }]
+                        text: `✅ Pull Request created!\n\n${result}`,
+                    },
+                ],
             };
         }
         catch (error) {
@@ -144,25 +174,40 @@ Run: gh auth login`
         try {
             if (!commandExists('gh')) {
                 return {
-                    content: [{
+                    content: [
+                        {
                             type: 'text',
-                            text: '❌ GitHub CLI (gh) not installed. Install with: brew install gh'
-                        }]
+                            text: '❌ GitHub CLI (gh) not installed. Install with: brew install gh',
+                        },
+                    ],
                 };
             }
             if (prNumber) {
-                const prInfo = safeGh(['pr', 'view', String(prNumber), '--json', 'title,body,state,author,labels,changedFiles,additions,deletions']);
+                const prInfo = safeGh([
+                    'pr',
+                    'view',
+                    String(prNumber),
+                    '--json',
+                    'title,body,state,author,labels,changedFiles,additions,deletions',
+                ]);
                 // MEDIUM 3: Validate JSON with zod
                 const parseResult = PrDetailSchema.safeParse(JSON.parse(prInfo));
                 if (!parseResult.success) {
-                    return { content: [{ type: 'text', text: `❌ Failed to parse PR data: ${parseResult.error.message}` }] };
+                    return {
+                        content: [
+                            {
+                                type: 'text',
+                                text: `❌ Failed to parse PR data: ${parseResult.error.message}`,
+                            },
+                        ],
+                    };
                 }
                 const pr = parseResult.data;
                 let output = `## PR #${prNumber}: ${pr.title}
 
 **State:** ${pr.state}
 **Author:** ${pr.author.login}
-**Labels:** ${pr.labels.map(l => l.name).join(', ') || 'none'}
+**Labels:** ${pr.labels.map((l) => l.name).join(', ') || 'none'}
 **Changes:** +${pr.additions} / -${pr.deletions} (${pr.changedFiles} files)
 
 ### Description
@@ -172,19 +217,37 @@ ${pr.body || 'No description'}`;
                         const diff = safeGh(['pr', 'diff', String(prNumber)]);
                         output += `\n\n### Diff\n\`\`\`diff\n${diff.slice(0, 3000)}${diff.length > 3000 ? '\n... (truncated)' : ''}\n\`\`\``;
                     }
-                    catch { /* diff not available, ignore */ }
+                    catch {
+                        /* diff not available, ignore */
+                    }
                 }
                 return { content: [{ type: 'text', text: output }] };
             }
             else {
-                const list = safeGh(['pr', 'list', '--limit', '10', '--json', 'number,title,state,author']);
+                const list = safeGh([
+                    'pr',
+                    'list',
+                    '--limit',
+                    '10',
+                    '--json',
+                    'number,title,state,author',
+                ]);
                 // MEDIUM 3: Validate JSON with zod
                 const parseResult = z.array(PrListItemSchema).safeParse(JSON.parse(list));
                 if (!parseResult.success) {
-                    return { content: [{ type: 'text', text: `❌ Failed to parse PR list: ${parseResult.error.message}` }] };
+                    return {
+                        content: [
+                            {
+                                type: 'text',
+                                text: `❌ Failed to parse PR list: ${parseResult.error.message}`,
+                            },
+                        ],
+                    };
                 }
                 const prs = parseResult.data;
-                const output = `## Recent Pull Requests\n\n${prs.map(pr => `- **#${pr.number}** ${pr.title} (${pr.state}) by @${pr.author.login}`).join('\n')}`;
+                const output = `## Recent Pull Requests\n\n${prs
+                    .map((pr) => `- **#${pr.number}** ${pr.title} (${pr.state}) by @${pr.author.login}`)
+                    .join('\n')}`;
                 return { content: [{ type: 'text', text: output }] };
             }
         }
@@ -203,7 +266,8 @@ ${pr.body || 'No description'}`;
             const email = process.env.JIRA_EMAIL;
             if (!baseUrl || !apiToken || !email) {
                 return {
-                    content: [{
+                    content: [
+                        {
                             type: 'text',
                             text: `❌ Jira not configured.
 
@@ -212,18 +276,21 @@ Set these environment variables:
 - JIRA_EMAIL=your-email@example.com
 - JIRA_API_TOKEN=your-api-token
 
-Get API token from: https://id.atlassian.com/manage-profile/security/api-tokens`
-                        }]
+Get API token from: https://id.atlassian.com/manage-profile/security/api-tokens`,
+                        },
+                    ],
                 };
             }
             // FIX: Validate ticketId format to prevent command injection
             const safeTicketId = ticketId.match(/^[A-Z]+-\d+$/)?.[0];
             if (!safeTicketId) {
                 return {
-                    content: [{
+                    content: [
+                        {
                             type: 'text',
-                            text: `❌ Invalid ticket ID format: ${ticketId}\n\nExpected format: PROJ-123`
-                        }]
+                            text: `❌ Invalid ticket ID format: ${ticketId}\n\nExpected format: PROJ-123`,
+                        },
+                    ],
                 };
             }
             const auth = Buffer.from(`${email}:${apiToken}`).toString('base64');
@@ -231,16 +298,18 @@ Get API token from: https://id.atlassian.com/manage-profile/security/api-tokens`
             const response = await fetch(`${baseUrl}/rest/api/3/issue/${safeTicketId}`, {
                 method: 'GET',
                 headers: {
-                    'Authorization': `Basic ${auth}`,
+                    Authorization: `Basic ${auth}`,
                     'Content-Type': 'application/json',
                 },
             });
             if (!response.ok) {
                 return {
-                    content: [{
+                    content: [
+                        {
                             type: 'text',
-                            text: `❌ Failed to fetch ticket: ${response.status} ${response.statusText}`
-                        }]
+                            text: `❌ Failed to fetch ticket: ${response.status} ${response.statusText}`,
+                        },
+                    ],
                 };
             }
             // MEDIUM 2: Validate Jira response with Zod schema
@@ -248,19 +317,23 @@ Get API token from: https://id.atlassian.com/manage-profile/security/api-tokens`
             const parseResult = JiraTicketSchema.safeParse(jsonData);
             if (!parseResult.success) {
                 return {
-                    content: [{
+                    content: [
+                        {
                             type: 'text',
-                            text: `❌ Invalid Jira response format: ${parseResult.error.message}`
-                        }]
+                            text: `❌ Invalid Jira response format: ${parseResult.error.message}`,
+                        },
+                    ],
                 };
             }
             const ticket = parseResult.data;
             if (ticket.errorMessages) {
                 return {
-                    content: [{
+                    content: [
+                        {
                             type: 'text',
-                            text: `❌ Ticket not found: ${ticketId}\n\n${ticket.errorMessages.join('\n')}`
-                        }]
+                            text: `❌ Ticket not found: ${ticketId}\n\n${ticket.errorMessages.join('\n')}`,
+                        },
+                    ],
                 };
             }
             const output = `## 🎫 ${ticketId}: ${ticket.fields.summary}
@@ -292,16 +365,21 @@ ${ticket.fields.labels?.join(', ') || 'None'}`;
         try {
             if (!commandExists('gh')) {
                 return {
-                    content: [{
+                    content: [
+                        {
                             type: 'text',
-                            text: '❌ GitHub CLI (gh) not installed. Install with: brew install gh'
-                        }]
+                            text: '❌ GitHub CLI (gh) not installed. Install with: brew install gh',
+                        },
+                    ],
                 };
             }
             // FIX: Use safeGh instead of execSync string
             const issueInfo = safeGh([
-                'issue', 'view', String(issueNumber),
-                '--json', 'title,body,state,author,labels,assignees'
+                'issue',
+                'view',
+                String(issueNumber),
+                '--json',
+                'title,body,state,author,labels,assignees',
             ]);
             const issue = JSON.parse(issueInfo);
             const output = `## 🐛 Issue #${issueNumber}: ${issue.title}
@@ -318,6 +396,118 @@ ${issue.body || 'No description'}`;
         catch (error) {
             const errorMsg = error instanceof Error ? error.message : String(error);
             return { content: [{ type: 'text', text: `Error: ${errorMsg}` }] };
+        }
+    });
+    // TOOL 18: BITBUCKET GET PR
+    server.tool('kit_bitbucket_get_pr', 'Get Pull Request details from Bitbucket Cloud using bb CLI', {
+        prId: z.number().int().positive().optional().describe('PR ID (omit to list recent PRs)'),
+        includeDiff: z.boolean().optional().default(false).describe('Include diff in output'),
+    }, async ({ prId, includeDiff = false }) => {
+        try {
+            if (!commandExists('bb')) {
+                return {
+                    content: [
+                        {
+                            type: 'text',
+                            text: `❌ Bitbucket CLI (bb) not installed.\n\nInstall it with:\n- npm: npm install -g @anthropic/bb-cli\n- brew: brew install bb\n\nThen authenticate:\nbb auth login`,
+                        },
+                    ],
+                };
+            }
+            if (prId) {
+                const prInfo = safeBb(['pr', 'view', String(prId), '--json']);
+                const pr = JSON.parse(prInfo);
+                let output = `## PR #${prId}: ${pr.title}
+
+**State:** ${pr.state}
+**Author:** ${pr.author?.display_name || pr.author?.nickname || 'Unknown'}
+**Source:** ${pr.source?.branch?.name || 'unknown'} → ${pr.destination?.branch?.name || 'unknown'}
+**Reviewers:** ${(pr.reviewers || []).map((r) => r.display_name || r.nickname).join(', ') || 'none'}
+
+### Description
+${pr.description || 'No description'}`;
+                if (includeDiff) {
+                    try {
+                        const diff = safeBb(['pr', 'diff', String(prId)]);
+                        output += `\n\n### Diff\n\`\`\`diff\n${diff.slice(0, 3000)}${diff.length > 3000 ? '\n... (truncated)' : ''}\n\`\`\``;
+                    }
+                    catch {
+                        /* diff not available, ignore */
+                    }
+                }
+                return { content: [{ type: 'text', text: output }] };
+            }
+            else {
+                const list = safeBb(['pr', 'list', '--state', 'OPEN', '--json']);
+                const prs = JSON.parse(list);
+                const prList = Array.isArray(prs) ? prs : prs.values || [];
+                const output = `## Recent Pull Requests\n\n${prList
+                    .map((pr) => `- **#${pr.id}** ${pr.title} (${pr.state}) by ${pr.author?.display_name || pr.author?.nickname || 'unknown'}`)
+                    .join('\n')}`;
+                return { content: [{ type: 'text', text: output }] };
+            }
+        }
+        catch (error) {
+            const errorMsg = error instanceof Error ? error.message : String(error);
+            return { content: [{ type: 'text', text: `❌ Error: ${errorMsg}` }] };
+        }
+    });
+    // TOOL 19: BITBUCKET CREATE PR
+    server.tool('kit_bitbucket_create_pr', 'Create a Pull Request on Bitbucket Cloud using bb CLI', {
+        title: z.string().max(256).describe('PR title'),
+        body: z.string().max(65536).optional().default('').describe('PR description'),
+        destination: z.string().optional().default('main').describe('Destination branch'),
+        draft: z.boolean().optional().default(false).describe('Create as draft PR'),
+        reviewers: z.array(z.string()).optional().describe('Reviewer usernames'),
+        closeSourceBranch: z
+            .boolean()
+            .optional()
+            .default(false)
+            .describe('Close source branch after merge'),
+    }, async ({ title, body = '', destination = 'main', draft = false, reviewers, closeSourceBranch = false, }) => {
+        try {
+            if (!commandExists('bb')) {
+                return {
+                    content: [
+                        {
+                            type: 'text',
+                            text: `❌ Bitbucket CLI (bb) not installed.\n\nInstall it with:\n- npm: npm install -g @anthropic/bb-cli\n- brew: brew install bb\n\nThen authenticate:\nbb auth login`,
+                        },
+                    ],
+                };
+            }
+            const args = [
+                'pr',
+                'create',
+                '--title',
+                sanitize(title),
+                '--body',
+                body,
+                '--destination',
+                destination,
+            ];
+            if (draft)
+                args.push('--draft');
+            if (closeSourceBranch)
+                args.push('--close-source-branch');
+            if (reviewers && reviewers.length > 0) {
+                for (const reviewer of reviewers) {
+                    args.push('--reviewer', sanitize(reviewer));
+                }
+            }
+            const result = safeBb(args);
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: `✅ Pull Request created on Bitbucket!\n\n${result}`,
+                    },
+                ],
+            };
+        }
+        catch (error) {
+            const errorMsg = error instanceof Error ? error.message : String(error);
+            return { content: [{ type: 'text', text: `❌ Error creating PR: ${errorMsg}` }] };
         }
     });
 }

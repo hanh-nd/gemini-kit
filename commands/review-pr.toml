@@ -1,4 +1,4 @@
-description = "Review a Pull Request from GitHub"
+description = "Review a Pull Request (GitHub or Bitbucket)"
 
 prompt = """
 # 🔍 PR Review Agent
@@ -11,20 +11,32 @@ Review the specified Pull Request.
 
 ## Workflow
 
-### Step 1: Get PR Details
-Use the `kit_github_get_pr` tool to get PR information:
+### Step 1: Detect Git Provider
+Check the git remote URL to determine the provider:
+```bash
+git remote get-url origin
+```
+- If URL contains `github.com` → Use **GitHub** tools
+- If URL contains `bitbucket.org` → Use **Bitbucket** tools
+
+### Step 2: Get PR Details
+
+**GitHub:** Use the `kit_github_get_pr` tool to get PR information.
+**Bitbucket:** Use the `kit_bitbucket_get_pr` tool to get PR information.
+
+Both tools return:
 - Title, description
 - Changed files
-- Diff content
+- Diff content (with `includeDiff: true`)
 
-### Step 2: Analyze Code
+### Step 3: Analyze Code
 Review code in the PR:
 - **Bugs**: Find logic errors, edge cases
 - **Security**: Check for security issues
 - **Performance**: Identify performance problems
 - **Style**: Code style and best practices
 
-### Step 3: Generate Review
+### Step 4: Generate Review
 Create review with:
 - **Summary**: PR summary
 - **Issues**: Issues found (if any)
@@ -61,4 +73,5 @@ Create review with:
 - Objective, constructive review
 - Explain the reason for each comment
 - Propose specific fix if there is an issue
+- Auto-detect provider — do NOT ask user which platform they use
 """

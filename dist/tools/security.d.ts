@@ -54,3 +54,31 @@ export declare function findFiles(dir: string, extensions: string[], maxFiles: n
  * Uses queue-based approach to prevent stack overflow on deep directories
  */
 export declare function findFilesAsync(dir: string, extensions: string[], maxFiles: number, excludeDirs?: string[]): Promise<string[]>;
+/**
+ * Detect git provider from remote URL
+ * Returns 'github', 'bitbucket', or 'unknown'
+ */
+export type GitProvider = 'github' | 'bitbucket' | 'unknown';
+export declare function detectGitProvider(cwd?: string): GitProvider;
+/**
+ * Parse Bitbucket workspace and repo slug from git remote URL
+ * Supports both HTTPS and SSH formats:
+ *   https://bitbucket.org/workspace/repo.git
+ *   git@bitbucket.org:workspace/repo.git
+ */
+export declare function parseBitbucketRemote(cwd?: string): {
+    workspace: string;
+    repoSlug: string;
+} | null;
+/**
+ * Safe bb (Bitbucket CLI) command execution
+ * Includes stderr in error message for better debugging
+ *
+ * Requires bb CLI: npm install -g @anthropic/bb-cli or brew install bb
+ * Auth via: bb auth login (OAuth flow, no passwords stored)
+ *
+ * @param timeout Default from GEMINI_KIT_BB_TIMEOUT env var or 60s
+ */
+export declare function safeBb(args: string[], options?: {
+    timeout?: number;
+}): string;

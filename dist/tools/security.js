@@ -115,7 +115,7 @@ export function findFiles(dir, extensions, maxFiles, excludeDirs = ['node_module
     const results = [];
     // Use queue instead of recursion to prevent stack overflow on deep dirs
     const queue = [
-        { fullPath: dir, relativePath: '' }
+        { fullPath: dir, relativePath: '' },
     ];
     while (queue.length > 0 && results.length < maxFiles) {
         const current = queue.shift();
@@ -139,7 +139,7 @@ export function findFiles(dir, extensions, maxFiles, excludeDirs = ['node_module
                 }
             }
             else if (entry.isFile()) {
-                if (extensions.some(ext => entry.name.endsWith(ext))) {
+                if (extensions.some((ext) => entry.name.endsWith(ext))) {
                     results.push(entryRelPath);
                 }
             }
@@ -155,7 +155,7 @@ export async function findFilesAsync(dir, extensions, maxFiles, excludeDirs = ['
     const results = [];
     // Use queue instead of recursion to prevent stack overflow
     const queue = [
-        { fullPath: dir, relativePath: '' }
+        { fullPath: dir, relativePath: '' },
     ];
     while (queue.length > 0 && results.length < maxFiles) {
         const current = queue.shift();
@@ -179,11 +179,74 @@ export async function findFilesAsync(dir, extensions, maxFiles, excludeDirs = ['
                 }
             }
             else if (entry.isFile()) {
-                if (extensions.some(ext => entry.name.endsWith(ext))) {
+                if (extensions.some((ext) => entry.name.endsWith(ext))) {
                     results.push(entryRelPath);
                 }
             }
         }
     }
     return results;
+}
+export function detectGitProvider(cwd) {
+    try {
+        const remoteUrl = safeGit(['remote', 'get-url', 'origin'], { cwd }).trim();
+        if (remoteUrl.includes('github.com'))
+            return 'github';
+        if (remoteUrl.includes('bitbucket.org'))
+            return 'bitbucket';
+        return 'unknown';
+    }
+    catch {
+        return 'unknown';
+    }
+}
+/**
+ * Parse Bitbucket workspace and repo slug from git remote URL
+ * Supports both HTTPS and SSH formats:
+ *   https://bitbucket.org/workspace/repo.git
+ *   git@bitbucket.org:workspace/repo.git
+ */
+export function parseBitbucketRemote(cwd) {
+    try {
+        const remoteUrl = safeGit(['remote', 'get-url', 'origin'], { cwd }).trim();
+        // HTTPS: https://bitbucket.org/workspace/repo.git
+        const httpsMatch = remoteUrl.match(/bitbucket\.org\/([^/]+)\/([^/.]+)/);
+        if (httpsMatch) {
+            return { workspace: httpsMatch[1], repoSlug: httpsMatch[2] };
+        }
+        // SSH: git@bitbucket.org:workspace/repo.git
+        const sshMatch = remoteUrl.match(/bitbucket\.org:([^/]+)\/([^/.]+)/);
+        if (sshMatch) {
+            return { workspace: sshMatch[1], repoSlug: sshMatch[2] };
+        }
+        return null;
+    }
+    catch {
+        return null;
+    }
+}
+// Configurable timeout for Bitbucket CLI
+const BB_TIMEOUT = parseInt(process.env.GEMINI_KIT_BB_TIMEOUT || '60000', 10);
+/**
+ * Safe bb (Bitbucket CLI) command execution
+ * Includes stderr in error message for better debugging
+ *
+ * Requires bb CLI: npm install -g @anthropic/bb-cli or brew install bb
+ * Auth via: bb auth login (OAuth flow, no passwords stored)
+ *
+ * @param timeout Default from GEMINI_KIT_BB_TIMEOUT env var or 60s
+ */
+export function safeBb(args, options) {
+    try {
+        return execFileSync('bb', args, {
+            encoding: 'utf8',
+            timeout: options?.timeout || BB_TIMEOUT,
+            maxBuffer: 10 * 1024 * 1024,
+        });
+    }
+    catch (error) {
+        const stderr = extractStderr(error);
+        const baseMsg = error instanceof Error ? error.message : String(error);
+        throw new Error(`Bitbucket CLI failed: ${baseMsg}${stderr ? `\nDetails: ${stderr}` : ''}`);
+    }
 }

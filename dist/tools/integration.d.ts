@@ -1,6 +1,6 @@
 /**
- * Integration Tools - GitHub, Jira
- * Tools 14, 15, 16, 17
+ * Integration Tools - GitHub, Bitbucket, Jira
+ * Tools 14, 15, 16, 17, 18, 19
  */
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 export declare function registerIntegrationTools(server: McpServer): void;

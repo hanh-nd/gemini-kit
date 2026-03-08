@@ -15,19 +15,19 @@ export const homeDir = os.homedir();
  * Sanitize string for safe use with execFileSync
  * Only removes dangerous shell operators - safe chars like !?#* are allowed
  * since execFileSync doesn't invoke a shell and handles args safely
- * 
+ *
  * NOTE: Flag injection is NOT handled here because:
  * 1. execFileSync uses arg arrays, not shell parsing
  * 2. Adding -- prefix would corrupt content (e.g., commit messages)
  * 3. Callers should use '--' separator when needed for specific commands
  */
 export function sanitize(input: string): string {
-    // Only remove truly dangerous shell operators
-    // Keep: ! ? # * ( ) [ ] { } - for valid content like "Fix bug!" or "- TODO item"
-    return String(input)
-        .replace(/[;&|`$<>\\]/g, '')
-        .trim()
-        .slice(0, 500); // Limit length
+  // Only remove truly dangerous shell operators
+  // Keep: ! ? # * ( ) [ ] { } - for valid content like "Fix bug!" or "- TODO item"
+  return String(input)
+    .replace(/[;&|`$<>\\]/g, '')
+    .trim()
+    .slice(0, 500); // Limit length
 }
 
 /**
@@ -36,24 +36,24 @@ export function sanitize(input: string): string {
  * (e.g., /tmp/app should not match /tmp/app-secret)
  */
 export function validatePath(filePath: string, baseDir: string = process.cwd()): string {
-    const resolved = path.resolve(baseDir, filePath);
-    const root = path.resolve(baseDir);
+  const resolved = path.resolve(baseDir, filePath);
+  const root = path.resolve(baseDir);
 
-    // Stricter: exact match OR starts with root + separator
-    if (resolved !== root && !resolved.startsWith(root + path.sep)) {
-        throw new Error(`Path traversal detected: ${filePath}`);
-    }
-    return resolved;
+  // Stricter: exact match OR starts with root + separator
+  if (resolved !== root && !resolved.startsWith(root + path.sep)) {
+    throw new Error(`Path traversal detected: ${filePath}`);
+  }
+  return resolved;
 }
 
 /**
  * Extract stderr from error for better logging
  */
 function extractStderr(error: unknown): string {
-    if (error && typeof error === 'object' && 'stderr' in error) {
-        return String((error as { stderr?: unknown }).stderr);
-    }
-    return '';
+  if (error && typeof error === 'object' && 'stderr' in error) {
+    return String((error as { stderr?: unknown }).stderr);
+  }
+  return '';
 }
 
 // Configurable timeouts via environment variables
@@ -63,42 +63,42 @@ const GH_TIMEOUT = parseInt(process.env.GEMINI_KIT_GH_TIMEOUT || '60000', 10);
 /**
  * Safe git command execution using execFileSync
  * Includes stderr in error message for better debugging
- * 
+ *
  * @param timeout Default from GEMINI_KIT_GIT_TIMEOUT env var or 30s
  */
 export function safeGit(args: string[], options?: { cwd?: string; timeout?: number }): string {
-    try {
-        return execFileSync('git', args, {
-            encoding: 'utf8',
-            timeout: options?.timeout || GIT_TIMEOUT,
-            cwd: options?.cwd,
-            maxBuffer: 10 * 1024 * 1024, // 10MB
-        });
-    } catch (error) {
-        const stderr = extractStderr(error);
-        const baseMsg = error instanceof Error ? error.message : String(error);
-        throw new Error(`Git command failed: ${baseMsg}${stderr ? `\nDetails: ${stderr}` : ''}`);
-    }
+  try {
+    return execFileSync('git', args, {
+      encoding: 'utf8',
+      timeout: options?.timeout || GIT_TIMEOUT,
+      cwd: options?.cwd,
+      maxBuffer: 10 * 1024 * 1024, // 10MB
+    });
+  } catch (error) {
+    const stderr = extractStderr(error);
+    const baseMsg = error instanceof Error ? error.message : String(error);
+    throw new Error(`Git command failed: ${baseMsg}${stderr ? `\nDetails: ${stderr}` : ''}`);
+  }
 }
 
 /**
  * Safe gh (GitHub CLI) command execution
  * Includes stderr in error message for better debugging
- * 
+ *
  * @param timeout Default from GEMINI_KIT_GH_TIMEOUT env var or 60s
  */
 export function safeGh(args: string[], options?: { timeout?: number }): string {
-    try {
-        return execFileSync('gh', args, {
-            encoding: 'utf8',
-            timeout: options?.timeout || GH_TIMEOUT,
-            maxBuffer: 10 * 1024 * 1024,
-        });
-    } catch (error) {
-        const stderr = extractStderr(error);
-        const baseMsg = error instanceof Error ? error.message : String(error);
-        throw new Error(`GitHub CLI failed: ${baseMsg}${stderr ? `\nDetails: ${stderr}` : ''}`);
-    }
+  try {
+    return execFileSync('gh', args, {
+      encoding: 'utf8',
+      timeout: options?.timeout || GH_TIMEOUT,
+      maxBuffer: 10 * 1024 * 1024,
+    });
+  } catch (error) {
+    const stderr = extractStderr(error);
+    const baseMsg = error instanceof Error ? error.message : String(error);
+    throw new Error(`GitHub CLI failed: ${baseMsg}${stderr ? `\nDetails: ${stderr}` : ''}`);
+  }
 }
 
 /**
@@ -106,13 +106,13 @@ export function safeGh(args: string[], options?: { timeout?: number }): string {
  * Uses 'where' on Windows, 'which' on macOS/Linux
  */
 export function commandExists(cmd: string): boolean {
-    try {
-        const checkCmd = process.platform === 'win32' ? 'where' : 'which';
-        execFileSync(checkCmd, [cmd], { encoding: 'utf8', timeout: 5000, stdio: 'ignore' });
-        return true;
-    } catch {
-        return false;
-    }
+  try {
+    const checkCmd = process.platform === 'win32' ? 'where' : 'which';
+    execFileSync(checkCmd, [cmd], { encoding: 'utf8', timeout: 5000, stdio: 'ignore' });
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -120,48 +120,48 @@ export function commandExists(cmd: string): boolean {
  * MEDIUM 2: Uses iterative queue-based approach to prevent stack overflow
  */
 export function findFiles(
-    dir: string,
-    extensions: string[],
-    maxFiles: number,
-    excludeDirs: string[] = ['node_modules', '.git', 'dist', 'build', 'coverage']
+  dir: string,
+  extensions: string[],
+  maxFiles: number,
+  excludeDirs: string[] = ['node_modules', '.git', 'dist', 'build', 'coverage']
 ): string[] {
-    const results: string[] = [];
-    // Use queue instead of recursion to prevent stack overflow on deep dirs
-    const queue: Array<{ fullPath: string; relativePath: string }> = [
-        { fullPath: dir, relativePath: '' }
-    ];
+  const results: string[] = [];
+  // Use queue instead of recursion to prevent stack overflow on deep dirs
+  const queue: Array<{ fullPath: string; relativePath: string }> = [
+    { fullPath: dir, relativePath: '' },
+  ];
 
-    while (queue.length > 0 && results.length < maxFiles) {
-        const current = queue.shift()!;
+  while (queue.length > 0 && results.length < maxFiles) {
+    const current = queue.shift()!;
 
-        let entries;
-        try {
-            entries = fs.readdirSync(current.fullPath, { withFileTypes: true });
-        } catch {
-            continue; // Skip directories we can't read
-        }
-
-        for (const entry of entries) {
-            if (results.length >= maxFiles) break;
-
-            const entryFullPath = path.join(current.fullPath, entry.name);
-            const entryRelPath = current.relativePath
-                ? path.join(current.relativePath, entry.name)
-                : entry.name;
-
-            if (entry.isDirectory()) {
-                if (!excludeDirs.includes(entry.name)) {
-                    queue.push({ fullPath: entryFullPath, relativePath: entryRelPath });
-                }
-            } else if (entry.isFile()) {
-                if (extensions.some(ext => entry.name.endsWith(ext))) {
-                    results.push(entryRelPath);
-                }
-            }
-        }
+    let entries;
+    try {
+      entries = fs.readdirSync(current.fullPath, { withFileTypes: true });
+    } catch {
+      continue; // Skip directories we can't read
     }
 
-    return results;
+    for (const entry of entries) {
+      if (results.length >= maxFiles) break;
+
+      const entryFullPath = path.join(current.fullPath, entry.name);
+      const entryRelPath = current.relativePath
+        ? path.join(current.relativePath, entry.name)
+        : entry.name;
+
+      if (entry.isDirectory()) {
+        if (!excludeDirs.includes(entry.name)) {
+          queue.push({ fullPath: entryFullPath, relativePath: entryRelPath });
+        }
+      } else if (entry.isFile()) {
+        if (extensions.some((ext) => entry.name.endsWith(ext))) {
+          results.push(entryRelPath);
+        }
+      }
+    }
+  }
+
+  return results;
 }
 
 /**
@@ -169,46 +169,118 @@ export function findFiles(
  * Uses queue-based approach to prevent stack overflow on deep directories
  */
 export async function findFilesAsync(
-    dir: string,
-    extensions: string[],
-    maxFiles: number,
-    excludeDirs: string[] = ['node_modules', '.git', 'dist', 'build', 'coverage']
+  dir: string,
+  extensions: string[],
+  maxFiles: number,
+  excludeDirs: string[] = ['node_modules', '.git', 'dist', 'build', 'coverage']
 ): Promise<string[]> {
-    const results: string[] = [];
-    // Use queue instead of recursion to prevent stack overflow
-    const queue: Array<{ fullPath: string; relativePath: string }> = [
-        { fullPath: dir, relativePath: '' }
-    ];
+  const results: string[] = [];
+  // Use queue instead of recursion to prevent stack overflow
+  const queue: Array<{ fullPath: string; relativePath: string }> = [
+    { fullPath: dir, relativePath: '' },
+  ];
 
-    while (queue.length > 0 && results.length < maxFiles) {
-        const current = queue.shift()!;
+  while (queue.length > 0 && results.length < maxFiles) {
+    const current = queue.shift()!;
 
-        let entries;
-        try {
-            entries = await fs.promises.readdir(current.fullPath, { withFileTypes: true });
-        } catch {
-            continue; // Skip directories we can't read
-        }
-
-        for (const entry of entries) {
-            if (results.length >= maxFiles) break;
-
-            const entryFullPath = path.join(current.fullPath, entry.name);
-            const entryRelPath = current.relativePath
-                ? path.join(current.relativePath, entry.name)
-                : entry.name;
-
-            if (entry.isDirectory()) {
-                if (!excludeDirs.includes(entry.name)) {
-                    queue.push({ fullPath: entryFullPath, relativePath: entryRelPath });
-                }
-            } else if (entry.isFile()) {
-                if (extensions.some(ext => entry.name.endsWith(ext))) {
-                    results.push(entryRelPath);
-                }
-            }
-        }
+    let entries;
+    try {
+      entries = await fs.promises.readdir(current.fullPath, { withFileTypes: true });
+    } catch {
+      continue; // Skip directories we can't read
     }
 
-    return results;
+    for (const entry of entries) {
+      if (results.length >= maxFiles) break;
+
+      const entryFullPath = path.join(current.fullPath, entry.name);
+      const entryRelPath = current.relativePath
+        ? path.join(current.relativePath, entry.name)
+        : entry.name;
+
+      if (entry.isDirectory()) {
+        if (!excludeDirs.includes(entry.name)) {
+          queue.push({ fullPath: entryFullPath, relativePath: entryRelPath });
+        }
+      } else if (entry.isFile()) {
+        if (extensions.some((ext) => entry.name.endsWith(ext))) {
+          results.push(entryRelPath);
+        }
+      }
+    }
+  }
+
+  return results;
+}
+
+/**
+ * Detect git provider from remote URL
+ * Returns 'github', 'bitbucket', or 'unknown'
+ */
+export type GitProvider = 'github' | 'bitbucket' | 'unknown';
+
+export function detectGitProvider(cwd?: string): GitProvider {
+  try {
+    const remoteUrl = safeGit(['remote', 'get-url', 'origin'], { cwd }).trim();
+    if (remoteUrl.includes('github.com')) return 'github';
+    if (remoteUrl.includes('bitbucket.org')) return 'bitbucket';
+    return 'unknown';
+  } catch {
+    return 'unknown';
+  }
+}
+
+/**
+ * Parse Bitbucket workspace and repo slug from git remote URL
+ * Supports both HTTPS and SSH formats:
+ *   https://bitbucket.org/workspace/repo.git
+ *   git@bitbucket.org:workspace/repo.git
+ */
+export function parseBitbucketRemote(cwd?: string): { workspace: string; repoSlug: string } | null {
+  try {
+    const remoteUrl = safeGit(['remote', 'get-url', 'origin'], { cwd }).trim();
+
+    // HTTPS: https://bitbucket.org/workspace/repo.git
+    const httpsMatch = remoteUrl.match(/bitbucket\.org\/([^/]+)\/([^/.]+)/);
+    if (httpsMatch) {
+      return { workspace: httpsMatch[1], repoSlug: httpsMatch[2] };
+    }
+
+    // SSH: git@bitbucket.org:workspace/repo.git
+    const sshMatch = remoteUrl.match(/bitbucket\.org:([^/]+)\/([^/.]+)/);
+    if (sshMatch) {
+      return { workspace: sshMatch[1], repoSlug: sshMatch[2] };
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+// Configurable timeout for Bitbucket CLI (bkt)
+const BKT_TIMEOUT = parseInt(process.env.GEMINI_KIT_BKT_TIMEOUT || '60000', 10);
+
+/**
+ * Safe bkt (Bitbucket CLI) command execution
+ * Includes stderr in error message for better debugging
+ *
+ * Requires bkt CLI: brew install avivsinai/tap/bitbucket-cli
+ * Auth via: bkt auth login https://bitbucket.org --kind cloud --web
+ * See: https://github.com/avivsinai/bitbucket-cli
+ *
+ * @param timeout Default from GEMINI_KIT_BKT_TIMEOUT env var or 60s
+ */
+export function safeBkt(args: string[], options?: { timeout?: number }): string {
+  try {
+    return execFileSync('bkt', args, {
+      encoding: 'utf8',
+      timeout: options?.timeout || BKT_TIMEOUT,
+      maxBuffer: 10 * 1024 * 1024,
+    });
+  } catch (error) {
+    const stderr = extractStderr(error);
+    const baseMsg = error instanceof Error ? error.message : String(error);
+    throw new Error(`Bitbucket CLI failed: ${baseMsg}${stderr ? `\nDetails: ${stderr}` : ''}`);
+  }
 }
