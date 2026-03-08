@@ -3,7 +3,7 @@
  * Tools 14, 15, 16, 17, 18, 19
  */
 import { z } from 'zod';
-import { sanitize, safeGh, safeBb, commandExists } from './security.js';
+import { sanitize, safeGh, safeBkt, commandExists } from './security.js';
 // Zod schemas for GitHub CLI responses (MEDIUM 3: Validate JSON)
 const PrDetailSchema = z.object({
     title: z.string(),
@@ -399,23 +399,40 @@ ${issue.body || 'No description'}`;
         }
     });
     // TOOL 18: BITBUCKET GET PR
-    server.tool('kit_bitbucket_get_pr', 'Get Pull Request details from Bitbucket Cloud using bb CLI', {
+    server.tool('kit_bitbucket_get_pr', 'Get Pull Request details from Bitbucket using bkt CLI (avivsinai/bitbucket-cli)', {
         prId: z.number().int().positive().optional().describe('PR ID (omit to list recent PRs)'),
         includeDiff: z.boolean().optional().default(false).describe('Include diff in output'),
     }, async ({ prId, includeDiff = false }) => {
         try {
-            if (!commandExists('bb')) {
+            if (!commandExists('bkt')) {
                 return {
                     content: [
                         {
                             type: 'text',
-                            text: `❌ Bitbucket CLI (bb) not installed.\n\nInstall it with:\n- npm: npm install -g @anthropic/bb-cli\n- brew: brew install bb\n\nThen authenticate:\nbb auth login`,
+                            text: `❌ Bitbucket CLI (bkt) not installed.
+
+Install bkt using one of these methods:
+
+  # Homebrew (macOS/Linux)
+  brew install avivsinai/tap/bitbucket-cli
+
+  # Go Install
+  go install github.com/avivsinai/bitbucket-cli/cmd/bkt@latest
+
+  # From Source
+  git clone https://github.com/avivsinai/bitbucket-cli.git
+  cd bitbucket-cli && make build
+
+Then authenticate with Bitbucket Cloud:
+  bkt auth login https://bitbucket.org --kind cloud --web
+
+More info: https://github.com/avivsinai/bitbucket-cli`,
                         },
                     ],
                 };
             }
             if (prId) {
-                const prInfo = safeBb(['pr', 'view', String(prId), '--json']);
+                const prInfo = safeBkt(['pr', 'view', String(prId), '--json']);
                 const pr = JSON.parse(prInfo);
                 let output = `## PR #${prId}: ${pr.title}
 
@@ -428,7 +445,7 @@ ${issue.body || 'No description'}`;
 ${pr.description || 'No description'}`;
                 if (includeDiff) {
                     try {
-                        const diff = safeBb(['pr', 'diff', String(prId)]);
+                        const diff = safeBkt(['pr', 'diff', String(prId)]);
                         output += `\n\n### Diff\n\`\`\`diff\n${diff.slice(0, 3000)}${diff.length > 3000 ? '\n... (truncated)' : ''}\n\`\`\``;
                     }
                     catch {
@@ -438,7 +455,7 @@ ${pr.description || 'No description'}`;
                 return { content: [{ type: 'text', text: output }] };
             }
             else {
-                const list = safeBb(['pr', 'list', '--state', 'OPEN', '--json']);
+                const list = safeBkt(['pr', 'list', '--state', 'OPEN', '--limit', '10', '--json']);
                 const prs = JSON.parse(list);
                 const prList = Array.isArray(prs) ? prs : prs.values || [];
                 const output = `## Recent Pull Requests\n\n${prList
@@ -453,49 +470,53 @@ ${pr.description || 'No description'}`;
         }
     });
     // TOOL 19: BITBUCKET CREATE PR
-    server.tool('kit_bitbucket_create_pr', 'Create a Pull Request on Bitbucket Cloud using bb CLI', {
+    server.tool('kit_bitbucket_create_pr', 'Create a Pull Request on Bitbucket using bkt CLI (avivsinai/bitbucket-cli)', {
         title: z.string().max(256).describe('PR title'),
-        body: z.string().max(65536).optional().default('').describe('PR description'),
-        destination: z.string().optional().default('main').describe('Destination branch'),
-        draft: z.boolean().optional().default(false).describe('Create as draft PR'),
+        description: z.string().max(65536).optional().default('').describe('PR description'),
+        source: z.string().optional().describe('Source branch (defaults to current branch)'),
+        target: z.string().optional().default('main').describe('Target/destination branch'),
         reviewers: z.array(z.string()).optional().describe('Reviewer usernames'),
-        closeSourceBranch: z
-            .boolean()
-            .optional()
-            .default(false)
-            .describe('Close source branch after merge'),
-    }, async ({ title, body = '', destination = 'main', draft = false, reviewers, closeSourceBranch = false, }) => {
+    }, async ({ title, description = '', source, target = 'main', reviewers }) => {
         try {
-            if (!commandExists('bb')) {
+            if (!commandExists('bkt')) {
                 return {
                     content: [
                         {
                             type: 'text',
-                            text: `❌ Bitbucket CLI (bb) not installed.\n\nInstall it with:\n- npm: npm install -g @anthropic/bb-cli\n- brew: brew install bb\n\nThen authenticate:\nbb auth login`,
+                            text: `❌ Bitbucket CLI (bkt) not installed.
+
+Install bkt using one of these methods:
+
+  # Homebrew (macOS/Linux)
+  brew install avivsinai/tap/bitbucket-cli
+
+  # Go Install
+  go install github.com/avivsinai/bitbucket-cli/cmd/bkt@latest
+
+  # From Source
+  git clone https://github.com/avivsinai/bitbucket-cli.git
+  cd bitbucket-cli && make build
+
+Then authenticate with Bitbucket Cloud:
+  bkt auth login https://bitbucket.org --kind cloud --web
+
+More info: https://github.com/avivsinai/bitbucket-cli`,
                         },
                     ],
                 };
             }
-            const args = [
-                'pr',
-                'create',
-                '--title',
-                sanitize(title),
-                '--body',
-                body,
-                '--destination',
-                destination,
-            ];
-            if (draft)
-                args.push('--draft');
-            if (closeSourceBranch)
-                args.push('--close-source-branch');
+            const args = ['pr', 'create', '--title', sanitize(title)];
+            if (description)
+                args.push('--description', description);
+            if (source)
+                args.push('--source', source);
+            args.push('--target', target);
             if (reviewers && reviewers.length > 0) {
                 for (const reviewer of reviewers) {
                     args.push('--reviewer', sanitize(reviewer));
                 }
             }
-            const result = safeBb(args);
+            const result = safeBkt(args);
             return {
                 content: [
                     {

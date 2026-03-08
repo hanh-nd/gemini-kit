@@ -10,7 +10,7 @@ vi.mock('child_process', () => ({
 // Mock security
 vi.mock('../security.js', () => ({
     safeGh: vi.fn().mockReturnValue('https://github.com/user/repo/pull/1'),
-    safeBb: vi.fn().mockReturnValue('https://bitbucket.org/team/repo/pull-requests/1'),
+    safeBkt: vi.fn().mockReturnValue('https://bitbucket.org/team/repo/pull-requests/1'),
     commandExists: vi.fn().mockReturnValue(true),
     sanitize: vi.fn((x) => x),
 }));
@@ -125,19 +125,19 @@ describe('registerIntegrationTools - Full Coverage', () => {
         });
     });
     describe('kit_bitbucket_get_pr', () => {
-        it('should handle bb not installed', async () => {
+        it('should handle bkt not installed', async () => {
             const security = await import('../security.js');
             vi.mocked(security.commandExists).mockReturnValue(false);
             const { registerIntegrationTools } = await import('../integration.js');
             registerIntegrationTools(mockServer);
             const tool = registeredTools.get('kit_bitbucket_get_pr');
             const result = await tool.handler({ prId: 1 });
-            expect(result.content[0].text).toContain('bb) not installed');
+            expect(result.content[0].text).toContain('bkt) not installed');
         });
-        it('should handle bb CLI errors', async () => {
+        it('should handle bkt CLI errors', async () => {
             const security = await import('../security.js');
             vi.mocked(security.commandExists).mockReturnValue(true);
-            vi.mocked(security.safeBb).mockImplementation(() => {
+            vi.mocked(security.safeBkt).mockImplementation(() => {
                 throw new Error('Bitbucket CLI failed: not authenticated');
             });
             const { registerIntegrationTools } = await import('../integration.js');
@@ -148,19 +148,19 @@ describe('registerIntegrationTools - Full Coverage', () => {
         });
     });
     describe('kit_bitbucket_create_pr', () => {
-        it('should handle bb not installed', async () => {
+        it('should handle bkt not installed', async () => {
             const security = await import('../security.js');
             vi.mocked(security.commandExists).mockReturnValue(false);
             const { registerIntegrationTools } = await import('../integration.js');
             registerIntegrationTools(mockServer);
             const tool = registeredTools.get('kit_bitbucket_create_pr');
             const result = await tool.handler({ title: 'Test PR' });
-            expect(result.content[0].text).toContain('bb) not installed');
+            expect(result.content[0].text).toContain('bkt) not installed');
         });
         it('should create PR successfully', async () => {
             const security = await import('../security.js');
             vi.mocked(security.commandExists).mockReturnValue(true);
-            vi.mocked(security.safeBb).mockReturnValue('https://bitbucket.org/team/repo/pull-requests/42');
+            vi.mocked(security.safeBkt).mockReturnValue('https://bitbucket.org/team/repo/pull-requests/42');
             const { registerIntegrationTools } = await import('../integration.js');
             registerIntegrationTools(mockServer);
             const tool = registeredTools.get('kit_bitbucket_create_pr');

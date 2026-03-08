@@ -24,6 +24,8 @@ git remote get-url origin
 **GitHub:** Use the `kit_github_get_pr` tool to get PR information.
 **Bitbucket:** Use the `kit_bitbucket_get_pr` tool to get PR information.
 
+⚠️ **STOP on failure**: If the tool returns an error (CLI not installed, auth failed, PR not found, etc.), **STOP immediately**. Display the error message to the user and do NOT continue to Step 3. Do NOT attempt to review without PR data.
+
 Both tools return:
 - Title, description
 - Changed files
@@ -74,4 +76,5 @@ Create review with:
 - Explain the reason for each comment
 - Propose specific fix if there is an issue
 - Auto-detect provider — do NOT ask user which platform they use
+- **If CLI tool fails (not installed, auth error, API error), STOP the review and show the error to the user**
 """

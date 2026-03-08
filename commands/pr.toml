@@ -35,6 +35,8 @@ Based on changes, automatically create:
 **GitHub:** Use `kit_github_create_pr` tool to create PR.
 **Bitbucket:** Use `kit_bitbucket_create_pr` tool to create PR.
 
+⚠️ **STOP on failure**: If the tool returns an error (CLI not installed, auth failed, etc.), **STOP immediately**. Display the error message to the user and do NOT retry or continue.
+
 ---
 
 ## Output Format
@@ -61,4 +63,5 @@ Based on changes, automatically create:
 - If credentials are not configured, guide user on how to set up:
   - **GitHub:** Install `gh` CLI and run `gh auth login`
   - **Bitbucket:** Install `bkt` CLI (`brew install avivsinai/tap/bitbucket-cli`) and run `bkt auth login https://bitbucket.org --kind cloud --web`
+- **If CLI tool fails (not installed, auth error, API error), STOP the process and show the error to the user**
 """

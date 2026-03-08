@@ -225,22 +225,23 @@ export function parseBitbucketRemote(cwd) {
         return null;
     }
 }
-// Configurable timeout for Bitbucket CLI
-const BB_TIMEOUT = parseInt(process.env.GEMINI_KIT_BB_TIMEOUT || '60000', 10);
+// Configurable timeout for Bitbucket CLI (bkt)
+const BKT_TIMEOUT = parseInt(process.env.GEMINI_KIT_BKT_TIMEOUT || '60000', 10);
 /**
- * Safe bb (Bitbucket CLI) command execution
+ * Safe bkt (Bitbucket CLI) command execution
  * Includes stderr in error message for better debugging
  *
- * Requires bb CLI: npm install -g @anthropic/bb-cli or brew install bb
- * Auth via: bb auth login (OAuth flow, no passwords stored)
+ * Requires bkt CLI: brew install avivsinai/tap/bitbucket-cli
+ * Auth via: bkt auth login https://bitbucket.org --kind cloud --web
+ * See: https://github.com/avivsinai/bitbucket-cli
  *
- * @param timeout Default from GEMINI_KIT_BB_TIMEOUT env var or 60s
+ * @param timeout Default from GEMINI_KIT_BKT_TIMEOUT env var or 60s
  */
-export function safeBb(args, options) {
+export function safeBkt(args, options) {
     try {
-        return execFileSync('bb', args, {
+        return execFileSync('bkt', args, {
             encoding: 'utf8',
-            timeout: options?.timeout || BB_TIMEOUT,
+            timeout: options?.timeout || BKT_TIMEOUT,
             maxBuffer: 10 * 1024 * 1024,
         });
     }

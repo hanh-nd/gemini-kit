@@ -467,7 +467,24 @@ ${issue.body || 'No description'}`;
             content: [
               {
                 type: 'text' as const,
-                text: `❌ Bitbucket CLI (bkt) not installed.\n\nInstall it with:\n  brew install avivsinai/tap/bitbucket-cli\n\nThen authenticate:\n  bkt auth login https://bitbucket.org --kind cloud --web\n\nSee: https://github.com/avivsinai/bitbucket-cli`,
+                text: `❌ Bitbucket CLI (bkt) not installed.
+
+Install bkt using one of these methods:
+
+  # Homebrew (macOS/Linux)
+  brew install avivsinai/tap/bitbucket-cli
+
+  # Go Install
+  go install github.com/avivsinai/bitbucket-cli/cmd/bkt@latest
+
+  # From Source
+  git clone https://github.com/avivsinai/bitbucket-cli.git
+  cd bitbucket-cli && make build
+
+Then authenticate with Bitbucket Cloud:
+  bkt auth login https://bitbucket.org --kind cloud --web
+
+More info: https://github.com/avivsinai/bitbucket-cli`,
               },
             ],
           };
@@ -541,7 +558,24 @@ ${pr.description || 'No description'}`;
             content: [
               {
                 type: 'text' as const,
-                text: `❌ Bitbucket CLI (bkt) not installed.\n\nInstall it with:\n  brew install avivsinai/tap/bitbucket-cli\n\nThen authenticate:\n  bkt auth login https://bitbucket.org --kind cloud --web\n\nSee: https://github.com/avivsinai/bitbucket-cli`,
+                text: `❌ Bitbucket CLI (bkt) not installed.
+
+Install bkt using one of these methods:
+
+  # Homebrew (macOS/Linux)
+  brew install avivsinai/tap/bitbucket-cli
+
+  # Go Install
+  go install github.com/avivsinai/bitbucket-cli/cmd/bkt@latest
+
+  # From Source
+  git clone https://github.com/avivsinai/bitbucket-cli.git
+  cd bitbucket-cli && make build
+
+Then authenticate with Bitbucket Cloud:
+  bkt auth login https://bitbucket.org --kind cloud --web
+
+More info: https://github.com/avivsinai/bitbucket-cli`,
               },
             ],
           };

@@ -71,14 +71,15 @@ export declare function parseBitbucketRemote(cwd?: string): {
     repoSlug: string;
 } | null;
 /**
- * Safe bb (Bitbucket CLI) command execution
+ * Safe bkt (Bitbucket CLI) command execution
  * Includes stderr in error message for better debugging
  *
- * Requires bb CLI: npm install -g @anthropic/bb-cli or brew install bb
- * Auth via: bb auth login (OAuth flow, no passwords stored)
+ * Requires bkt CLI: brew install avivsinai/tap/bitbucket-cli
+ * Auth via: bkt auth login https://bitbucket.org --kind cloud --web
+ * See: https://github.com/avivsinai/bitbucket-cli
  *
- * @param timeout Default from GEMINI_KIT_BB_TIMEOUT env var or 60s
+ * @param timeout Default from GEMINI_KIT_BKT_TIMEOUT env var or 60s
  */
-export declare function safeBb(args: string[], options?: {
+export declare function safeBkt(args: string[], options?: {
     timeout?: number;
 }): string;

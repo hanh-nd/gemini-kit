@@ -20923,12 +20923,12 @@ async function findFilesAsync(dir, extensions, maxFiles, excludeDirs = ["node_mo
   }
   return results;
 }
-var BB_TIMEOUT = parseInt(process.env.GEMINI_KIT_BB_TIMEOUT || "60000", 10);
-function safeBb(args, options) {
+var BKT_TIMEOUT = parseInt(process.env.GEMINI_KIT_BKT_TIMEOUT || "60000", 10);
+function safeBkt(args, options) {
   try {
-    return execFileSync("bb", args, {
+    return execFileSync("bkt", args, {
       encoding: "utf8",
-      timeout: options?.timeout || BB_TIMEOUT,
+      timeout: options?.timeout || BKT_TIMEOUT,
       maxBuffer: 10 * 1024 * 1024
     });
   } catch (error2) {
@@ -22374,32 +22374,42 @@ ${issue2.body || "No description"}`;
   );
   server2.tool(
     "kit_bitbucket_get_pr",
-    "Get Pull Request details from Bitbucket Cloud using bb CLI",
+    "Get Pull Request details from Bitbucket using bkt CLI (avivsinai/bitbucket-cli)",
     {
       prId: external_exports.number().int().positive().optional().describe("PR ID (omit to list recent PRs)"),
       includeDiff: external_exports.boolean().optional().default(false).describe("Include diff in output")
     },
     async ({ prId, includeDiff = false }) => {
       try {
-        if (!commandExists("bb")) {
+        if (!commandExists("bkt")) {
           return {
             content: [
               {
                 type: "text",
-                text: `\u274C Bitbucket CLI (bb) not installed.
+                text: `\u274C Bitbucket CLI (bkt) not installed.
 
-Install it with:
-- npm: npm install -g @anthropic/bb-cli
-- brew: brew install bb
+Install bkt using one of these methods:
 
-Then authenticate:
-bb auth login`
+  # Homebrew (macOS/Linux)
+  brew install avivsinai/tap/bitbucket-cli
+
+  # Go Install
+  go install github.com/avivsinai/bitbucket-cli/cmd/bkt@latest
+
+  # From Source
+  git clone https://github.com/avivsinai/bitbucket-cli.git
+  cd bitbucket-cli && make build
+
+Then authenticate with Bitbucket Cloud:
+  bkt auth login https://bitbucket.org --kind cloud --web
+
+More info: https://github.com/avivsinai/bitbucket-cli`
               }
             ]
           };
         }
         if (prId) {
-          const prInfo = safeBb(["pr", "view", String(prId), "--json"]);
+          const prInfo = safeBkt(["pr", "view", String(prId), "--json"]);
           const pr = JSON.parse(prInfo);
           let output = `## PR #${prId}: ${pr.title}
 
@@ -22412,7 +22422,7 @@ bb auth login`
 ${pr.description || "No description"}`;
           if (includeDiff) {
             try {
-              const diff = safeBb(["pr", "diff", String(prId)]);
+              const diff = safeBkt(["pr", "diff", String(prId)]);
               output += `
 
 ### Diff
@@ -22424,7 +22434,7 @@ ${diff.slice(0, 3e3)}${diff.length > 3e3 ? "\n... (truncated)" : ""}
           }
           return { content: [{ type: "text", text: output }] };
         } else {
-          const list = safeBb(["pr", "list", "--state", "OPEN", "--json"]);
+          const list = safeBkt(["pr", "list", "--state", "OPEN", "--limit", "10", "--json"]);
           const prs = JSON.parse(list);
           const prList = Array.isArray(prs) ? prs : prs.values || [];
           const output = `## Recent Pull Requests
@@ -22442,59 +22452,53 @@ ${prList.map(
   );
   server2.tool(
     "kit_bitbucket_create_pr",
-    "Create a Pull Request on Bitbucket Cloud using bb CLI",
+    "Create a Pull Request on Bitbucket using bkt CLI (avivsinai/bitbucket-cli)",
     {
       title: external_exports.string().max(256).describe("PR title"),
-      body: external_exports.string().max(65536).optional().default("").describe("PR description"),
-      destination: external_exports.string().optional().default("main").describe("Destination branch"),
-      draft: external_exports.boolean().optional().default(false).describe("Create as draft PR"),
-      reviewers: external_exports.array(external_exports.string()).optional().describe("Reviewer usernames"),
-      closeSourceBranch: external_exports.boolean().optional().default(false).describe("Close source branch after merge")
+      description: external_exports.string().max(65536).optional().default("").describe("PR description"),
+      source: external_exports.string().optional().describe("Source branch (defaults to current branch)"),
+      target: external_exports.string().optional().default("main").describe("Target/destination branch"),
+      reviewers: external_exports.array(external_exports.string()).optional().describe("Reviewer usernames")
     },
-    async ({
-      title,
-      body = "",
-      destination = "main",
-      draft = false,
-      reviewers,
-      closeSourceBranch = false
-    }) => {
+    async ({ title, description = "", source, target = "main", reviewers }) => {
       try {
-        if (!commandExists("bb")) {
+        if (!commandExists("bkt")) {
           return {
             content: [
               {
                 type: "text",
-                text: `\u274C Bitbucket CLI (bb) not installed.
+                text: `\u274C Bitbucket CLI (bkt) not installed.
 
-Install it with:
-- npm: npm install -g @anthropic/bb-cli
-- brew: brew install bb
+Install bkt using one of these methods:
 
-Then authenticate:
-bb auth login`
+  # Homebrew (macOS/Linux)
+  brew install avivsinai/tap/bitbucket-cli
+
+  # Go Install
+  go install github.com/avivsinai/bitbucket-cli/cmd/bkt@latest
+
+  # From Source
+  git clone https://github.com/avivsinai/bitbucket-cli.git
+  cd bitbucket-cli && make build
+
+Then authenticate with Bitbucket Cloud:
+  bkt auth login https://bitbucket.org --kind cloud --web
+
+More info: https://github.com/avivsinai/bitbucket-cli`
               }
             ]
           };
         }
-        const args = [
-          "pr",
-          "create",
-          "--title",
-          sanitize(title),
-          "--body",
-          body,
-          "--destination",
-          destination
-        ];
-        if (draft) args.push("--draft");
-        if (closeSourceBranch) args.push("--close-source-branch");
+        const args = ["pr", "create", "--title", sanitize(title)];
+        if (description) args.push("--description", description);
+        if (source) args.push("--source", source);
+        args.push("--target", target);
         if (reviewers && reviewers.length > 0) {
           for (const reviewer of reviewers) {
             args.push("--reviewer", sanitize(reviewer));
           }
         }
-        const result = safeBb(args);
+        const result = safeBkt(args);
         return {
           content: [
             {

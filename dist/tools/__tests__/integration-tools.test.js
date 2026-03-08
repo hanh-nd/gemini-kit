@@ -166,8 +166,8 @@ describe('Integration Tools - kit_bitbucket_pr', () => {
         expect(pr.author.display_name).toBe('John Doe');
         expect(pr.source.branch.name).toBe('feature/new');
     });
-    it('should handle bb CLI not available', () => {
-        // bb CLI availability is checked via commandExists('bb')
+    it('should handle bkt CLI not available', () => {
+        // bkt CLI availability is checked via commandExists('bkt')
         const bbInstalled = false; // simulate not installed
         expect(bbInstalled).toBe(false);
     });
