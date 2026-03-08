@@ -72,10 +72,10 @@
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/nth5693/gemini-kit.git ~/.gemini/extensions/gemini-kit
+git clone https://github.com/hanh-nd/gemini-kit.git
 
 # 2. Install & build
-cd ~/.gemini/extensions/gemini-kit
+cd /path/to/gemini-kit
 npm install && npm run build
 
 # 3. Link extension
