@@ -31,16 +31,24 @@ Both tools return:
 - Changed files
 - Diff content (with `includeDiff: true`)
 
-### Step 3: Analyze Code
+### Step 3: Get Jira Ticket (Optional)
+Check if `{{args}}` or the PR title/description mentions a Jira ticket (e.g., "PROJ-123" or keyword "ticket", "jira ticket").
+- If a ticket ID is found, use `kit_jira_get_ticket(ticketId: "...")` to fetch details.
+- If multiple tickets are mentioned, prioritize the one most relevant to the PR.
+- Inform the user if a ticket was found and fetched.
+
+### Step 4: Analyze Code
 Review code in the PR:
+- **Requirement Alignment**: If a Jira ticket was fetched, verify if the PR implementation aligns with the ticket's requirements.
 - **Bugs**: Find logic errors, edge cases
 - **Security**: Check for security issues
 - **Performance**: Identify performance problems
 - **Style**: Code style and best practices
 
-### Step 4: Generate Review
+### Step 5: Generate Review
 Create review with:
 - **Summary**: PR summary
+- **Ticket Alignment**: Summary of how the PR aligns with the Jira ticket requirements (if applicable).
 - **Issues**: Issues found (if any)
 - **Suggestions**: Improvement suggestions
 - **Verdict**: APPROVE / REQUEST_CHANGES / COMMENT
@@ -54,6 +62,9 @@ Create review with:
 
 ### Summary
 [Summary of changes]
+
+### 🎟️ Ticket Alignment
+[Alignment with Jira ticket requirements, or "No Jira ticket found"]
 
 ### ✅ Good
 - [Good point 1]
