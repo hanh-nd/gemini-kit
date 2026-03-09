@@ -72,12 +72,39 @@ Based on the task "{{args}}", you need to:
 
 ---
 
-## Step 3: Execute
+## Step 3: Announce & Execute
 
 Now analyze the specific task "{{args}}" and:
-1. State which agents you will use and why
-2. Start executing as the FIRST agent in the sequence
-3. At the end, tell user about the next recommended agent
+
+1. **Announce your routing decision** using this format:
+
+```
+🧭 Routing Decision
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 Task: <brief task summary>
+🤖 Pipeline: <agent1> (<cmd1>) → <agent2> (<cmd2>) → ...
+📝 Reason: <why this sequence>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+2. **Execute commands sequentially:**
+
+   For each command in your pipeline:
+
+   a. Call `kit_get_command_prompt(command: "<command-name>")` to get its workflow
+   b. **If command found:** Follow the returned workflow EXACTLY
+   c. **If command NOT found (agent-only):** Read the agent definition at `.agent/agents/<agent-name>.md` and act according to that agent's role and instructions. If that file also doesn't exist, proceed using your best understanding of the agent's expertise.
+   d. When the step is complete and there is a next step, announce:
+      ```
+      ✅ Completed: /<command> | Next: /<next-command>
+      Proceed? (y/n)
+      ```
+   e. Wait for user confirmation before starting the next step
+   f. For the next step, call `kit_get_command_prompt` again and repeat
+
+3. If only **1 command/agent** is selected, just execute it directly without asking.
+
+**⚠️ CRITICAL:** Always try `kit_get_command_prompt` first. Only fall back to agent definition if no command exists.
 
 **Begin analysis and execution:**
 {{else}}

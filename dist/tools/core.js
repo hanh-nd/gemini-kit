@@ -23,7 +23,7 @@ export function registerCoreTools(server) {
             // HIGH FIX: Use async version to avoid blocking
             const files = await findFilesAsync(projectDir, extensions, 50);
             // Filter by depth (approximate)
-            const structure = files.filter(f => {
+            const structure = files.filter((f) => {
                 const parts = f.split(path.sep);
                 return parts.length <= depth + 1;
             });
@@ -33,26 +33,34 @@ export function registerCoreTools(server) {
                 try {
                     packageInfo = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
                 }
-                catch { /* parse error, ignore */ }
+                catch {
+                    /* parse error, ignore */
+                }
             }
             let gitLog = '';
             try {
                 gitLog = safeGit(['log', '--oneline', '-5']);
             }
-            catch { /* no git log, ignore */ }
+            catch {
+                /* no git log, ignore */
+            }
             return {
-                content: [{
+                content: [
+                    {
                         type: 'text',
                         text: JSON.stringify({
                             structure: structure,
-                            package: packageInfo ? {
-                                name: packageInfo.name,
-                                version: packageInfo.version,
-                                dependencies: Object.keys(packageInfo.dependencies || {})
-                            } : null,
+                            package: packageInfo
+                                ? {
+                                    name: packageInfo.name,
+                                    version: packageInfo.version,
+                                    dependencies: Object.keys(packageInfo.dependencies || {}),
+                                }
+                                : null,
                             recentCommits: gitLog.split('\n').filter(Boolean),
                         }, null, 2),
-                    }],
+                    },
+                ],
             };
         }
         catch (error) {
@@ -76,16 +84,18 @@ export function registerCoreTools(server) {
                 from: fromAgent,
                 to: toAgent,
                 context,
-                artifacts: artifacts || []
+                artifacts: artifacts || [],
             };
             // Issue 5 FIX: Use UUID to prevent filename collision in concurrent handoffs
             const filename = `${crypto.randomUUID()}-${fromAgent}-${toAgent}.json`;
             fs.writeFileSync(path.join(handoffDir, filename), JSON.stringify(handoff, null, 2));
             return {
-                content: [{
+                content: [
+                    {
                         type: 'text',
-                        text: `✅ Handoff from ${fromAgent} → ${toAgent}\n\nContext: ${context.slice(0, 200)}...`
-                    }]
+                        text: `✅ Handoff from ${fromAgent} → ${toAgent}\n\nContext: ${context.slice(0, 200)}...`,
+                    },
+                ],
             };
         }
         catch (error) {
@@ -104,7 +114,8 @@ export function registerCoreTools(server) {
             const artifactDir = path.join(process.cwd(), '.gemini-kit', 'artifacts', type);
             fs.mkdirSync(artifactDir, { recursive: true });
             // Security: Use path.basename and allow only safe characters
-            const safeName = path.basename(String(name))
+            const safeName = path
+                .basename(String(name))
                 .replace(/[^a-zA-Z0-9-_]/g, '-')
                 .slice(0, 50);
             // Issue 5 FIX: Use UUID to prevent filename collision
@@ -115,6 +126,85 @@ export function registerCoreTools(server) {
         }
         catch (error) {
             return { content: [{ type: 'text', text: `Error saving artifact: ${error}` }] };
+        }
+    });
+    // ═══════════════════════════════════════════════════════════════
+    // TOOL: GET COMMAND PROMPT
+    // Returns the prompt content from a command .toml file
+    // Used by /do to delegate to the correct command workflow
+    // ═══════════════════════════════════════════════════════════════
+    server.tool('kit_get_command_prompt', "Get the prompt/workflow of a gemini-kit command by name. Use this to understand and follow a command's workflow.", {
+        command: z.string().describe('Command name without slash, e.g. "review-pr", "pr", "debug"'),
+    }, async ({ command }) => {
+        try {
+            // Resolve extension root from bundled file location (dist/kit-server.js → ../)
+            const distDir = path.dirname(new URL(import.meta.url).pathname);
+            const extensionRoot = path.resolve(distDir, '..');
+            const commandsDir = path.join(extensionRoot, 'commands');
+            // Sanitize command name
+            const safeName = command.replace(/[^a-zA-Z0-9-_]/g, '');
+            const filePath = path.join(commandsDir, `${safeName}.toml`);
+            if (!fs.existsSync(filePath)) {
+                // List available commands
+                const available = fs
+                    .readdirSync(commandsDir)
+                    .filter((f) => f.endsWith('.toml'))
+                    .map((f) => f.replace('.toml', ''))
+                    .sort();
+                return {
+                    content: [
+                        {
+                            type: 'text',
+                            text: `❌ Command "${command}" not found.\n\nAvailable commands:\n${available.map((c) => `  /${c}`).join('\n')}`,
+                        },
+                    ],
+                };
+            }
+            const content = fs.readFileSync(filePath, 'utf8');
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: content,
+                    },
+                ],
+            };
+        }
+        catch (error) {
+            return { content: [{ type: 'text', text: `Error reading command: ${error}` }] };
+        }
+    });
+    // ═══════════════════════════════════════════════════════════════
+    // TOOL: LIST COMMANDS
+    // Lists all available gemini-kit commands
+    // ═══════════════════════════════════════════════════════════════
+    server.tool('kit_list_commands', 'List all available gemini-kit slash commands', {}, async () => {
+        try {
+            const distDir = path.dirname(new URL(import.meta.url).pathname);
+            const extensionRoot = path.resolve(distDir, '..');
+            const commandsDir = path.join(extensionRoot, 'commands');
+            const commands = fs
+                .readdirSync(commandsDir)
+                .filter((f) => f.endsWith('.toml'))
+                .map((f) => {
+                const name = f.replace('.toml', '');
+                try {
+                    const content = fs.readFileSync(path.join(commandsDir, f), 'utf8');
+                    const descMatch = content.match(/description\s*=\s*"([^"]*)"/);
+                    return { name, description: descMatch?.[1] || '' };
+                }
+                catch {
+                    return { name, description: '' };
+                }
+            })
+                .sort((a, b) => a.name.localeCompare(b.name));
+            const output = `## Available Commands (${commands.length})\n\n${commands
+                .map((c) => `- **/${c.name}**${c.description ? `: ${c.description}` : ''}`)
+                .join('\n')}`;
+            return { content: [{ type: 'text', text: output }] };
+        }
+        catch (error) {
+            return { content: [{ type: 'text', text: `Error listing commands: ${error}` }] };
         }
     });
 }

@@ -2981,7 +2981,7 @@ var require_compile = __commonJS({
       const schOrFunc = root.refs[ref];
       if (schOrFunc)
         return schOrFunc;
-      let _sch = resolve2.call(this, root, ref);
+      let _sch = resolve3.call(this, root, ref);
       if (_sch === void 0) {
         const schema = (_a = root.localRefs) === null || _a === void 0 ? void 0 : _a[ref];
         const { schemaId } = this.opts;
@@ -3008,7 +3008,7 @@ var require_compile = __commonJS({
     function sameSchemaEnv(s1, s2) {
       return s1.schema === s2.schema && s1.root === s2.root && s1.baseId === s2.baseId;
     }
-    function resolve2(root, ref) {
+    function resolve3(root, ref) {
       let sch;
       while (typeof (sch = this.refs[ref]) == "string")
         ref = sch;
@@ -3583,7 +3583,7 @@ var require_fast_uri = __commonJS({
       }
       return uri;
     }
-    function resolve2(baseURI, relativeURI, options) {
+    function resolve3(baseURI, relativeURI, options) {
       const schemelessOptions = options ? Object.assign({ scheme: "null" }, options) : { scheme: "null" };
       const resolved = resolveComponent(parse3(baseURI, schemelessOptions), parse3(relativeURI, schemelessOptions), schemelessOptions, true);
       schemelessOptions.skipEscape = true;
@@ -3810,7 +3810,7 @@ var require_fast_uri = __commonJS({
     var fastUri = {
       SCHEMES,
       normalize,
-      resolve: resolve2,
+      resolve: resolve3,
       resolveComponent,
       equal,
       serialize,
@@ -18850,7 +18850,7 @@ var Protocol = class {
           return;
         }
         const pollInterval = task2.pollInterval ?? this._options?.defaultTaskPollInterval ?? 1e3;
-        await new Promise((resolve2) => setTimeout(resolve2, pollInterval));
+        await new Promise((resolve3) => setTimeout(resolve3, pollInterval));
         options?.signal?.throwIfAborted();
       }
     } catch (error2) {
@@ -18867,7 +18867,7 @@ var Protocol = class {
    */
   request(request, resultSchema, options) {
     const { relatedRequestId, resumptionToken, onresumptiontoken, task, relatedTask } = options ?? {};
-    return new Promise((resolve2, reject) => {
+    return new Promise((resolve3, reject) => {
       const earlyReject = (error2) => {
         reject(error2);
       };
@@ -18945,7 +18945,7 @@ var Protocol = class {
           if (!parseResult.success) {
             reject(parseResult.error);
           } else {
-            resolve2(parseResult.data);
+            resolve3(parseResult.data);
           }
         } catch (error2) {
           reject(error2);
@@ -19206,12 +19206,12 @@ var Protocol = class {
       }
     } catch {
     }
-    return new Promise((resolve2, reject) => {
+    return new Promise((resolve3, reject) => {
       if (signal.aborted) {
         reject(new McpError(ErrorCode.InvalidRequest, "Request cancelled"));
         return;
       }
-      const timeoutId = setTimeout(resolve2, interval);
+      const timeoutId = setTimeout(resolve3, interval);
       signal.addEventListener("abort", () => {
         clearTimeout(timeoutId);
         reject(new McpError(ErrorCode.InvalidRequest, "Request cancelled"));
@@ -20170,7 +20170,7 @@ var McpServer = class {
     let task = createTaskResult.task;
     const pollInterval = task.pollInterval ?? 5e3;
     while (task.status !== "completed" && task.status !== "failed" && task.status !== "cancelled") {
-      await new Promise((resolve2) => setTimeout(resolve2, pollInterval));
+      await new Promise((resolve3) => setTimeout(resolve3, pollInterval));
       const updatedTask = await extra.taskStore.getTask(taskId);
       if (!updatedTask) {
         throw new McpError(ErrorCode.InternalError, `Task ${taskId} not found during polling`);
@@ -20813,12 +20813,12 @@ var StdioServerTransport = class {
     this.onclose?.();
   }
   send(message) {
-    return new Promise((resolve2) => {
+    return new Promise((resolve3) => {
       const json = serializeMessage(message);
       if (this._stdout.write(json)) {
-        resolve2();
+        resolve3();
       } else {
-        this._stdout.once("drain", resolve2);
+        this._stdout.once("drain", resolve3);
       }
     });
   }
@@ -22607,18 +22607,24 @@ function registerCoreTools(server2) {
         } catch {
         }
         return {
-          content: [{
-            type: "text",
-            text: JSON.stringify({
-              structure,
-              package: packageInfo ? {
-                name: packageInfo.name,
-                version: packageInfo.version,
-                dependencies: Object.keys(packageInfo.dependencies || {})
-              } : null,
-              recentCommits: gitLog.split("\n").filter(Boolean)
-            }, null, 2)
-          }]
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(
+                {
+                  structure,
+                  package: packageInfo ? {
+                    name: packageInfo.name,
+                    version: packageInfo.version,
+                    dependencies: Object.keys(packageInfo.dependencies || {})
+                  } : null,
+                  recentCommits: gitLog.split("\n").filter(Boolean)
+                },
+                null,
+                2
+              )
+            }
+          ]
         };
       } catch (error2) {
         return { content: [{ type: "text", text: `Error getting context: ${error2}` }] };
@@ -22648,12 +22654,14 @@ function registerCoreTools(server2) {
         const filename = `${crypto.randomUUID()}-${fromAgent}-${toAgent}.json`;
         fs5.writeFileSync(path5.join(handoffDir, filename), JSON.stringify(handoff, null, 2));
         return {
-          content: [{
-            type: "text",
-            text: `\u2705 Handoff from ${fromAgent} \u2192 ${toAgent}
+          content: [
+            {
+              type: "text",
+              text: `\u2705 Handoff from ${fromAgent} \u2192 ${toAgent}
 
 Context: ${context.slice(0, 200)}...`
-          }]
+            }
+          ]
         };
       } catch (error2) {
         return { content: [{ type: "text", text: `Error in handoff: ${error2}` }] };
@@ -22682,6 +22690,70 @@ Context: ${context.slice(0, 200)}...`
       }
     }
   );
+  server2.tool(
+    "kit_get_command_prompt",
+    "Get the prompt/workflow of a gemini-kit command by name. Use this to understand and follow a command's workflow.",
+    {
+      command: external_exports.string().describe('Command name without slash, e.g. "review-pr", "pr", "debug"')
+    },
+    async ({ command }) => {
+      try {
+        const distDir = path5.dirname(new URL(import.meta.url).pathname);
+        const extensionRoot = path5.resolve(distDir, "..");
+        const commandsDir = path5.join(extensionRoot, "commands");
+        const safeName = command.replace(/[^a-zA-Z0-9-_]/g, "");
+        const filePath = path5.join(commandsDir, `${safeName}.toml`);
+        if (!fs5.existsSync(filePath)) {
+          const available = fs5.readdirSync(commandsDir).filter((f) => f.endsWith(".toml")).map((f) => f.replace(".toml", "")).sort();
+          return {
+            content: [
+              {
+                type: "text",
+                text: `\u274C Command "${command}" not found.
+
+Available commands:
+${available.map((c) => `  /${c}`).join("\n")}`
+              }
+            ]
+          };
+        }
+        const content = fs5.readFileSync(filePath, "utf8");
+        return {
+          content: [
+            {
+              type: "text",
+              text: content
+            }
+          ]
+        };
+      } catch (error2) {
+        return { content: [{ type: "text", text: `Error reading command: ${error2}` }] };
+      }
+    }
+  );
+  server2.tool("kit_list_commands", "List all available gemini-kit slash commands", {}, async () => {
+    try {
+      const distDir = path5.dirname(new URL(import.meta.url).pathname);
+      const extensionRoot = path5.resolve(distDir, "..");
+      const commandsDir = path5.join(extensionRoot, "commands");
+      const commands = fs5.readdirSync(commandsDir).filter((f) => f.endsWith(".toml")).map((f) => {
+        const name = f.replace(".toml", "");
+        try {
+          const content = fs5.readFileSync(path5.join(commandsDir, f), "utf8");
+          const descMatch = content.match(/description\s*=\s*"([^"]*)"/);
+          return { name, description: descMatch?.[1] || "" };
+        } catch {
+          return { name, description: "" };
+        }
+      }).sort((a, b) => a.name.localeCompare(b.name));
+      const output = `## Available Commands (${commands.length})
+
+${commands.map((c) => `- **/${c.name}**${c.description ? `: ${c.description}` : ""}`).join("\n")}`;
+      return { content: [{ type: "text", text: output }] };
+    } catch (error2) {
+      return { content: [{ type: "text", text: `Error listing commands: ${error2}` }] };
+    }
+  });
 }
 
 // src/tools/team-state.ts
