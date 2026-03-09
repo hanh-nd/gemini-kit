@@ -271,12 +271,13 @@ const BKT_TIMEOUT = parseInt(process.env.GEMINI_KIT_BKT_TIMEOUT || '60000', 10);
  *
  * @param timeout Default from GEMINI_KIT_BKT_TIMEOUT env var or 60s
  */
-export function safeBkt(args: string[], options?: { timeout?: number }): string {
+export function safeBkt(args: string[], options?: { timeout?: number; cwd?: string }): string {
   try {
     return execFileSync('bkt', args, {
       encoding: 'utf8',
       timeout: options?.timeout || BKT_TIMEOUT,
       maxBuffer: 10 * 1024 * 1024,
+      cwd: options?.cwd,
     });
   } catch (error) {
     const stderr = extractStderr(error);

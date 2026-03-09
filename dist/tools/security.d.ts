@@ -82,4 +82,5 @@ export declare function parseBitbucketRemote(cwd?: string): {
  */
 export declare function safeBkt(args: string[], options?: {
     timeout?: number;
+    cwd?: string;
 }): string;

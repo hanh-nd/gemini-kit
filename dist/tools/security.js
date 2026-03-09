@@ -243,6 +243,7 @@ export function safeBkt(args, options) {
             encoding: 'utf8',
             timeout: options?.timeout || BKT_TIMEOUT,
             maxBuffer: 10 * 1024 * 1024,
+            cwd: options?.cwd,
         });
     }
     catch (error) {

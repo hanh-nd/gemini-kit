@@ -399,7 +399,7 @@ ${issue.body || 'No description'}`;
         }
     });
     // TOOL 18: BITBUCKET GET PR
-    server.tool('kit_bitbucket_get_pr', 'Get Pull Request details from Bitbucket using bkt CLI (avivsinai/bitbucket-cli)', {
+    server.tool('kit_bitbucket_get_pr', 'Get Pull Request details from Bitbucket using bkt CLI. Requires bkt context to be set up first.', {
         prId: z.number().int().positive().optional().describe('PR ID (omit to list recent PRs)'),
         includeDiff: z.boolean().optional().default(false).describe('Include diff in output'),
     }, async ({ prId, includeDiff = false }) => {
@@ -423,8 +423,9 @@ Install bkt using one of these methods:
   git clone https://github.com/avivsinai/bitbucket-cli.git
   cd bitbucket-cli && make build
 
-Then authenticate with Bitbucket Cloud:
+Then authenticate and set up context:
   bkt auth login https://bitbucket.org --kind cloud --web
+  bkt context create my-cloud --host api.bitbucket.org --workspace <your-workspace> --set-active
 
 More info: https://github.com/avivsinai/bitbucket-cli`,
                         },
@@ -434,15 +435,7 @@ More info: https://github.com/avivsinai/bitbucket-cli`,
             if (prId) {
                 const prInfo = safeBkt(['pr', 'view', String(prId), '--json']);
                 const pr = JSON.parse(prInfo);
-                let output = `## PR #${prId}: ${pr.title}
-
-**State:** ${pr.state}
-**Author:** ${pr.author?.display_name || pr.author?.nickname || 'Unknown'}
-**Source:** ${pr.source?.branch?.name || 'unknown'} → ${pr.destination?.branch?.name || 'unknown'}
-**Reviewers:** ${(pr.reviewers || []).map((r) => r.display_name || r.nickname).join(', ') || 'none'}
-
-### Description
-${pr.description || 'No description'}`;
+                let output = `## PR #${prId} Details\n\n\`\`\`json\n${JSON.stringify(pr, null, 2)}\n\`\`\``;
                 if (includeDiff) {
                     try {
                         const diff = safeBkt(['pr', 'diff', String(prId)]);
@@ -457,10 +450,7 @@ ${pr.description || 'No description'}`;
             else {
                 const list = safeBkt(['pr', 'list', '--state', 'OPEN', '--limit', '10', '--json']);
                 const prs = JSON.parse(list);
-                const prList = Array.isArray(prs) ? prs : prs.values || [];
-                const output = `## Recent Pull Requests\n\n${prList
-                    .map((pr) => `- **#${pr.id}** ${pr.title} (${pr.state}) by ${pr.author?.display_name || pr.author?.nickname || 'unknown'}`)
-                    .join('\n')}`;
+                const output = `## Recent Pull Requests\n\n\`\`\`json\n${JSON.stringify(prs, null, 2)}\n\`\`\``;
                 return { content: [{ type: 'text', text: output }] };
             }
         }
@@ -470,7 +460,7 @@ ${pr.description || 'No description'}`;
         }
     });
     // TOOL 19: BITBUCKET CREATE PR
-    server.tool('kit_bitbucket_create_pr', 'Create a Pull Request on Bitbucket using bkt CLI (avivsinai/bitbucket-cli)', {
+    server.tool('kit_bitbucket_create_pr', 'Create a Pull Request on Bitbucket using bkt CLI. Requires bkt context to be set up first.', {
         title: z.string().max(256).describe('PR title'),
         description: z.string().max(65536).optional().default('').describe('PR description'),
         source: z.string().optional().describe('Source branch (defaults to current branch)'),
@@ -497,8 +487,9 @@ Install bkt using one of these methods:
   git clone https://github.com/avivsinai/bitbucket-cli.git
   cd bitbucket-cli && make build
 
-Then authenticate with Bitbucket Cloud:
+Then authenticate and set up context:
   bkt auth login https://bitbucket.org --kind cloud --web
+  bkt context create my-cloud --host api.bitbucket.org --workspace <your-workspace> --set-active
 
 More info: https://github.com/avivsinai/bitbucket-cli`,
                         },

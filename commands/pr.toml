@@ -62,6 +62,11 @@ Based on changes, automatically create:
 - Auto-detect provider — do NOT ask user which platform they use
 - If credentials are not configured, guide user on how to set up:
   - **GitHub:** Install `gh` CLI and run `gh auth login`
-  - **Bitbucket:** Install `bkt` CLI (`brew install avivsinai/tap/bitbucket-cli`) and run `bkt auth login https://bitbucket.org --kind cloud --web`
+  - **Bitbucket:** Install `bkt` CLI and set up context:
+    ```
+    brew install avivsinai/tap/bitbucket-cli
+    bkt auth login https://bitbucket.org --kind cloud --web
+    bkt context create my-cloud --host api.bitbucket.org --workspace <your-workspace> --set-active
+    ```
 - **If CLI tool fails (not installed, auth error, API error), STOP the process and show the error to the user**
 """

@@ -76,5 +76,10 @@ Create review with:
 - Explain the reason for each comment
 - Propose specific fix if there is an issue
 - Auto-detect provider — do NOT ask user which platform they use
-- **If CLI tool fails (not installed, auth error, API error), STOP the review and show the error to the user**
+  - **Bitbucket:** Install `bkt` CLI and set up context:
+    ```
+    brew install avivsinai/tap/bitbucket-cli
+    bkt auth login https://bitbucket.org --kind cloud --web
+    bkt context create my-cloud --host api.bitbucket.org --workspace <your-workspace> --set-active
+    ```
 """
