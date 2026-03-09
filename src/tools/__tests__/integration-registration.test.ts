@@ -29,6 +29,18 @@ vi.mock('child_process', () => ({
 vi.mock('../security.js', () => ({
   safeGh: vi.fn().mockReturnValue('https://github.com/user/repo/pull/1'),
   safeBkt: vi.fn().mockReturnValue('https://bitbucket.org/team/repo/pull-requests/1'),
+  safeAcli: vi.fn().mockReturnValue(JSON.stringify({
+    fields: {
+      summary: 'Test issue',
+      status: { name: 'To Do' },
+      priority: { name: 'High' },
+      assignee: { displayName: 'John Doe' },
+      reporter: { displayName: 'Jane Smith' },
+      issuetype: { name: 'Task' },
+      description: 'Test description',
+      labels: ['bug']
+    }
+  })),
   commandExists: vi.fn().mockReturnValue(true),
   sanitize: vi.fn((x: string) => x),
 }));
@@ -184,7 +196,10 @@ describe('registerIntegrationTools - Full Coverage', () => {
   });
 
   describe('kit_jira_get_ticket', () => {
-    it('should get ticket structure', async () => {
+    it('should get ticket structure from Atlassian CLI', async () => {
+      const security = await import('../security.js');
+      vi.mocked(security.commandExists).mockReturnValue(true);
+
       const { registerIntegrationTools } = await import('../integration.js');
       registerIntegrationTools(
         mockServer as unknown as Parameters<typeof registerIntegrationTools>[0]
@@ -193,7 +208,24 @@ describe('registerIntegrationTools - Full Coverage', () => {
       const tool = registeredTools.get('kit_jira_get_ticket');
       const result = await tool!.handler({ ticketId: 'PROJ-123' });
 
-      expect(result.content[0].text).toBeDefined();
+      expect(result.content[0].text).toContain('PROJ-123');
+      expect(result.content[0].text).toContain('Test issue');
+      expect(result.content[0].text).toContain('Status:** To Do');
+    });
+
+    it('should handle acli not installed', async () => {
+      const security = await import('../security.js');
+      vi.mocked(security.commandExists).mockImplementation((cmd: string) => cmd !== 'acli');
+
+      const { registerIntegrationTools } = await import('../integration.js');
+      registerIntegrationTools(
+        mockServer as unknown as Parameters<typeof registerIntegrationTools>[0]
+      );
+
+      const tool = registeredTools.get('kit_jira_get_ticket');
+      const result = await tool!.handler({ ticketId: 'PROJ-123' });
+
+      expect(result.content[0].text).toContain('acli) not installed');
     });
   });
 

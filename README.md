@@ -365,8 +365,10 @@ Skills are loaded automatically based on context and agent configuration.
 | `kit_bitbucket_create_pr` | Create Bitbucket PR      |
 | `kit_jira_get_ticket`     | Get Jira ticket info     |
 
-> **Note**: PR commands (`/review-pr`, `/pr`) auto-detect GitHub vs Bitbucket from git remote.
-> For Bitbucket, install `bkt` CLI (`brew install avivsinai/tap/bitbucket-cli`) and run `bkt auth login`.
+> **Note**: PR and Ticket commands require corresponding CLI tools:
+> - **GitHub**: Install `gh` (`brew install gh`) and run `gh auth login`.
+> - **Bitbucket**: Install `bkt` (`brew install avivsinai/tap/bitbucket-cli`) and run `bkt auth login`.
+> - **Jira**: Install `acli` ([Instructions](https://developer.atlassian.com/cloud/acli/guides/how-to-get-started/)) and run `acli jira auth login --web`.
 
 ---
 

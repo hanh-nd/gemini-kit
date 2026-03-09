@@ -5,7 +5,7 @@
 
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
-import { sanitize, safeGh, safeBkt, commandExists } from './security.js';
+import { sanitize, safeGh, safeBkt, safeAcli, commandExists } from './security.js';
 
 // Zod schemas for GitHub CLI responses (MEDIUM 3: Validate JSON)
 const PrDetailSchema = z.object({
@@ -288,29 +288,24 @@ ${pr.body || 'No description'}`;
   // TOOL 16: JIRA GET TICKET
   server.tool(
     'kit_jira_get_ticket',
-    'Get ticket details from Jira (requires JIRA_BASE_URL and JIRA_API_TOKEN env vars)',
+    'Get ticket details from Jira using Atlassian CLI (acli)',
     {
       ticketId: z.string().describe('Jira ticket ID (e.g., PROJ-123)'),
     },
     async ({ ticketId }) => {
       try {
-        const baseUrl = process.env.JIRA_BASE_URL;
-        const apiToken = process.env.JIRA_API_TOKEN;
-        const email = process.env.JIRA_EMAIL;
-
-        if (!baseUrl || !apiToken || !email) {
+        if (!commandExists('acli')) {
           return {
             content: [
               {
                 type: 'text' as const,
-                text: `❌ Jira not configured.
+                text: `❌ Atlassian CLI (acli) not installed.
 
-Set these environment variables:
-- JIRA_BASE_URL=https://your-domain.atlassian.net
-- JIRA_EMAIL=your-email@example.com
-- JIRA_API_TOKEN=your-api-token
+Install it from:
+https://developer.atlassian.com/cloud/acli/guides/how-to-get-started/
 
-Get API token from: https://id.atlassian.com/manage-profile/security/api-tokens`,
+Then authenticate:
+acli jira auth login --web`,
               },
             ],
           };
@@ -329,44 +324,25 @@ Get API token from: https://id.atlassian.com/manage-profile/security/api-tokens`
           };
         }
 
-        const auth = Buffer.from(`${email}:${apiToken}`).toString('base64');
-
-        // FIX: Use Node.js native fetch instead of curl for cross-platform compatibility
-        const response = await fetch(`${baseUrl}/rest/api/3/issue/${safeTicketId}`, {
-          method: 'GET',
-          headers: {
-            Authorization: `Basic ${auth}`,
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (!response.ok) {
-          return {
-            content: [
-              {
-                type: 'text' as const,
-                text: `❌ Failed to fetch ticket: ${response.status} ${response.statusText}`,
-              },
-            ],
-          };
-        }
+        // Use acli to get ticket info in JSON format
+        const ticketInfo = safeAcli(['jira', 'workitem', 'view', safeTicketId, '--json']);
 
         // MEDIUM 2: Validate Jira response with Zod schema
-        const jsonData = await response.json();
+        const jsonData = JSON.parse(ticketInfo);
         const parseResult = JiraTicketSchema.safeParse(jsonData);
         if (!parseResult.success) {
           return {
             content: [
               {
                 type: 'text' as const,
-                text: `❌ Invalid Jira response format: ${parseResult.error.message}`,
+                text: `❌ Invalid Jira response format from acli: ${parseResult.error.message}`,
               },
             ],
           };
         }
         const ticket = parseResult.data;
 
-        if (ticket.errorMessages) {
+        if (ticket.errorMessages && ticket.errorMessages.length > 0) {
           return {
             content: [
               {

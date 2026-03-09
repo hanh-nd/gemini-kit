@@ -285,3 +285,29 @@ export function safeBkt(args: string[], options?: { timeout?: number; cwd?: stri
     throw new Error(`Bitbucket CLI failed: ${baseMsg}${stderr ? `\nDetails: ${stderr}` : ''}`);
   }
 }
+
+// Configurable timeout for Atlassian CLI (acli)
+const ACLI_TIMEOUT = parseInt(process.env.GEMINI_KIT_ACLI_TIMEOUT || '60000', 10);
+
+/**
+ * Safe acli (Atlassian CLI) command execution
+ * Includes stderr in error message for better debugging
+ *
+ * Requires acli: https://developer.atlassian.com/cloud/acli/guides/how-to-get-started/
+ *
+ * @param timeout Default from GEMINI_KIT_ACLI_TIMEOUT env var or 60s
+ */
+export function safeAcli(args: string[], options?: { timeout?: number; cwd?: string }): string {
+  try {
+    return execFileSync('acli', args, {
+      encoding: 'utf8',
+      timeout: options?.timeout || ACLI_TIMEOUT,
+      maxBuffer: 10 * 1024 * 1024,
+      cwd: options?.cwd,
+    });
+  } catch (error) {
+    const stderr = extractStderr(error);
+    const baseMsg = error instanceof Error ? error.message : String(error);
+    throw new Error(`Atlassian CLI failed: ${baseMsg}${stderr ? `\nDetails: ${stderr}` : ''}`);
+  }
+}
