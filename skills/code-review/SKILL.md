@@ -8,7 +8,12 @@ last_updated: 2025-12-20
 
 ## Overview
 
-A systematic approach to code review that moves beyond "it looks good" to rigorous quality verification. This skill provides specific checklists and procedures for different review types.
+A systematic approach to code review that moves beyond "it looks good" to rigorous quality verification. This skill provides specific checklists and procedures for different review types. It uses the Code Review Architect persona to ensure high-quality, substantive feedback.
+
+## Foundation
+
+Before performing any specific review pass, you **MUST** read and understand the core constraints and objectives in:
+→ `workflows/code-review-commons.md`
 
 ## When To Use
 
@@ -25,6 +30,7 @@ A systematic approach to code review that moves beyond "it looks good" to rigoro
 
 ## What do you want to do?
 
+0. **Understand the Persona & Constraints** (MANDATORY first step) → `workflows/code-review-commons.md`
 1. **Security Review** (Auth, RLS, Input) → `workflows/security-pass.md`
 2. **Performance Review** (Database, Re-renders) → `workflows/performance-pass.md`
 3. **Architecture Review** (State, Data Flow) → `workflows/architecture-pass.md`
