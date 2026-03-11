@@ -38,12 +38,13 @@ Check if `{{args}}` or the PR title/description mentions a Jira ticket (e.g., "P
 - Inform the user if a ticket was found and fetched.
 
 ### Step 4: Analyze Code
-Review code in the PR:
-- **Requirement Alignment**: If a Jira ticket was fetched, verify if the PR implementation aligns with the ticket's requirements.
-- **Bugs**: Find logic errors, edge cases
-- **Security**: Check for security issues
-- **Performance**: Identify performance problems
-- **Style**: Code style and best practices
+Perform a structured analysis in two distinct phases:
+
+1.  **Objective Code Review**:
+    Execute the `skills/code-review` workflow on the diff content. STRICTLY adopt the "Code Review Architect" persona and follow the multi-pass review instructions in `skills/code-review/SKILL.md`. Identify bugs, security vulnerabilities, and performance bottlenecks based *only* on the code implementation.
+
+2.  **Requirement Alignment**:
+    If a Jira ticket was fetched in Step 3, compare the implementation against the ticket's requirements. Identify if any requested features are missing, if the logic conflicts with business rules, or if the "intent" matches the "requirement".
 
 ### Step 5: Generate Review
 Create review with:
