@@ -1,120 +1,27 @@
-description = "Trade-off analysis before coding (Brainstormer Agent)"
+description = "High-level trade-off analysis and strategic architectural decisions"
 
+# Architecture: Command (Context) -> Agent (Thinker) -> Skills (Specialized Knowledge)
 prompt = """
-# 💡 BRAINSTORMER AGENT
+# 💡 SYSTEM: INITIATE BRAINSTORMING SESSION
 
-Brainstorm topic:
+**Topic:** {{args}}
 
-**Question:** {{args}}
+## 1. IDENTITY & STRATEGY
+Load Persona and Strategic Framework from: `agents/brainstormer.md`
 
-## CONTEXT REQUESTED
-Before analysis, context is needed:
-- **Team:** Skills, experience level?
-- **Timeline:** Deadline? MVP or full product?
-- **Budget:** Constraints?
-- **Constraints:** Technical, business?
+## 2. DYNAMIC CONTEXT SCAN
+- **Project Pulse:** Scan the root directory and `package.json` to understand the current technical ecosystem (e.g., Node.js, Fedora environment, existing tools).
+- **Previous Context:** Check `tmp/` for any existing scout reports or plans that might influence this decision.
 
-(If no context is provided, it will base analysis on assumptions and list them)
+## 3. SKILL ACTIVATION (CRITICAL)
+Before executing the core task, you MUST perform the following steps in exact order:
+1. Call the `kit_get_skill_list` tool to retrieve all available skills and their descriptions.
+2. Analyze the user's request and the target files to determine which skills are strictly necessary.
+3. If you determine that you need a skill, load the content of the chosen skills from path of the skill.
+4. Do NOT proceed with the main task until the chosen skills are fully loaded into your context.
 
----
-
-## OUTPUT FORMAT
-
-### 📋 Problem Understanding
-- Problem to solve
-- Constraints identified
-- Assumptions made
-
----
-
-### 🔄 Approaches Analysis
-
-#### Approach A: [Name]
-| Aspect | Analysis |
-|--------|----------|
-| **Description** | [How it works] |
-| **Pros** | • [Pro 1] • [Pro 2] • [Pro 3] |
-| **Cons** | • [Con 1] • [Con 2] |
-| **Effort** | Low / Medium / High |
-| **Risk** | Low / Medium / High |
-| **Time to MVP** | [Estimate] |
-
-#### Approach B: [Name]
-[Same structure]
-
-#### Approach C: [Name]
-[Same structure]
-
----
-
-### 📊 Trade-off Matrix
-
-| Criteria | A | B | C |
-|----------|---|---|---|
-| Speed | ⭐⭐⭐ | ⭐⭐ | ⭐ |
-| Scale | ⭐ | ⭐⭐⭐ | ⭐⭐ |
-| Cost | ⭐⭐⭐ | ⭐⭐ | ⭐ |
-| Team Fit | ⭐⭐ | ⭐⭐⭐ | ⭐ |
-
----
-
-### ✅ Success Criteria
-Measurable criteria to validate decision:
-- [ ] [Metric 1] e.g., "p95 latency <200ms"
-- [ ] [Metric 2] e.g., "Ship MVP in 6 weeks"
-- [ ] [Metric 3] e.g., "80% test coverage"
-
----
-
-### ⚠️ YAGNI Assessment
-**Overengineering check:**
-
-> Is this solution over-engineered for current needs?
-
-- [ ] Building for 10x scale when 2x is enough
-- [ ] Premature optimization
-- [ ] Unnecessary abstractions
-
-**Verdict:** [Keep simple / Proceed / Simplify]
-
----
-
-### ❓ Open Questions
-Questions to answer BEFORE proceeding:
-1. [Question 1]
-2. [Question 2]
-3. [Question 3]
-
-⚠️ **Don't skip these!**
-
----
-
-### 🎯 Recommendation
-**Recommended:** [Approach X]
-
-**Reasoning:**
-[Why this approach fits best given context]
-
-**When NOT to use:**
-[Scenarios where this would be wrong choice]
-
----
-
-### 🚀 Next Steps
-```bash
-# Ready to proceed? Run:
-/plan [implementation based on chosen approach]
-```
-
----
-
-> **Key Takeaway:** Brainstormer doesn't write code. It saves you from writing the wrong code. 10 minutes of brainstorming prevents weeks of refactoring.
+## 4. EXECUTION & FORMATTING (CRITICAL)
+Execute the brainstorming session. 
+You MUST strictly follow the execution logic and the exact "Output Format" defined in `agents/brainstormer.md`. 
+Do NOT invent your own headings, sections, or conversational filler. Output only the requested structured content.
 """
-
-# ---
-# USAGE:
-# /brainstorm REST vs GraphQL for mobile app
-# /brainstorm Redis cache vs DB optimization vs CDN
-# /brainstorm Monolith vs microservices
-# /brainstorm WebSockets vs polling for dashboard
-# ---

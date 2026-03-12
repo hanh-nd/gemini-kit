@@ -1,172 +1,27 @@
-description = "Create detailed implementation plans (Planner Agent)"
+description = "Create implementation plans using Agent-led Skill Routing"
 
 prompt = """
-# 📋 PLANNER AGENT
+# 🚀 SYSTEM: INITIATE PLANNING
 
-Create implementation plan for:
+**Objective:** {{args}}
 
-**Task:** {{args}}
+## 1. IDENTITY & WORKFLOW
+Load Persona and Protocol from: `agents/planner.md`
 
-## MODE DETECTION
-Based on input, select suitable mode:
+## 2. SKILL ACTIVATION (CRITICAL)
+Before executing the core task, you MUST perform the following steps in exact order:
+1. Call the `kit_get_skill_list` tool to retrieve all available skills and their descriptions.
+2. Analyze the user's request and the target files to determine which skills are strictly necessary.
+3. If you determine that you need a skill, load the content of the chosen skills from path of the skill.
+4. Do NOT proceed with the main task until the chosen skills are fully loaded into your context.
 
-| Mode | Trigger | Description |
-|------|---------|-------|
-| **STANDARD** | default | Basic planning |
-| **TWO** | "two", "vs", "or", "compare" | 2 approaches comparison |
-| **HARD** | "hard", "complex", "bug", "race", "memory" | Complex fix planning |
-| **CRO** | "cro", "conversion", "signup", "checkout" | Conversion optimization |
-| **CI** | "ci", "github", "actions", "pipeline" | CI/CD fix planning |
+## 3. INSTRUCTIONS
+1. **Analyze:** Parse the user input "{{args}}".
+2. **Discover:** Use CLI tools to inspect the local codebase.
+3. **Execute:** Generate the plan following the Agent's output states.
 
----
-
-## STANDARD PLAN OUTPUT
-
-### # Implementation Plan: [Feature Name]
-
-### ## Approach
-- Why this solution
-- Alternatives considered
-
-### ## Steps
-1. **Install Dependencies** (5 min)
-   ```bash
-   npm install [packages]
-   ```
-
-2. **Core Implementation** (20 min)
-   - Files to create: `src/feature/service.ts`
-   - Files to modify: `src/server.ts`
-   ```typescript
-   // Code snippet showing structure
-   ```
-
-3. **Integration** (15 min)
-   - Where to hook into existing code
-
-4. **Testing** (20 min)
-   - Test files to create
-   - Coverage requirements
-
-### ## Timeline
-| Phase | Duration |
-|-------|----------|
-| Dependencies | 5 min |
-| Implementation | 20 min |
-| Integration | 15 min |
-| Testing | 20 min |
-| **Total** | **1 hour** |
-
-### ## Rollback Plan
-Step-by-step recovery if issues occur.
-
-### ## Security Checklist
-- [ ] Input validation
-- [ ] Auth checks
-- [ ] Rate limiting
-- [ ] Error handling
-
----
-
-## HARD MODE (Complex Bug Fix)
-When fixing complex bugs:
-
-### Root Cause Analysis
-1. Symptom description
-2. Reproduction steps
-3. Affected components
-
-### Investigation Steps
-1. [Step 1] - What to check
-2. [Step 2] - What to verify
-
-### Fix Plan
-- Files to modify
-- Code changes with snippets
-- Test cases to add
-
----
-
-## CRO MODE (Conversion Optimization)
-
-### Current State
-- Metric: [Current conversion %]
-- User flow analysis
-
-### Improvements
-| Change | Expected Impact | Effort |
-|--------|-----------------|--------|
-| [Change 1] | +X% | Low |
-| [Change 2] | +Y% | Medium |
-
-### A/B Test Plan
-- Control vs Variant
-- Sample size
-- Duration
-
-### Tracking Implementation
-- Events to track
-- Analytics setup
-
----
-
-## CI MODE (CI/CD Fix)
-
-### Log Analysis
-```
-[Key error lines from logs]
-```
-
-### Root Cause
-[Why it failed]
-
-### Fix Steps
-1. [Fix step 1]
-2. [Fix step 2]
-
-### Prevention
-- [ ] Add test case
-- [ ] Update workflow
-
----
-
-## TWO APPROACHES MODE
-
-### Approach A: [Name]
-[Standard plan sections]
-
-### Approach B: [Name]
-[Standard plan sections]
-
-### Comparison Table
-| Criteria | Approach A | Approach B |
-|----------|------------|------------|
-| Effort | ⭐⭐⭐ | ⭐⭐ |
-| Risk | ⭐ | ⭐⭐ |
-| Scalability | ⭐⭐ | ⭐⭐⭐ |
-
-### Recommendation
-[Which to choose and why]
-
----
-
-## OUTPUT
-Save to: `plans/[feature-name]-YYYYMMDD.md`
-
-## NEXT STEPS
-```bash
-# Ready? Run:
-/cook @plans/[your-plan].md
-```
-
-> **Key Takeaway:** Planning prevents waste. 10 minutes of analysis saves hours of refactoring.
+## 4. EXECUTION & FORMATTING (CRITICAL)
+Execute the planning logic. 
+You MUST strictly follow the execution logic and the exact "Output Format" defined in `agents/planner.md`. 
+Do NOT invent your own headings, sections, or conversational filler. Output only the requested structured content.
 """
-
-# ---
-# USAGE:
-# /plan Add user authentication
-# /plan:two REST vs GraphQL for mobile app  
-# /plan:hard Fix checkout race condition causing double charges
-# /plan:cro Improve signup conversion rate
-# /plan:ci Fix failing GitHub Actions workflow
-# ---

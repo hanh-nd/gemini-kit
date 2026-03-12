@@ -1,80 +1,30 @@
-description = "Explore codebase with Structure Analysis & Scale (Scout Agent)"
+description = "Explore and map the codebase structure (Scout Agent)"
 
 prompt = """
-# 🔍 SCOUT AGENT
+# 🔍 SYSTEM: INITIATE CODEBASE SCOUTING
 
-Exploration task:
+**Mission:** Explore and analyze the codebase for: {{args}}
 
-**Query:** {{args}}
+## 1. IDENTITY & PROTOCOL
+Load Persona and Investigation Logic from: `agents/scout.md`
 
-## SCALE & SCOPE
-Default scale: 5 (Medium)
+## 2. SKILL ACTIVATION (CRITICAL)
+Before executing the core task, you MUST perform the following steps in exact order:
+1. Call the `kit_get_skill_list` tool to retrieve all available skills and their descriptions.
+2. Analyze the user's request and the target files to determine which skills are strictly necessary.
+3. If you determine that you need a skill, load the content of the chosen skills from path of the skill.
+4. Do NOT proceed with the main task until the chosen skills are fully loaded into your context.
 
-| Scale | Files | Use Case |
-|-------|-------|----------|
-| **1-3** | <100 | Targeted search, small feature |
-| **4-6** | 100-500 | Feature discovery, debugging |
-| **7-10** | 500+ | Full architecture map, monorepo |
+## 3. INSTRUCTIONS
+1. **Identify Project Name:** Read `package.json`, `go.mod`, or the root folder name.
+2. **Execute Scouting:**
+    - Use `ls`, `grep`, `find`, or `tree` to map the landscape.
+    - Identify tech stack and core architectural patterns.
+3. **Analyze:** Organize findings into the Categorized Landscape.
+4. **Identify Integration Points:** Trace how files/services interact.
 
----
-
-## OUTPUT REPORT FORMAT
-
-### 🗺️ Landscape Overview
-- **Domain:** [Affected business domain]
-- **Tech Stack:** [Languages/Frameworks detected]
-- **Scale:** [Number of files found]
-
-### 📂 Categorized Findings
-Organize files by role:
-
-#### 🏗️ Core Services / Logic
-- `src/services/...`
-- `src/lib/...`
-
-#### 🛣️ Middleware & Routes
-- `src/api/...`
-- `src/middleware/...`
-
-#### 💾 Data Layer
-- `src/models/...`
-- `src/db/...`
-
-#### ⚙️ Configuration
-- `config/...`
-- `package.json`
-
-#### 🧪 Tests
-- `tests/...`
-
----
-
-### 🔗 Integration Points
-Identify files that connect different parts:
-- [File A] imports [File B]
-- [Service X] uses [Model Y]
-
----
-
-### 💡 Pro Tips for this Context
-- **Reading Order:** Start with [File A], then [File B].
-- **Key Patterns:** [Observed patterns e.g. Repository pattern, Adapter pattern]
-- **Dependencies:** [Key external libs used]
-
----
-
-## USAGE TIPS
-- **Specific:** "auth middleware and JWT" (Better than "auth")
-- **Scale:** Append number 1-10 to control depth
-- **Constraint:** "only in src/api" to narrow down
-
-> **Key Takeaway:** Scout maps the terrain so you don't get lost. 5 minutes of scouting saves hours of debugging.
+## 4. EXECUTION & FORMATTING (CRITICAL)
+Execute the investigation and codebase mapping. 
+You MUST strictly follow the execution logic and the exact "Output Format" defined in `agents/scout.md`. 
+Output ONLY the structured map and findings. Do NOT add unnecessary conversational preambles or attempt to fix the code during the scout phase.
 """
-
-# ---
-# USAGE:
-# /scout "locate all auth files" 5
-# /scout "find Stripe webhook handling" 4
-# /scout "data models and migrations" 3
-# /scout "security related files" 8
-# ---

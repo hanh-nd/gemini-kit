@@ -114,8 +114,13 @@ export function registerIntegrationTools(server: McpServer): void {
         .array(z.string().regex(/^[a-zA-Z0-9_-]+$/))
         .optional()
         .describe('Labels to add'),
+      repo: z
+        .string()
+        .regex(/^[a-zA-Z0-9_\-./]+$/)
+        .optional()
+        .describe('Repository in owner/repo format'),
     },
-    async ({ title, body, base = 'main', draft = false, labels }) => {
+    async ({ title, body, base = 'main', draft = false, labels, repo }) => {
       try {
         if (!commandExists('gh')) {
           return {
@@ -161,6 +166,8 @@ Run: gh auth login`,
           base,
         ];
 
+        if (repo) args.push('--repo', sanitize(repo));
+
         if (draft) args.push('--draft');
         // Issue 3 FIX: gh CLI requires separate --label flags, not comma-joined
         if (labels && labels.length > 0) {
@@ -193,8 +200,13 @@ Run: gh auth login`,
     {
       prNumber: z.number().int().positive().optional().describe('PR number'),
       includeDiff: z.boolean().optional().default(false).describe('Include diff in output'),
+      repo: z
+        .string()
+        .regex(/^[a-zA-Z0-9_\-./]+$/)
+        .optional()
+        .describe('Repository in owner/repo format'),
     },
-    async ({ prNumber, includeDiff = false }) => {
+    async ({ prNumber, includeDiff = false, repo }) => {
       try {
         if (!commandExists('gh')) {
           return {
@@ -208,13 +220,16 @@ Run: gh auth login`,
         }
 
         if (prNumber) {
-          const prInfo = safeGh([
+          const prArgs = [
             'pr',
             'view',
             String(prNumber),
             '--json',
             'title,body,state,author,labels,changedFiles,additions,deletions',
-          ]);
+          ];
+
+          if (repo) prArgs.push('--repo', sanitize(repo));
+          const prInfo = safeGh(prArgs);
 
           // MEDIUM 3: Validate JSON with zod
           const parseResult = PrDetailSchema.safeParse(JSON.parse(prInfo));
@@ -241,7 +256,9 @@ ${pr.body || 'No description'}`;
 
           if (includeDiff) {
             try {
-              const diff = safeGh(['pr', 'diff', String(prNumber)]);
+              const diffArgs = ['pr', 'diff', String(prNumber)];
+              if (repo) diffArgs.push('--repo', sanitize(repo));
+              const diff = safeGh(diffArgs);
               output += `\n\n### Diff\n\`\`\`diff\n${diff.slice(0, 3000)}${diff.length > 3000 ? '\n... (truncated)' : ''}\n\`\`\``;
             } catch {
               /* diff not available, ignore */
@@ -250,14 +267,17 @@ ${pr.body || 'No description'}`;
 
           return { content: [{ type: 'text' as const, text: output }] };
         } else {
-          const list = safeGh([
+          const listArgs = [
             'pr',
             'list',
             '--limit',
             '10',
             '--json',
             'number,title,state,author',
-          ]);
+          ];
+
+          if (repo) listArgs.push('--repo', sanitize(repo));
+          const list = safeGh(listArgs);
 
           // MEDIUM 3: Validate JSON with zod
           const parseResult = z.array(PrListItemSchema).safeParse(JSON.parse(list));
@@ -385,8 +405,13 @@ ${ticket.fields.labels?.join(', ') || 'None'}`;
     'Get GitHub issue details using gh CLI',
     {
       issueNumber: z.number().describe('Issue number'),
+      repo: z
+        .string()
+        .regex(/^[a-zA-Z0-9_\-./]+$/)
+        .optional()
+        .describe('Repository in owner/repo format'),
     },
-    async ({ issueNumber }) => {
+    async ({ issueNumber, repo }) => {
       try {
         if (!commandExists('gh')) {
           return {
@@ -400,13 +425,16 @@ ${ticket.fields.labels?.join(', ') || 'None'}`;
         }
 
         // FIX: Use safeGh instead of execSync string
-        const issueInfo = safeGh([
+        const issueArgs = [
           'issue',
           'view',
           String(issueNumber),
           '--json',
           'title,body,state,author,labels,assignees',
-        ]);
+        ];
+
+        if (repo) issueArgs.push('--repo', sanitize(repo));
+        const issueInfo = safeGh(issueArgs);
 
         const issue = JSON.parse(issueInfo);
 
@@ -435,8 +463,11 @@ ${issue.body || 'No description'}`;
     {
       prId: z.number().int().positive().optional().describe('PR ID (omit to list recent PRs)'),
       includeDiff: z.boolean().optional().default(false).describe('Include diff in output'),
+      workspace: z.string().optional().describe('Bitbucket workspace override'),
+      repoSlug: z.string().optional().describe('Repository slug override'),
+      context: z.string().optional().describe('Bitbucket context name'),
     },
-    async ({ prId, includeDiff = false }) => {
+    async ({ prId, includeDiff = false, workspace, repoSlug, context }) => {
       try {
         if (!commandExists('bkt')) {
           return {
@@ -468,14 +499,24 @@ More info: https://github.com/avivsinai/bitbucket-cli`,
         }
 
         if (prId) {
-          const prInfo = safeBkt(['pr', 'view', String(prId), '--json']);
+          const viewArgs = ['pr', 'view', String(prId), '--json'];
+          if (workspace) viewArgs.push('--workspace', sanitize(workspace));
+          if (repoSlug) viewArgs.push('--repo', sanitize(repoSlug));
+          if (context) viewArgs.push('--context', sanitize(context));
+
+          const prInfo = safeBkt(viewArgs);
           const pr = JSON.parse(prInfo);
 
           let output = `## PR #${prId} Details\n\n\`\`\`json\n${JSON.stringify(pr, null, 2)}\n\`\`\``;
 
           if (includeDiff) {
             try {
-              const diff = safeBkt(['pr', 'diff', String(prId)]);
+              const diffArgs = ['pr', 'diff', String(prId)];
+              if (workspace) diffArgs.push('--workspace', sanitize(workspace));
+              if (repoSlug) diffArgs.push('--repo', sanitize(repoSlug));
+              if (context) diffArgs.push('--context', sanitize(context));
+
+              const diff = safeBkt(diffArgs);
               output += `\n\n### Diff\n\`\`\`diff\n${diff.slice(0, 3000)}${diff.length > 3000 ? '\n... (truncated)' : ''}\n\`\`\``;
             } catch {
               /* diff not available, ignore */
@@ -484,7 +525,12 @@ More info: https://github.com/avivsinai/bitbucket-cli`,
 
           return { content: [{ type: 'text' as const, text: output }] };
         } else {
-          const list = safeBkt(['pr', 'list', '--state', 'OPEN', '--limit', '10', '--json']);
+          const listArgs = ['pr', 'list', '--state', 'OPEN', '--limit', '10', '--json'];
+          if (workspace) listArgs.push('--workspace', sanitize(workspace));
+          if (repoSlug) listArgs.push('--repo', sanitize(repoSlug));
+          if (context) listArgs.push('--context', sanitize(context));
+
+          const list = safeBkt(listArgs);
           const prs = JSON.parse(list);
 
           const output = `## Recent Pull Requests\n\n\`\`\`json\n${JSON.stringify(prs, null, 2)}\n\`\`\``;
@@ -508,8 +554,11 @@ More info: https://github.com/avivsinai/bitbucket-cli`,
       source: z.string().optional().describe('Source branch (defaults to current branch)'),
       target: z.string().optional().default('main').describe('Target/destination branch'),
       reviewers: z.array(z.string()).optional().describe('Reviewer usernames'),
+      workspace: z.string().optional().describe('Bitbucket workspace override'),
+      repoSlug: z.string().optional().describe('Repository slug override'),
+      context: z.string().optional().describe('Bitbucket context name'),
     },
-    async ({ title, description = '', source, target = 'main', reviewers }) => {
+    async ({ title, description = '', source, target = 'main', reviewers, workspace, repoSlug, context }) => {
       try {
         if (!commandExists('bkt')) {
           return {
@@ -541,6 +590,10 @@ More info: https://github.com/avivsinai/bitbucket-cli`,
         }
 
         const args: string[] = ['pr', 'create', '--title', sanitize(title)];
+
+        if (workspace) args.push('--workspace', sanitize(workspace));
+        if (repoSlug) args.push('--repo', sanitize(repoSlug));
+        if (context) args.push('--context', sanitize(context));
 
         if (description) args.push('--description', description);
         if (source) args.push('--source', source);

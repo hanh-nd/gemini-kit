@@ -1,97 +1,40 @@
-description = "Review a Pull Request (GitHub or Bitbucket)"
+description = "Automated PR Review for GitHub or Bitbucket with Jira integration"
+
+skills = ["code-review", "security", "requirements-alignment"]
 
 prompt = """
-# 🔍 PR Review Agent
+# 🔍 SYSTEM: INITIATE PR REVIEW
 
-Review the specified Pull Request.
+**PR Target:** {{args}}
 
-**PR:** {{args}}
+## 1. IDENTITY & STANDARDS
+Load Persona and Analysis Logic from: `agents/reviewer.md`
 
----
+## 2. CONTEXT ACQUISITION (Mandatory Steps)
+1. **Analyze Input:** Parse `{{args}}` which can be a URL or a Numeric ID.
+    - **GitHub Pattern:** `https://github.com/{owner}/{repo}/pull/{number}`
+    - **Bitbucket Pattern:** `https://bitbucket.org/{workspace}/{repoSlug}/pull-requests/{id}`
+2. **Detect Context:** If `{{args}}` is only an ID, run `git remote get-url origin` to identify the provider and repository details.
+3. **Fetch PR Data:**
+    - **If GitHub:** Call `kit_github_get_pr(prNumber: number, includeDiff: true, repo: "owner/repo")`.
+      - **Note:** Ensure `prNumber` is an integer.
+    - **If Bitbucket:** Call `kit_bitbucket_get_pr(prId: number, includeDiff: true, workspace: "...", repoSlug: "...")`.
+      - **Note:** Ensure `prId` is an integer. Extract `workspace` and `repoSlug` from the URL or local git remote.
+    - **CRITICAL:** If any tool returns an error, STOP and report to user. DO NOT proceed to analysis without Diff content.
+4. **Fetch Jira Context (Optional):**
+    - Scan PR title, description, and `{{args}}` for Jira Ticket IDs (e.g., PROJ-123).
+    - If a Ticket ID is found, call `kit_jira_get_ticket(ticketId: "EXTRACTED-ID")`.
 
-## Workflow
+## 3. SKILL ACTIVATION
+Load the following skills before starting analyzing the PR:
+1. `skills/code-review/SKILL.md`
+2. `skills/security/SKILL.md`
+3. `skills/requirements-alignment/SKILL.md`
 
-### Step 1: Detect Git Provider
-Check the git remote URL to determine the provider:
-```bash
-git remote get-url origin
-```
-- If URL contains `github.com` → Use **GitHub** tools
-- If URL contains `bitbucket.org` → Use **Bitbucket** tools
+Do NOT output your review until you have successfully executed the tool calls to read these files and internalized their rules.
 
-### Step 2: Get PR Details
-
-**GitHub:** Use the `kit_github_get_pr` tool to get PR information.
-**Bitbucket:** Use the `kit_bitbucket_get_pr` tool to get PR information.
-
-⚠️ **STOP on failure**: If the tool returns an error (CLI not installed, auth failed, PR not found, etc.), **STOP immediately**. Display the error message to the user and do NOT continue to Step 3. Do NOT attempt to review without PR data.
-
-Both tools return:
-- Title, description
-- Changed files
-- Diff content (with `includeDiff: true`)
-
-### Step 3: Get Jira Ticket (Optional)
-Check if `{{args}}` or the PR title/description mentions a Jira ticket (e.g., "PROJ-123" or keyword "ticket", "jira ticket").
-- If a ticket ID is found, use `kit_jira_get_ticket(ticketId: "...")` to fetch details.
-- If multiple tickets are mentioned, prioritize the one most relevant to the PR.
-- Inform the user if a ticket was found and fetched.
-
-### Step 4: Analyze Code
-Perform a structured analysis in two distinct phases:
-
-1.  **Objective Code Review**:
-    Execute the `skills/code-review` workflow on the diff content. STRICTLY adopt the "Code Review Architect" persona and follow the multi-pass review instructions in `skills/code-review/SKILL.md`. Identify bugs, security vulnerabilities, and performance bottlenecks based *only* on the code implementation.
-
-2.  **Requirement Alignment**:
-    If a Jira ticket was fetched in Step 3, compare the implementation against the ticket's requirements. Identify if any requested features are missing, if the logic conflicts with business rules, or if the "intent" matches the "requirement".
-
-### Step 5: Generate Review
-Create review with:
-- **Summary**: PR summary
-- **Ticket Alignment**: Summary of how the PR aligns with the Jira ticket requirements (if applicable).
-- **Issues**: Issues found (if any)
-- **Suggestions**: Improvement suggestions
-- **Verdict**: APPROVE / REQUEST_CHANGES / COMMENT
-
----
-
-## Output Format
-
-```markdown
-## 🔍 PR Review
-
-### Summary
-[Summary of changes]
-
-### 🎟️ Ticket Alignment
-[Alignment with Jira ticket requirements, or "No Jira ticket found"]
-
-### ✅ Good
-- [Good point 1]
-- [Good point 2]
-
-### ⚠️ Issues
-- [Issue 1]
-- [Issue 2]
-
-### 💡 Suggestions
-- [Suggestion 1]
-
-### Verdict: [APPROVE/REQUEST_CHANGES/COMMENT]
-```
-
----
-
-## Guidelines
-- Objective, constructive review
-- Explain the reason for each comment
-- Propose specific fix if there is an issue
-- Auto-detect provider — do NOT ask user which platform they use
-  - **Bitbucket:** Install `bkt` CLI and set up context:
-    ```
-    brew install avivsinai/tap/bitbucket-cli
-    bkt auth login https://bitbucket.org --kind cloud --web
-    bkt context create my-cloud --host api.bitbucket.org --workspace <your-workspace> --set-active
-    ```
+## 4. EXECUTION & FORMATTING (CRITICAL)
+Execute the multi-pass PR review. 
+You MUST strictly follow the audit logic and the exact "Output Format" template defined in `agents/reviewer.md`. 
+Do NOT invent your own headings, summary styles, or output generic conversational text. Fill the template exactly as instructed.
 """

@@ -13,6 +13,10 @@ Complete documentation for all MCP tools provided by gemini-kit.
   - [kit_get_project_context](#kit_get_project_context)
   - [kit_handoff_agent](#kit_handoff_agent)
   - [kit_save_artifact](#kit_save_artifact)
+  - [kit_get_extension_info](#kit_get_extension_info)
+  - [kit_get_skill_list](#kit_get_skill_list)
+  - [kit_get_command_prompt](#kit_get_command_prompt)
+  - [kit_list_commands](#kit_list_commands)
 - [Knowledge Tools](#knowledge-tools)
   - [kit_save_learning](#kit_save_learning)
   - [kit_get_learnings](#kit_get_learnings)
@@ -146,8 +150,58 @@ Save an artifact (plan, report, log) from agent work.
 | `type` | enum | Yes | `plan`, `report`, `log`, or `other` |
 | `content` | string | Yes | Artifact content (markdown) |
 
+  - File path where artifact was saved
+
+---
+
+### kit_get_extension_info
+
+Get information about the gemini-kit extension, including absolute paths to agents, skills, and commands. Use this for absolute path resolution.
+
+**Parameters:** None
+
 **Returns:**
-- File path where artifact was saved
+- `extensionRoot`: Absolute path to the extension root
+- `agentsDir`: Absolute path to agents directory
+- `skillsDir`: Absolute path to skills directory
+- `commandsDir`: Absolute path to commands directory
+
+---
+
+### kit_get_skill_list
+
+Get a list of all available skills and their metadata extracted from `SKILL.md` frontmatter. Use this to dynamically discover appropriate skills for a task.
+
+**Parameters:** None
+
+**Returns:**
+- Array of objects containing `name`, `description`, and absolute `path`.
+
+---
+
+### kit_get_command_prompt
+
+Get the prompt/workflow content from a command `.toml` file. Automatically rewrites relative paths to agents/skills to absolute paths.
+
+**Parameters:**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `command` | string | Yes | Command name (e.g., "review-pr") |
+
+**Returns:**
+- The prompt content of the command
+
+---
+
+### kit_list_commands
+
+List all available gemini-kit slash commands.
+
+**Parameters:** None
+
+**Returns:**
+- Formatted list of slash commands and their descriptions
 
 ---
 

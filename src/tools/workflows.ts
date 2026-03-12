@@ -3,6 +3,8 @@
  * Pre-defined workflows for common development patterns
  */
 
+import * as path from 'path';
+
 export interface WorkflowStep {
     agent: string;
     description: string;
@@ -247,6 +249,14 @@ export function autoSelectWorkflow(task: string): { workflow: Workflow; confiden
 }
 
 /**
+ * Get extension root path
+ */
+function getExtensionRoot(): string {
+    const distDir = path.dirname(new URL(import.meta.url).pathname);
+    return path.resolve(distDir, '..');
+}
+
+/**
  * Get workflow step prompt
  */
 export function getStepPrompt(step: WorkflowStep, task: string, context: Record<string, unknown>): string {
@@ -263,11 +273,18 @@ export function getStepPrompt(step: WorkflowStep, task: string, context: Record<
         analyst: `You are an Analyst agent. Analyze the code structure for: ${task}`,
     };
 
+    // Add extension info for path resolution
+    const extensionRoot = getExtensionRoot();
+    const extensionInfo = `\n\n**Extension Information:**
+- Root: ${extensionRoot}
+- Agents: ${path.join(extensionRoot, 'agents')}
+- Skills: ${path.join(extensionRoot, 'skills')}`;
+
     // Add context from previous steps
     let contextStr = '';
     if (Object.keys(context).length > 0) {
         contextStr = '\n\nContext from previous steps:\n' + JSON.stringify(context, null, 2);
     }
 
-    return (agentPrompts[step.agent] || `Execute ${step.agent} for: ${task}`) + contextStr;
+    return (agentPrompts[step.agent] || `Execute ${step.agent} for: ${task}`) + extensionInfo + contextStr;
 }

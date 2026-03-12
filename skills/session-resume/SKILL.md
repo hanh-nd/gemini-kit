@@ -1,6 +1,10 @@
 ---
 name: session-resume
-description: Resume context from previous session
+description: |
+  ACTIVATE THIS SKILL WHEN: The user starts a new conversation session, says "hello", asks to "resume", "catch up", or asks "what is the current status/what were we doing?".
+  DO NOT ACTIVATE WHEN: In the middle of an active execution (coding, debugging, planning).
+  PURPOSE: Automatically re-orients the AI by fetching active plans, recent architectural decisions, and uncompleted tasks.
+version: 1.0.0
 ---
 
 # Session Resume Skill
@@ -82,6 +86,7 @@ Review health grade and recommendations before starting work.
 ## Automatic Triggers
 
 Consider running this skill when you see:
+
 - User starts with "continue", "resume", "where were we"
 - First message in a new session
 - User seems to lack context

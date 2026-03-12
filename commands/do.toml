@@ -32,26 +32,16 @@ First, analyze the task and determine which agents/commands to use.
 | Reviewer | `/review` | Code review, security check |
 | PR Review | `/review-pr` | Review pull request |
 
-### DevOps
-| Agent | Command | Use When |
-|-------|---------|----------|
-| Git Manager | `/git` | Git operations |
-| PR Creator | `/pr` | Create pull request |
-| DB Admin | `/db` | Database operations |
-
 ### Documentation
 | Agent | Command | Use When |
 |-------|---------|----------|
 | Docs Manager | `/docs` | Update documentation |
-| Copywriter | `/copywrite` | Marketing content |
 
 ### Research/Creative
 | Agent | Command | Use When |
 |-------|---------|----------|
 | Researcher | `/research` | Learn new topics |
 | Brainstormer | `/brainstorm` | Generate ideas |
-| Designer | `/design` | UI/UX design |
-
 ---
 
 ## Step 2: Route Decision
@@ -64,7 +54,7 @@ Based on the task "{{args}}", you need to:
 4. **Execute the first agent**, then ask if user wants to continue with next agent
 
 ### Common Patterns:
-- **New feature**: Planner → Scout → Coder → Tester → Reviewer
+- **New feature**: Scout → Planner → Coder → Tester → Reviewer
 - **Bug fix**: Debugger → Tester
 - **Refactor**: Scout → Coder → Reviewer
 - **Documentation**: Docs Manager

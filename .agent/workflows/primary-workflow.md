@@ -8,8 +8,8 @@
 
 ### Steps
 
-1. **Planning** - `/plan`
-2. **Scouting** - `/scout`
+1. **Scouting** - `/scout`
+2. **Planning** - `/plan`
 3. **Coding** - Implement
 4. **Testing** - `/test`
 5. **Reviewing** - `/review`
@@ -17,12 +17,12 @@
 
 ## Quick Workflows
 
-| Task | Command |
-|------|---------|
-| New feature | `/cook implement` |
-| Bug fix | `/cook fix` |
-| Refactoring | `/cook refactor` |
-| Full audit | `/cook full review` |
+| Task        | Command             |
+| ----------- | ------------------- |
+| New feature | `/cook implement`   |
+| Bug fix     | `/cook fix`         |
+| Refactoring | `/cook refactor`    |
+| Full audit  | `/cook full review` |
 
 ## When to Use
 

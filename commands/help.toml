@@ -24,7 +24,7 @@ If {{args}} is "hooks", explain the 5 lifecycle hooks.
 {{else}}
 # 🧰 Gemini-Kit Help
 
-## 📋 Available Commands (20)
+## 📋 Available Commands (23)
 
 ### 🔧 Core Workflow
 | Command | Description |

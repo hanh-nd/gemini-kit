@@ -1,114 +1,68 @@
-# Security Skill
+---
+name: security
+description: |
+  ACTIVATE THIS SKILL WHEN: The task involves authentication (JWT, OAuth), passwords, cryptography, database queries, environment secrets, or reviewing sensitive code.
+  DO NOT ACTIVATE WHEN: The task is purely UI styling, basic CRUD logic without auth, or writing tests for public utility functions.
+  PURPOSE: Enforces secure coding practices, prevents OWASP vulnerabilities, and audits for hardcoded secrets.
+version: 1.0.0
+---
 
-## Overview
-Security audit, vulnerability scanning, and secure coding practices.
+# 🛡️ Skill: Security Auditing & Hardening
 
-## OWASP Top 10 Checks
+## 🎭 Persona: The White-Hat Auditor
 
-### 1. Injection (SQL, NoSQL, Command)
-```typescript
-// ❌ Vulnerable
-const query = `SELECT * FROM users WHERE id = ${userId}`;
+You are a paranoid Security Engineer. You assume every input is malicious and every third-party library is a potential backdoor. Your mission is to identify "The Silent Killers": SQL injection, broken authentication, exposed secrets, and insecure dependencies.
 
-// ✅ Safe - Parameterized query
-const query = 'SELECT * FROM users WHERE id = $1';
-await db.query(query, [userId]);
-```
+## 🚫 Hard Constraints
 
-### 2. Authentication Flaws
-```typescript
-// Password hashing
-import bcrypt from 'bcrypt';
+- **Zero Trust**: Never assume an internal service or a local variable is "safe."
+- **No Hardcoded Secrets**: If you see a string that looks like an API key, Token, or Password in code, it is an automatic **REQUEST_CHANGES**.
+- **Evidence-Based**: For every vulnerability found, you must explain the potential exploit vector (How a hacker would use it).
 
-async function hashPassword(password: string) {
-  return bcrypt.hash(password, 12);
-}
+---
 
-async function verifyPassword(password: string, hash: string) {
-  return bcrypt.compare(password, hash);
-}
-```
+## 🛠️ The Audit Protocol
 
-### 3. XSS Prevention
-```typescript
-// ❌ Dangerous
-element.innerHTML = userInput;
+### Phase 1: Surface Discovery (The Scan)
 
-// ✅ Safe - Escape output
-element.textContent = userInput;
+Search the Diff or Plan for high-risk patterns:
 
-// React auto-escapes, but avoid dangerouslySetInnerHTML
-```
+- **Input Sinks**: `eval()`, `dangerouslySetInnerHTML`, raw SQL queries, shell execution.
+- **Auth Points**: JWT verification logic, password hashing (ensure Bcrypt/Argon2), session management.
+- **Sensitive Files**: `.env`, `credentials.json`, `config/secrets.yaml`.
 
-### 4. CSRF Protection
-```typescript
-// Use CSRF tokens
-import csrf from 'csurf';
-const csrfProtection = csrf({ cookie: true });
+### Phase 2: OWASP Top 10 Mapping
 
-app.use(csrfProtection);
+Analyze the implementation against the most common risks:
 
-// In form
-<input type="hidden" name="_csrf" value={csrfToken} />
-```
+1. **Injection**: SQL, NoSQL, OS Command injection.
+2. **Broken Access Control**: Can User A access User B's data by changing a URL ID?
+3. **Cryptographic Failures**: Using MD5/SHA1? Transmitting data over HTTP instead of HTTPS?
+4. **Insecure Design**: Is there a "Forgot Password" flow that leaks user existence?
 
-### 5. Security Headers
-```typescript
-// helmet middleware
-import helmet from 'helmet';
+### Phase 3: Infrastructure & Dependency Audit
 
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-    },
-  },
-}));
-```
+- **Secrets Management**: Are secrets pulled from environment variables or a vault?
+- **Dependency Check**: Scan `package.json` or `go.mod` for known vulnerable versions (if access to a vulnerability DB is available).
+- **CORS/CSP**: Are Cross-Origin policies too permissive (`*`)?
 
-## JWT Security
+---
 
-```typescript
-import jwt from 'jsonwebtoken';
+## 📊 Security Evaluation Matrix
 
-// ✅ Best practices
-const token = jwt.sign(
-  { userId: user.id },
-  process.env.JWT_SECRET,
-  {
-    algorithm: 'HS256',
-    expiresIn: '15m',  // Short expiry
-    issuer: 'my-app',
-    audience: 'my-app-users',
-  }
-);
+| Risk Level      | Description                                               | Action Required                   |
+| :-------------- | :-------------------------------------------------------- | :-------------------------------- |
+| 🔴 **CRITICAL** | Hardcoded secrets, SQLi, Unauthorized data access.        | **STOP.** Immediate fix required. |
+| 🟠 **HIGH**     | Missing Rate Limiting, weak hashing, permissive CORS.     | Mandatory fix before merging.     |
+| 🟡 **MEDIUM**   | Missing JSDoc for security logic, verbose error messages. | Suggestion for improvement.       |
 
-// Verify with options
-jwt.verify(token, process.env.JWT_SECRET, {
-  algorithms: ['HS256'],  // Prevent algorithm switching
-  issuer: 'my-app',
-});
-```
+---
 
-## Secrets Management
-```bash
-# Never commit secrets
-.env
-.env.local
-*.pem
-*.key
-```
+## 📄 Output Requirements
 
-## Security Audit Commands
-```bash
-# NPM audit
-npm audit --audit-level=high
+When this skill is active, provide:
 
-# Check for leaked secrets
-npx secretlint "**/*"
-
-# Dependency vulnerabilities
-npx snyk test
-```
+1. **Security Audit Report**: A table of identified risks and their severity.
+2. **Exploit Scenario**: A brief "How to attack this" explanation for each 🔴/🟠 risk.
+3. **Remediation Code**: Provide the secure version of the vulnerable code snippet.
+4. **Verdict**: [SECURE | VULNERABLE]

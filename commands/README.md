@@ -8,69 +8,46 @@ Commands extend Gemini CLI's capabilities by providing specialized prompts for s
 
 ## Command Categories
 
+## Command Categories
+
 | Category | Commands | Purpose |
 |----------|----------|---------|
-| **Planning** | `plan`, `brainstorm` | Create implementation plans |
-| **Coding** | `code`, `fix`, `debug`, `fullstack` | Write and debug code |
-| **Review** | `review`, `review-pr`, `pr` | Code review and PR management |
-| **Documentation** | `docs`, `doc-rules`, `help` | Documentation tasks |
-| **Project** | `project`, `pm`, `status` | Project management |
-| **Git** | `git`, `session` | Git and session management |
-| **Research** | `research`, `scout`, `scout-ext` | Codebase exploration |
-| **Content** | `content`, `copywrite`, `chat` | Content creation |
-| **Database** | `db` | Database operations |
-| **Design** | `design` | UI/UX design tasks |
-| **Testing** | `test` | Testing and QA |
-| **Tools** | `mcp`, `skill`, `screenshot`, `video` | Tool integrations |
+| **Orchestration** | `cook`, `team`, `ticket`, `do` | Multi-agent workflows & entry points |
+| **Planning** | `plan`, `brainstorm`, `orchestration` | Strategic implementation plans |
+| **Coding** | `code`, `fix`, `debug`, `use` | Core development and bug fixing |
+| **Review** | `review-pr` | PR analysis & quality assurance |
+| **Exploration** | `scout`, `watzup`, `status` | Codebase & project state analysis |
+| **Tools** | `mcp`, `skill`, `session` | Integrations & context management |
+| **Media** | `screenshot`, `video` | Visual and video analysis |
+| **Help** | `help`, `kit-setup`, `workflow` | Guidance and environment setup |
 
 ## Components
 
 | Component | Purpose | Status |
 |-----------|---------|--------|
-| `ask.toml` | General Q&A with context | ✅ Active |
-| `brainstorm.toml` | Creative ideation | ✅ Active |
-| `chat.toml` | Conversational interactions | ✅ Active |
-| `code.toml` | Code implementation | ✅ Active |
-| `code-preview.toml` | Code preview mode | ✅ Active |
-| `content.toml` | Content creation | ✅ Active |
-| `cook.toml` | Execute plans step-by-step | ✅ Active |
-| `copywrite.toml` | Marketing copy | ✅ Active |
-| `db.toml` | Database operations | ✅ Active |
-| `debug.toml` | Debugging assistance | ✅ Active |
-| `design.toml` | UI/UX design | ✅ Active |
-| `dev-rules.toml` | Development rules loader | ✅ Active |
-| `do.toml` | Quick task execution | ✅ Active |
-| `doc-rules.toml` | Documentation rules | ✅ Active |
-| `docs.toml` | Documentation management | ✅ Active |
-| `fix.toml` | Bug fixing | ✅ Active |
-| `fullstack.toml` | Full-stack development | ✅ Active |
-| `git.toml` | Git operations | ✅ Active |
-| `help.toml` | Help and guidance | ✅ Active |
-| `integrate.toml` | Integration tasks | ✅ Active |
-| `journal.toml` | Session journaling | ✅ Active |
+| `brainstorm.toml` | High-level trade-off analysis | ✅ Active |
+| `code.toml` | Execute coding tasks (Coder Agent) | ✅ Active |
+| `cook.toml` | Full development workflow (Auto-Safe) | ✅ Active |
+| `debug.toml` | Troubleshoot issues with Skill Routing | ✅ Active |
+| `do.toml` | AI Router - Auto Agent Selection | ✅ Active |
+| `fix.toml` | Targeted bug fixes | ✅ Active |
+| `help.toml` | Help and usage information | ✅ Active |
 | `kit-setup.toml` | Project setup wizard | ✅ Active |
-| `mcp.toml` | MCP server management | ✅ Active |
-| `orchestration.toml` | Multi-agent orchestration | ✅ Active |
-| `plan.toml` | Implementation planning | ✅ Active |
-| `pm.toml` | Project management | ✅ Active |
-| `pr.toml` | Pull request creation | ✅ Active |
-| `project.toml` | Project context | ✅ Active |
-| `research.toml` | Research tasks | ✅ Active |
-| `review-pr.toml` | PR review | ✅ Active |
-| `review.toml` | Code review | ✅ Active |
-| `scout-ext.toml` | Extended codebase exploration | ✅ Active |
-| `scout.toml` | Codebase scout | ✅ Active |
-| `screenshot.toml` | Screenshot capture | ✅ Active |
-| `session.toml` | Session management | ✅ Active |
-| `skill.toml` | Skill creation | ✅ Active |
-| `status.toml` | Status reporting | ✅ Active |
-| `team.toml` | Team coordination | ✅ Active |
-| `test.toml` | Testing tasks | ✅ Active |
-| `ticket.toml` | Issue/ticket management | ✅ Active |
-| `use.toml` | Use existing patterns | ✅ Active |
-| `video.toml` | Video processing | ✅ Active |
-| `watzup.toml` | Quick status check | ✅ Active |
-| `workflow.toml` | Workflow management | ✅ Active |
+| `mcp.toml` | MCP tools management (Browser/Docs) | ✅ Active |
+| `orchestration.toml` | View orchestration protocols | ✅ Active |
+| `plan.toml` | Create implementation plans | ✅ Active |
+| `review-pr.toml` | Automated PR Review | ✅ Active |
+| `scout.toml` | Map codebase structure | ✅ Active |
+| `screenshot.toml` | Visual debugging via screenshot | ✅ Active |
+| `session.toml` | Save and load work sessions | ✅ Active |
+| `skill.toml` | Create new specialized AI skills | ✅ Active |
+| `status.toml` | Project progress and health | ✅ Active |
+| `team.toml` | AI Team Orchestration | ✅ Active |
+| `ticket.toml` | Ticket-driven orchestration | ✅ Active |
+| `use.toml` | Use specialized AI assistants | ✅ Active |
+| `video.toml` | Video analysis to code | ✅ Active |
+| `watzup.toml` | Recent activity status check | ✅ Active |
+| `workflow.toml` | View primary workflow guide | ✅ Active |
 
 ## TOML Structure
 
@@ -110,6 +87,11 @@ prompt = '''
 ```
 
 ## Changelog
+
+### 2026-03-13
+- Updated command list to reflect current 23 active commands.
+- Removed legacy and duplicate commands.
+- Categorized commands for better discoverability.
 
 ### 2026-01-24
 - Fixed TOML parsing failure in `docs.toml` by switching from basic strings (`"""`) to literal strings (`'''`) - Issue #9

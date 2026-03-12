@@ -1,167 +1,26 @@
-description = "Debug and fix issues with structured analysis (Debugger Agent)"
+description = "Analyze and troubleshoot issues using dynamic Skill Routing (Debugger Agent)"
 
 prompt = """
-# 🐛 DEBUGGER AGENT
+# 🐛 SYSTEM: INITIATE SEMANTIC DEBUGGING
 
-Debug issue:
+**Reported Issue:** {{args}}
 
-**Issue:** {{args}}
+## 1. IDENTITY & ENGINE
+Load Persona and Core Logic from: `agents/debugger.md`
 
-## MODE DETECTION
+## 2. SKILL ACTIVATION (CRITICAL)
+Before executing the core task, you MUST perform the following steps in exact order:
+1. Call the `kit_get_skill_list` tool to retrieve all available skills and their descriptions.
+2. Analyze the user's request and the target files to determine which skills are strictly necessary.
+3. If you determine that you need a skill, load the content of the chosen skills from path of the skill.
+4. Do NOT proceed with the main task until the chosen skills are fully loaded into your context.
 
-| Mode | Trigger | Features |
-|------|---------|----------|
-| **API** | "500", "error", "response", "endpoint" | Root cause, fix, rollback |
-| **DB** | "connection", "pool", "query", "timeout" | Leak detection, kill commands |
-| **CI** | "ci", "actions", "pipeline", "build" | Workflow analysis, fix |
-| **PERF** | "slow", "latency", "performance", "degradation" | N+1, EXPLAIN, optimization |
-| **GENERAL** | default | Standard debug flow |
+## 3. INVESTIGATION STEPS
+1. **Discovery:** Use CLI tools to find error logs, stack traces, or recent Git changes related to the issue.
+2. **Root Cause Analysis (RCA):** Use the loaded skills to perform deep-dive analysis.
 
----
-
-## DEBUG REPORT FORMAT (Runbook)
-
-### 📋 Issue Summary
-- **Symptom:** [What's happening]
-- **Started:** [When/after what change]
-- **Severity:** Critical / High / Medium / Low
-- **Affected:** [Users, services, endpoints]
-
----
-
-### 🔍 Investigation
-
-#### Logs Analysis
-```
-[Key error logs]
-```
-
-#### Recent Changes
-- [Deploy/commit that may have caused this]
-- [Config changes]
-- [Dependency updates]
-
----
-
-### 🎯 Root Cause
-[Clear explanation of why this is happening]
-
----
-
-### 🔧 Fix Plan
-
-#### Step 1: [Immediate mitigation]
-```bash
-# Command to run
-```
-
-#### Step 2: [Code fix]
-```typescript
-// Before
-[broken code]
-
-// After
-[fixed code]
-```
-
-#### Step 3: [Validation]
-```bash
-# Test the fix
-```
-
----
-
-### ⏪ Rollback Steps
-If fix doesn't work:
-1. [Rollback step 1]
-2. [Rollback step 2]
-```bash
-# Rollback command
-git revert [commit]
-# or
-kubectl rollout undo deployment/[name]
-```
-
----
-
-### ✅ Validation Commands
-```bash
-# Verify fix worked
-curl -X POST https://api.example.com/endpoint
-# Expected: 200 OK
-
-# Check logs
-tail -f /var/log/app.log | grep ERROR
-# Expected: No new errors
-
-# Monitor metrics
-# Expected: Error rate < 0.1%
-```
-
----
-
-### 🛡️ Prevention
-To prevent this in future:
-- [ ] Add test case for this scenario
-- [ ] Add monitoring alert
-- [ ] Update documentation
-- [ ] Add input validation
-
----
-
-## MODE-SPECIFIC SECTIONS
-
-### API MODE (500 Errors)
-- Request/Response analysis
-- Auth validation
-- Middleware chain trace
-- Connection pool status
-
-### DB MODE (Connection Issues)
-```sql
--- Active connections
-SELECT * FROM pg_stat_activity;
-
--- Long running queries
-SELECT pid, now() - pg_stat_activity.query_start AS duration, query
-FROM pg_stat_activity
-WHERE state != 'idle'
-ORDER BY duration DESC;
-
--- Kill stuck query
-SELECT pg_terminate_backend(pid);
-```
-
-### CI MODE (Pipeline Failures)
-- Workflow file analysis
-- Dependency check
-- Cache invalidation
-- Environment variables
-
-### PERF MODE (Performance)
-```sql
--- EXPLAIN ANALYZE
-EXPLAIN ANALYZE SELECT ...;
-```
-- N+1 query detection
-- Missing index identification
-- Memory/CPU profiling
-
----
-
-## PRO TIPS
-- **Collect context first** - errors, timestamps, recent deploys
-- **Check usual suspects** - deploys, config, migrations
-- **Validate in staging** - test fix before prod
-- **Save as runbook** - reuse for similar issues
-
-> **Key Takeaway:** Turns hours of troubleshooting into 30-minute structured analysis.
+## 4. EXECUTION & FORMATTING (CRITICAL)
+Perform the root cause analysis. 
+You MUST strictly follow the investigation logic and the exact "Output Format" (The Runbook) defined in `agents/debugger.md`. 
+Do NOT deviate from the specified headings (Issue Summary, Investigation, Root Cause, Fix, Rollback, Validation).
 """
-
-# ---
-# USAGE:
-# /debug POST /api/orders returning 500 after v2.3.4 deploy
-# /debug PostgreSQL pool exhausted, 47/20 connections
-# /debug CI build failing on test step, Module not found
-# /debug API latency increased from 200ms to 3s
-# ---

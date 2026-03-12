@@ -1,7 +1,10 @@
 ---
 name: code-review
-description: Systematic multi-perspective code review with consistent quality gates.
-last_updated: 2025-12-20
+description: |
+  ACTIVATE THIS SKILL WHEN: The user provides a Pull Request (PR) ID, a code diff, or explicitly asks to review newly written code.
+  DO NOT ACTIVATE WHEN: The user asks to fix a bug directly or write new implementation code.
+  PURPOSE: Performs a rigorous, multi-pass technical audit focusing on logic flaws, performance bottlenecks, and coding standards.
+version: 1.0.0
 ---
 
 # Code Review Skill
@@ -14,12 +17,6 @@ A systematic approach to code review that moves beyond "it looks good" to rigoro
 
 Before performing any specific review pass, you **MUST** read and understand the core constraints and objectives in:
 → `workflows/code-review-commons.md`
-
-## When To Use
-
-- **Self-Review**: Before submitting a PR or finishing `/work`
-- **Peer Review**: When reviewing another agent's or human's code (`/resolve_pr`)
-- **Plan Review**: When validating an implementation plan (`/plan_review`)
 
 ## Instrumentation
 

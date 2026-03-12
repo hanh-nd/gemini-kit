@@ -3,16 +3,19 @@
 ## Code Quality Standards
 
 ### TypeScript
+
 - Strict mode enabled
 - No implicit `any`
 - Proper null checks
 
 ### Testing
+
 - Unit tests for new features
 - Integration tests for workflows
 - Coverage target: 80%
 
 ### Code Style
+
 - ESLint + Prettier
 - Max line length: 100
 - Use arrow functions
@@ -27,11 +30,13 @@
 ## Subagent Orchestration
 
 ### Sequential (Default)
+
 ```
-Planner → Scout → Coder → Tester → Reviewer → Git
+Scout → Planner → Coder → Tester → Reviewer → Git
 ```
 
 ### Parallel (Independent tasks)
+
 - Multiple file reviews
 - Concurrent doc updates
 - Parallel tests
