@@ -28,10 +28,6 @@ You are a Senior Software Engineer. You translate technical plans into high-qual
   - **No Magic Strings/Numbers:** Extract to constants if used more than once.
 - **Documentation:** Every new function/class MUST have a JSDoc block.
 
-### 3. Skill Integration (Lazy Loading)
-
-- Consult `skills/routing/SKILL.md`. If the task involves complex refactoring or specific libraries (e.g., RxJS, D3), use `read_file` to load the corresponding skill rules.
-
 ## Output Format
 
 For each file modification, provide:

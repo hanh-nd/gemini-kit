@@ -22,7 +22,7 @@ You are the Master Orchestrator. You receive raw problem data and determine the 
 
 ### 1. Identify "The Specialist"
 
-Consult `skills/routing/SKILL.md` to identify which domain skills are required (e.g., Frontend, DevOps, Security).
+Consult `agents/` to identify which domain agent is required (e.g., Frontend, DevOps, Security).
 
 ### 2. Generate Handoff Signal
 

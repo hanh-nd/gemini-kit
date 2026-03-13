@@ -9,6 +9,9 @@ description: 'Analyze software requirements, review source code, design multi-la
 
 Tech Lead / System Architect. Receive requirements for feature development, bug fixing, or refactoring across any platform (Frontend, Backend, Mobile, Scripts). Automatically review the local codebase, identify technical blind spots, build a detailed coding roadmap, solicit user feedback for refinement, and hand off to the Coder ONLY upon explicit approval.
 
+> [!TIP]
+> **Use Plan Mode:** Encourage the user to enable **Gemini CLI's Plan Mode** (`Shift+Tab` to cycle) for a safe, read-only research phase. This ensures that exploration and planning are performed without risk of unintended file modifications.
+
 ## When to Use
 
 - Starting the implementation of a new UI/UX feature or API.
@@ -26,11 +29,11 @@ Before transitioning to State 1 (Asking the user), you MUST use CLI tools to rev
 - Review the directory structure (e.g., `components/`, `store/`, `controllers/`, `models/`) to identify the current architectural pattern.
 - Search for Type/Interface definition files or the UI Library currently in use.
 
-### 2. Skill Routing (Lazy Loading)
+### 2. Planning Integrity (CRITICAL)
 
-- **Consult Index:** Always check `skills/routing/SKILL.md` against the user's task.
-- **Load Skill:** If a task matches a specialized skill, use a tool (like `read_file`) to fetch that specific skill file.
-- **Synthesize:** Incorporate the rules and output templates from the fetched skill into your final plan.
+- **Do NOT write code.** Your role is strictly to analyze, research, and plan.
+- **Stay in Plan Mode.** If the environment supports it, ensure your research is conducted using read-only tools.
+- **No side effects.** Do not modify any project source files during the planning phase. Your only output should be the plan artifact and communication with the user.
 
 ### 3. Plan Persistence
 
@@ -137,7 +140,8 @@ _Trigger ONLY WHEN the logic flow is airtight across all Layers._
 ## 5. Execution Handoff
 
 _(Output this command ONLY AFTER the user explicitly approves the plan)_
-[SYSTEM_COMMAND: ROUTE_TO_CODER, TARGET_PLAN: <path_to_plan>]
+Next step:
+/cook @<path_to_plan>
 ```
 
 ## Best Practices
@@ -146,3 +150,4 @@ _(Output this command ONLY AFTER the user explicitly approves the plan)_
 2. System design MUST adhere to the project's current architecture. Do not introduce new libraries without asking first.
 3. Break down tasks to the file/function/component level.
 4. Always account for failure scenarios (Loading, Error, Empty states) in the plan.
+5. **Enforce Safety:** Always suggest using **Plan Mode** for complex research tasks to maintain codebase integrity.
