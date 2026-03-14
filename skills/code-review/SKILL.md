@@ -2,29 +2,19 @@
 name: code-review
 description: |
   Use this skill for: Multi-pass technical audits, security reviews, performance checks, architecture consistency, and ensuring coding standards in PRs or new code.
-version: 1.1.0
+version: 1.0.0
 ---
 
-# Code Review Skill
+# 🔎 Skill: Comprehensive Code Review
 
-## Overview
+## 🚦 Mandatory Bootstrapping
 
-A systematic approach to code review that moves beyond "it looks good" to rigorous quality verification. This skill provides specific checklists and procedures for different review types. It uses the Code Review Architect persona to ensure high-quality, substantive feedback.
+You are strictly FORBIDDEN from generating any review output immediately. You MUST use your file-reading tool to ingest the exact contents of the following four deep-dive directive files into your context:
 
-## Foundation
+1. `skills/code-review/docs/01-macro-triaging.md` (Intent & Blast Radius rules)
+2. `skills/code-review/docs/02-micro-execution.md` (Data tracing & Actionability rules)
+3. `skills/code-review/docs/03-baseline-security.md` (Vulnerability rules)
+4. `skills/code-review/docs/04-baseline-performance.md` (Performance rules)
+5. `skills/code-review/docs/05-test-parity.md` (Test Parity rules)
 
-Before performing any specific review pass, you **MUST** read and understand the core constraints and objectives in:
-→ `workflows/code-review-commons.md`
-
-## What do you want to do?
-
-0. **Understand the Persona & Constraints** (MANDATORY first step) → `workflows/code-review-commons.md`
-1. **Security Review** (Auth, RLS, Input) → `workflows/security-pass.md`
-2. **Performance Review** (Database, Re-renders) → `workflows/performance-pass.md`
-3. **Architecture Review** (State, Data Flow) → `workflows/architecture-pass.md`
-4. **General Quality Check** → `checklists/pre-merge.md`
-
-## Key Principles
-
-- **Review in Passes**: Don't check everything at once. Do a security pass, then a performance pass, etc.
-- **Verify, Don't Guess**: If you see a potential issue, verify it with a quick test or script.
+Do NOT proceed with the review or generate the final output until you have read and applied the constraints from all five files.

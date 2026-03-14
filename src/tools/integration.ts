@@ -95,7 +95,186 @@ function extractAdfText(adf: Record<string, unknown> | null | undefined): string
 
 // Note: IssueDetailSchema reserved for future kit_github_get_issue tool
 
+/**
+ * Helper: Get GitHub PR data
+ */
+async function getGitHubPr(prNumber: number, includeDiff: boolean = false, repo?: string) {
+  if (!commandExists('gh')) {
+    throw new Error('❌ GitHub CLI (gh) not installed. Install with: brew install gh');
+  }
+
+  const prArgs = [
+    'pr',
+    'view',
+    String(prNumber),
+    '--json',
+    'title,body,state,author,labels,changedFiles,additions,deletions',
+  ];
+
+  if (repo) prArgs.push('--repo', sanitize(repo));
+  const prInfo = safeGh(prArgs);
+
+  const parseResult = PrDetailSchema.safeParse(JSON.parse(prInfo));
+  if (!parseResult.success) {
+    throw new Error(`❌ Failed to parse PR data: ${parseResult.error.message}`);
+  }
+  const pr = parseResult.data;
+  let output = `## PR #${prNumber}: ${pr.title}
+
+**State:** ${pr.state}
+**Author:** ${pr.author.login}
+**Labels:** ${pr.labels.map((l) => l.name).join(', ') || 'none'}
+**Changes:** +${pr.additions} / -${pr.deletions} (${pr.changedFiles} files)
+
+### Description
+${pr.body || 'No description'}`;
+
+  if (includeDiff) {
+    try {
+      const diffArgs = ['pr', 'diff', String(prNumber)];
+      if (repo) diffArgs.push('--repo', sanitize(repo));
+      const diff = safeGh(diffArgs);
+      output += `\n\n### Diff\n\`\`\`diff\n${diff.slice(0, 3000)}${diff.length > 3000 ? '\n... (truncated)' : ''}\n\`\`\``;
+    } catch {
+      /* diff not available, ignore */
+    }
+  }
+
+  return output;
+}
+
+/**
+ * Helper: Get Bitbucket PR data
+ */
+async function getBitbucketPr(
+  prId: number,
+  includeDiff: boolean = false,
+  workspace?: string,
+  repoSlug?: string,
+  context?: string
+) {
+  if (!commandExists('bkt')) {
+    throw new Error('❌ Bitbucket CLI (bkt) not installed.');
+  }
+
+  const viewArgs = ['pr', 'view', String(prId), '--json'];
+  if (workspace) viewArgs.push('--workspace', sanitize(workspace));
+  if (repoSlug) viewArgs.push('--repo', sanitize(repoSlug));
+  if (context) viewArgs.push('--context', sanitize(context));
+
+  const prInfo = safeBkt(viewArgs);
+  const pr = JSON.parse(prInfo);
+
+  let output = `## PR #${prId} Details\n\n\`\`\`json\n${JSON.stringify(pr, null, 2)}\n\`\`\``;
+
+  if (includeDiff) {
+    try {
+      const diffArgs = ['pr', 'diff', String(prId)];
+      if (workspace) diffArgs.push('--workspace', sanitize(workspace));
+      if (repoSlug) diffArgs.push('--repo', sanitize(repoSlug));
+      if (context) diffArgs.push('--context', sanitize(context));
+
+      const diff = safeBkt(diffArgs);
+      output += `\n\n### Diff\n\`\`\`diff\n${diff.slice(0, 3000)}${diff.length > 3000 ? '\n... (truncated)' : ''}\n\`\`\``;
+    } catch {
+      /* diff not available, ignore */
+    }
+  }
+
+  return output;
+}
+
 export function registerIntegrationTools(server: McpServer): void {
+  // TOOL 14: UNIVERSAL GET PR
+  server.tool(
+    'kit_get_pr',
+    'Get PR details by detecting provider and repository from URL or local git context',
+    {
+      input: z.string().describe('PR URL or Numeric ID'),
+      includeDiff: z.boolean().optional().default(false).describe('Include diff in output'),
+    },
+    async ({ input, includeDiff = false }) => {
+      try {
+        let prId: number | undefined;
+        let provider: 'github' | 'bitbucket' | undefined;
+        let repo: string | undefined;
+        let workspace: string | undefined;
+        let repoSlug: string | undefined;
+
+        // 1. Detect input type
+        const githubMatch = input.match(/github\.com\/([^/]+\/[^/]+)\/pull\/(\d+)/);
+        const bitbucketMatch = input.match(/bitbucket\.org\/([^/]+)\/([^/]+)\/pull-requests\/(\d+)/);
+        const numericMatch = input.match(/^\d+$/);
+
+        if (githubMatch) {
+          provider = 'github';
+          repo = githubMatch[1];
+          prId = parseInt(githubMatch[2], 10);
+        } else if (bitbucketMatch) {
+          provider = 'bitbucket';
+          workspace = bitbucketMatch[1];
+          repoSlug = bitbucketMatch[2];
+          prId = parseInt(bitbucketMatch[3], 10);
+        } else if (numericMatch) {
+          prId = parseInt(input, 10);
+          // 1.1. Detect provider from git remote
+          const { safeGit } = await import('./security.js');
+          let remoteUrl: string;
+          try {
+            remoteUrl = safeGit(['remote', 'get-url', 'origin']).trim();
+          } catch (error) {
+            return {
+              content: [
+                {
+                  type: 'text' as const,
+                  text: `❌ Failed to identify git provider from local repository: ${error instanceof Error ? error.message : String(error)}`,
+                },
+              ],
+            };
+          }
+
+          if (remoteUrl.includes('github.com')) {
+            provider = 'github';
+            // Extract repo from something like https://github.com/owner/repo.git or git@github.com:owner/repo.git
+            const m = remoteUrl.match(/github\.com[:/]([^/]+\/[^/.]+)(\.git)?$/);
+            if (m) repo = m[1];
+          } else if (remoteUrl.includes('bitbucket.org')) {
+            provider = 'bitbucket';
+            const m = remoteUrl.match(/bitbucket\.org[:/]([^/]+)\/([^/.]+)(\.git)?$/);
+            if (m) {
+              workspace = m[1];
+              repoSlug = m[2];
+            }
+          }
+        }
+
+        if (!provider || !prId) {
+          return {
+            content: [
+              {
+                type: 'text' as const,
+                text: `❌ Could not detect provider or PR ID from input: ${input}`,
+              },
+            ],
+          };
+        }
+
+        // 2. Call appropriate helper
+        let result: string;
+        if (provider === 'github') {
+          result = await getGitHubPr(prId, includeDiff, repo);
+        } else {
+          result = await getBitbucketPr(prId, includeDiff, workspace, repoSlug);
+        }
+
+        return { content: [{ type: 'text' as const, text: result }] };
+      } catch (error) {
+        const errorMsg = error instanceof Error ? error.message : String(error);
+        return { content: [{ type: 'text' as const, text: `❌ Error: ${errorMsg}` }] };
+      }
+    }
+  );
+
   // TOOL 15: GITHUB GET PR
   server.tool(
     'kit_github_get_pr',
@@ -111,63 +290,8 @@ export function registerIntegrationTools(server: McpServer): void {
     },
     async ({ prNumber, includeDiff = false, repo }) => {
       try {
-        if (!commandExists('gh')) {
-          return {
-            content: [
-              {
-                type: 'text' as const,
-                text: '❌ GitHub CLI (gh) not installed. Install with: brew install gh',
-              },
-            ],
-          };
-        }
-
         if (prNumber) {
-          const prArgs = [
-            'pr',
-            'view',
-            String(prNumber),
-            '--json',
-            'title,body,state,author,labels,changedFiles,additions,deletions',
-          ];
-
-          if (repo) prArgs.push('--repo', sanitize(repo));
-          const prInfo = safeGh(prArgs);
-
-          // MEDIUM 3: Validate JSON with zod
-          const parseResult = PrDetailSchema.safeParse(JSON.parse(prInfo));
-          if (!parseResult.success) {
-            return {
-              content: [
-                {
-                  type: 'text' as const,
-                  text: `❌ Failed to parse PR data: ${parseResult.error.message}`,
-                },
-              ],
-            };
-          }
-          const pr = parseResult.data;
-          let output = `## PR #${prNumber}: ${pr.title}
-
-**State:** ${pr.state}
-**Author:** ${pr.author.login}
-**Labels:** ${pr.labels.map((l) => l.name).join(', ') || 'none'}
-**Changes:** +${pr.additions} / -${pr.deletions} (${pr.changedFiles} files)
-
-### Description
-${pr.body || 'No description'}`;
-
-          if (includeDiff) {
-            try {
-              const diffArgs = ['pr', 'diff', String(prNumber)];
-              if (repo) diffArgs.push('--repo', sanitize(repo));
-              const diff = safeGh(diffArgs);
-              output += `\n\n### Diff\n\`\`\`diff\n${diff.slice(0, 3000)}${diff.length > 3000 ? '\n... (truncated)' : ''}\n\`\`\``;
-            } catch {
-              /* diff not available, ignore */
-            }
-          }
-
+          const output = await getGitHubPr(prNumber, includeDiff, repo);
           return { content: [{ type: 'text' as const, text: output }] };
         } else {
           const listArgs = [
@@ -315,12 +439,16 @@ ${ticket.fields.labels?.join(', ') || 'None'}`;
     },
     async ({ prId, includeDiff = false, workspace, repoSlug, context }) => {
       try {
-        if (!commandExists('bkt')) {
-          return {
-            content: [
-              {
-                type: 'text' as const,
-                text: `❌ Bitbucket CLI (bkt) not installed.
+        if (prId) {
+          const output = await getBitbucketPr(prId, includeDiff, workspace, repoSlug, context);
+          return { content: [{ type: 'text' as const, text: output }] };
+        } else {
+          if (!commandExists('bkt')) {
+            return {
+              content: [
+                {
+                  type: 'text' as const,
+                  text: `❌ Bitbucket CLI (bkt) not installed.
 
 Install bkt using one of these methods:
 
@@ -339,38 +467,10 @@ Then authenticate and set up context:
   bkt context create my-cloud --host api.bitbucket.org --workspace <your-workspace> --set-active
 
 More info: https://github.com/avivsinai/bitbucket-cli`,
-              },
-            ],
-          };
-        }
-
-        if (prId) {
-          const viewArgs = ['pr', 'view', String(prId), '--json'];
-          if (workspace) viewArgs.push('--workspace', sanitize(workspace));
-          if (repoSlug) viewArgs.push('--repo', sanitize(repoSlug));
-          if (context) viewArgs.push('--context', sanitize(context));
-
-          const prInfo = safeBkt(viewArgs);
-          const pr = JSON.parse(prInfo);
-
-          let output = `## PR #${prId} Details\n\n\`\`\`json\n${JSON.stringify(pr, null, 2)}\n\`\`\``;
-
-          if (includeDiff) {
-            try {
-              const diffArgs = ['pr', 'diff', String(prId)];
-              if (workspace) diffArgs.push('--workspace', sanitize(workspace));
-              if (repoSlug) diffArgs.push('--repo', sanitize(repoSlug));
-              if (context) diffArgs.push('--context', sanitize(context));
-
-              const diff = safeBkt(diffArgs);
-              output += `\n\n### Diff\n\`\`\`diff\n${diff.slice(0, 3000)}${diff.length > 3000 ? '\n... (truncated)' : ''}\n\`\`\``;
-            } catch {
-              /* diff not available, ignore */
-            }
+                },
+              ],
+            };
           }
-
-          return { content: [{ type: 'text' as const, text: output }] };
-        } else {
           const listArgs = ['pr', 'list', '--state', 'OPEN', '--limit', '10', '--json'];
           if (workspace) listArgs.push('--workspace', sanitize(workspace));
           if (repoSlug) listArgs.push('--repo', sanitize(repoSlug));
