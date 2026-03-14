@@ -28,7 +28,7 @@ export function registerCoreTools(server: McpServer): void {
   // ═══════════════════════════════════════════════════════════════
   server.tool(
     'kit_get_extension_info',
-    'Get information about the gemini-kit extension, including absolute paths to agents and skills',
+    'Get information about the gemini-kit extension, including absolute paths to agents, skills, commands, and scripts',
     {},
     async () => {
       try {
@@ -43,6 +43,7 @@ export function registerCoreTools(server: McpServer): void {
                   agentsDir: path.join(root, 'agents'),
                   skillsDir: path.join(root, 'skills'),
                   commandsDir: path.join(root, 'commands'),
+                  scriptsDir: path.join(root, 'scripts'),
                 },
                 null,
                 2
@@ -51,7 +52,9 @@ export function registerCoreTools(server: McpServer): void {
           ],
         };
       } catch (error) {
-        return { content: [{ type: 'text' as const, text: `Error getting extension info: ${error}` }] };
+        return {
+          content: [{ type: 'text' as const, text: `Error getting extension info: ${error}` }],
+        };
       }
     }
   );
@@ -122,4 +125,3 @@ export function registerCoreTools(server: McpServer): void {
 
 // Export DEFAULT_EXTENSIONS for backward compatibility
 export { DEFAULT_EXTENSIONS };
-

@@ -1,26 +1,43 @@
-description = "Explore and map the codebase structure (Scout Agent)"
+description = "Scout the codebase for architectural overview, module deep-dives, or data flow tracing."
 
 prompt = """
-# 🔍 SYSTEM: INITIATE CODEBASE SCOUTING
+# 🚁 SYSTEM: INITIATE CODEBASE SCOUTING PIPELINE
 
-**Mission:** Explore and analyze the codebase for: {{args}}
+**Target Input:** {{args}}
 
-## 1. IDENTITY & PROTOCOL
-Load Persona and Investigation Logic from: `agents/scout.md`
+## 1. PROTOCOL & AGENT INITIALIZATION (MANDATORY)
 
-## 2. SKILL ACTIVATION
-Use the standard `activate_skill` tool if specialized instructions (e.g., Security, Testing) are needed for this task.
+You are strictly forbidden from guessing the project structure or blindly reading files. You MUST first use your file-reading tool to load your core logic:
 
-## 3. INSTRUCTIONS
-1. **Identify Project Name:** Read `package.json`, `go.mod`, or the root folder name.
-2. **Execute Scouting:**
-    - Use `ls`, `grep`, `find`, or `tree` to map the landscape.
-    - Identify tech stack and core architectural patterns.
-3. **Analyze:** Organize findings into the Categorized Landscape.
-4. **Identify Integration Points:** Trace how files/services interact.
+1. Agent Persona & Format: `agents/code-scouter.md`
+2. Workflow SOP: `agents/workflows/scout-pipeline.md`
 
-## 4. EXECUTION & FORMATTING (CRITICAL)
-Execute the investigation and codebase mapping. 
-You MUST strictly follow the execution logic and the exact "Output Format" defined in `agents/scout.md`. 
-Output ONLY the structured map and findings. Do NOT add unnecessary conversational preambles or attempt to fix the code during the scout phase.
-"""
+Do NOT proceed until you have fully internalized the Scouter persona and the multi-tier pipeline.
+
+## 2. INTENT ROUTING (TIER 1)
+
+Analyze the Target Input ("{{args}}"). Categorize the user's intent into exactly one of the following:
+
+- `OVERVIEW`: The user wants to understand the general tech stack, architecture, or project layout (e.g., "scout project overview", "what is this repo").
+- `MODULE_DEEPDIVE`: The user wants to understand a specific domain or folder (e.g., "scout payment module", "how does auth work").
+- `DATA_FLOW`: The user wants to trace a specific variable, function, or process (e.g., "scout data flow of executeTx", "trace user login").
+
+## 3. DETERMINISTIC DELEGATION (TIER 2 & 3)
+
+You must NOT use `grep` or `find` manually. You MUST delegate the heavy lifting to the local heuristic scorer.
+
+- Use your shell execution tool to run the following command exactly, passing the Target Input and your determined Intent:
+  ```bash
+  node scripts/scout-heuristic-scorer.js "{{args}}" --intent="YOUR_DETERMINED_INTENT"
+  ```
+- The script will output a list of **Top N Absolute File Paths** (and potentially an ASCII tree if it's an overview). Wait for this output. Do NOT hallucinate file paths.
+
+## 4. SKILL ACTIVATION & SEMANTIC SYNTHESIS (TIER 4)
+
+Once the Node.js script returns the exact file paths:
+
+1. Invoke your file-reading tool to load the master skill file: `skills/code-scout/SKILL.md`.
+2. Use your parallel file-reading capabilities to read the exact files returned by the script.
+3. Synthesize the context based on the specific intent rules (Overview, Module, or Data Flow).
+4. Output your findings strictly matching the ASCII diagrams and Markdown format specified in `agents/code-scouter.md`.
+   """
