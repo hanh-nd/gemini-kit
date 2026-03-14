@@ -51,7 +51,7 @@ describe('registerCoreTools', () => {
 
         expect(registeredTools.has('kit_get_extension_info')).toBe(true);
         expect(registeredTools.has('kit_get_command_prompt')).toBe(true);
-        expect(registeredTools.has('kit_get_skill_list')).toBe(true);
+        expect(registeredTools.has('kit_get_skill_list')).toBe(false);
         
         // Unused tools should NOT be registered
         expect(registeredTools.has('kit_get_project_context')).toBe(false);
@@ -75,25 +75,27 @@ describe('registerCoreTools', () => {
         });
     });
 
-    describe('kit_get_skill_list', () => {
-        it('should list available skills', async () => {
+
+
+    describe('kit_get_command_prompt', () => {
+        it('should rewrite agents/, skills/, and scripts/ paths to absolute', async () => {
+            const rawContent = 'Use scripts/myscript.js with agents/myagent.md and skills/myskill/SKILL.md';
             vi.mocked(fs.existsSync).mockReturnValue(true);
-            vi.mocked(fs.readdirSync).mockReturnValue([
-                { name: 'test-skill', isDirectory: () => true }
-            ] as any); // eslint-disable-line @typescript-eslint/no-explicit-any
-
-
-
-            vi.mocked(fs.readFileSync).mockReturnValue('name: Test Skill\ndescription: Test description\n---\n');
+            vi.mocked(fs.readFileSync).mockReturnValue(rawContent);
 
             const { registerCoreTools } = await import('../core.js');
             registerCoreTools(mockServer as unknown as Parameters<typeof registerCoreTools>[0]);
 
-            const tool = registeredTools.get('kit_get_skill_list');
-            const result = await tool!.handler({});
+            const tool = registeredTools.get('kit_get_command_prompt');
+            const result = await tool!.handler({ command: 'test' });
 
-            expect(result.content[1].text).toContain('Available Skills');
-            expect(result.content[1].text).toContain('Test Skill');
+            const content = result.content[0].text;
+            // Should not contain the relative path as a standalone word/path start
+            // Use a more specific check to ensure it was replaced (not preceded by /)
+            expect(content).not.toMatch(/(^|\s)scripts\/myscript\.js/);
+            expect(content).toContain('/scripts/myscript.js');
+            expect(content).toContain('/agents/myagent.md');
+            expect(content).toContain('/skills/myskill/SKILL.md');
         });
     });
 });

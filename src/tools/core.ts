@@ -99,14 +99,16 @@ export function registerCoreTools(server: McpServer): void {
 
         let content = fs.readFileSync(filePath, 'utf8');
 
-        // Rewrite relative paths to absolute paths for agents and skills
-        // Matches: agents/*.md, skills/*/SKILL.md, skills/*.toml (if any)
+        // Rewrite relative paths to absolute paths for agents, skills, and scripts
+        // Matches: agents/*.md, skills/*/SKILL.md, scripts/*.js
         const agentsPath = path.join(extensionRoot, 'agents');
         const skillsPath = path.join(extensionRoot, 'skills');
+        const scriptsPath = path.join(extensionRoot, 'scripts');
 
-        // Replace `agents/` and `skills/` when they appear as start of path in prompt
+        // Replace `agents/`, `skills/`, and `scripts/` when they appear as start of path in prompt
         content = content.replace(/(`?)agents\//g, `$1${agentsPath}${path.sep}`);
         content = content.replace(/(`?)skills\//g, `$1${skillsPath}${path.sep}`);
+        content = content.replace(/(`?)scripts\//g, `$1${scriptsPath}${path.sep}`);
 
         return {
           content: [

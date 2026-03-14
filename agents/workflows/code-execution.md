@@ -12,7 +12,9 @@ You are executing the Code Implementation Pipeline. You MUST process the impleme
 
 1. **Mandate:** Before writing code, you must understand the target and the constraints.
 2. **Action:** Read the `Target Input` (Implementation Plan). If the input is a file path, use `read_file` to ingest its content.
-3. **Scoring:** Identify the `test_count` from the initial command check.
+3. **Scoring:** You must determine the `test_count` to decide the rigor of verification.
+   - Run the following command: `node scripts/count-tests.js`
+   - Use the returned `TEST_COUNT_RESULT` as your `test_count`.
    - If `test_count >= 5`: Set `INTERNAL_TEST_MANDATORY = TRUE`.
    - Else: Set `INTERNAL_TEST_MANDATORY = FALSE`.
 

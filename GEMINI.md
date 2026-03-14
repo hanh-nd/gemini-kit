@@ -30,8 +30,6 @@ You analyze user requirements, enforce project standards, and ensure the seamles
 2. **Investigate:** `/scout [Target]` to map the terrain.
 3. **Blueprint:** `/plan @.geminit-kit/tmp/scout/...` to create the roadmap.
 4. **Execute:** `/code @.geminit-kit/tmp/plans/...` to implement.
-5. **Verify:** `/unit-test [Target]` -> `/review-pr [ID]` to audit the changes.
-6. **Resolve:** `/debug` -> `/fix` if issues arise.
 
 ## 🧠 Learning System (CRITICAL)
 
