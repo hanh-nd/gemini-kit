@@ -5,16 +5,15 @@
 [![Version](https://img.shields.io/badge/version-4.0.0-blue.svg)](https://github.com/nth5693/gemini-kit/releases)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/tests-291%20passed-brightgreen.svg)]()
-[![Agents](https://img.shields.io/badge/AI%20Agents-15-purple.svg)]()
-[![Skills](https://img.shields.io/badge/Skills-8-orange.svg)]()
-[![Commands](https://img.shields.io/badge/Commands-16-yellow.svg)]()
-[![Workflows](https://img.shields.io/badge/Workflows-10-cyan.svg)]()
+[![Agents](https://img.shields.io/badge/AI%20Agents-8-purple.svg)]()
+[![Skills](https://img.shields.io/badge/Skills-7-orange.svg)]()
+[![Commands](https://img.shields.io/badge/Commands-15-yellow.svg)]()
 
 ### 🎯 Transform Your Terminal into an AI Engineering Team
 
-**Gemini-Kit** is an extension for [Gemini CLI](https://github.com/google-gemini/gemini-cli) that brings **15 specialized AI agents**, **16 commands**, and **10 workflows** to help you code 10x faster.
+**Gemini-Kit** is an extension for [Gemini CLI](https://github.com/google-gemini/gemini-cli) that brings **8 specialized AI agents** and **15 commands** to help you code 10x faster.
 
-[🚀 Quick Start](#-quick-start) • [🤖 Agents](#-agents) • [🛠️ Skills](#️-skills) • [⌨️ Commands](#️-commands) • [📚 API](docs/API.md) • [📖 Docs](docs/README.md)
+[🚀 Quick Start](#-quick-start) • [🤖 Agents](#-agents) • [🛠️ Skills](#️-skills) • [⌨️ Commands](#️-commands)
 
 </div>
 
@@ -27,7 +26,6 @@
 - [Agents](#-agents)
 - [Skills](#️-skills)
 - [Commands](#️-commands)
-- [Documentation](#-documentation)
 - [MCP Tools](#-mcp-tools)
 - [Security](#-security)
 - [FAQ](#-faq)
@@ -40,18 +38,15 @@
 
 | Feature          | Count | Description                                                |
 | ---------------- | ----- | ---------------------------------------------------------- |
-| 🤖 **AI Agents** | 15    | Specialized roles (Scout, Planner, Coder, Reviewer...)     |
-| 🛠️ **Skills**    | 8     | Knowledge modules (React, Security, Testing...)            |
-| ⌨️ **Commands**  | 16    | Slash commands for every workflow                          |
-| 🔄 **Workflows** | 10    | Structured development workflows                           |
+| 🤖 **AI Agents** | 8     | Specialized roles (Scout, Planner, Coder, Reviewer...)     |
+| 🛠️ **Skills**    | 7     | Knowledge modules (React, Security, Testing...)            |
+| ⌨️ **Commands**  | 15    | Slash commands for every task                              |
 | 🔒 **Security**  | 30+   | Secret detection patterns                                  |
-| 📜 **Scripts**   | 30+   | Automation scripts                                         |
+| 📜 **Scripts**   | 3     | Core automation scripts                                    |
 
 ### Key Features
 
-- **🔄 Compound System**: `/scout → /plan → /code → /test → /review-pr` - Each iteration builds a Knowledge Base. Solutions are saved and reused!
 - **🧠 Learning System**: AI learns from your feedback. Correct once, it remembers forever
-- **📚 23 Critical Patterns**: Common mistakes documented as patterns - AI reads them before coding
 - **🎯 Multi-agent Orchestration**: Orchestrator coordinates multiple agents for complex tasks
 - **💾 Auto-checkpoint**: Automatic Git backup before changes
 - **🔒 Security Hooks**: Real-time blocking of secrets (30+ patterns)
@@ -93,28 +88,15 @@ cd /path/to/your/project
 gemini
 
 # Try these commands:
-> /status           # Check project status
 > /scout src        # Map the terrain
 > /plan Add auth    # Create implementation plan
 ```
 
 ---
 
-## 📖 Documentation
-
-Gemini-Kit comes with comprehensive documentation to help you get the most out of your AI team.
-
-- [**Full Documentation Hub**](docs/README.md)
-- [**API Reference**](docs/API.md) - MCP tools and extension API
-- [**Handbook (Vietnamese)**](docs/HANDBOOK.md) - Quick reference guide
-- [**Features**](docs/FEATURES.md) - Detailed list of agents and capabilities
-- [**Best Practices**](docs/BEST-PRACTICES.md) - Tips for better results
-
----
-
 ## 🤖 Agents
 
-Gemini-Kit includes 15 specialized agents. Use `/help` to see full details for each.
+Gemini-Kit includes 8 specialized agents. Use `/help` to see full details for each.
 
 | Agent | Purpose |
 |-------|---------|
@@ -124,7 +106,8 @@ Gemini-Kit includes 15 specialized agents. Use `/help` to see full details for e
 | **Coder** | Builder. Writes clean, production-ready code. |
 | **Reviewer** | Quality gate. Performs deep-dive technical audits. |
 | **Debugger** | Problem solver. Analyzes errors and produces RCA runbooks. |
-| **Fixer** | Repairman. Executes precise bug fixes. |
+| **Researcher** | Information gatherer. Finds technical documentation. |
+| **Brainstormer** | Strategic thinker. Explores design trade-offs. |
 
 ---
 
@@ -132,7 +115,6 @@ Gemini-Kit includes 15 specialized agents. Use `/help` to see full details for e
 
 Modular capabilities that can be activated on-demand:
 
-- `session-resume`: Restore context from previous sessions
 - `code-review`: Technical audit checklists
 - `code-fix`: Minimal-scope bug fixing
 - `unit-test`: Test generation and verification
@@ -154,7 +136,7 @@ Modular capabilities that can be activated on-demand:
 | `/debug` | Analyze and diagnose errors |
 | `/fix` | Execute targeted bug fixes |
 | `/ticket` | Start workflow from a Jira ticket |
-| `/status` | Get current project status |
+| `/brainstorm` | Strategic design trade-offs |
 
 ---
 
@@ -164,11 +146,10 @@ Modular capabilities that can be activated on-demand:
 | --------- | ------------- |
 | Tests     | 291 passing   |
 | Lint      | 0 errors      |
-| Agents    | 15            |
-| Skills    | 8 categories  |
-| Commands  | 16            |
-| Workflows | 10            |
-| Scripts   | 30+           |
+| Agents    | 8             |
+| Skills    | 7 categories  |
+| Commands  | 15            |
+| Scripts   | 3             |
 | Coverage  | ~81%          |
 
 ---
@@ -179,7 +160,7 @@ Contributions welcome!
 
 1. Fork the repo
 2. Create branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
+3. Commit changes (`git commit -m 'feat: add amazing feature'`)
 4. Push (`git push origin feature/amazing-feature`)
 5. Create Pull Request
 
@@ -193,7 +174,7 @@ MIT © 2024-2026
 
 <p align="center">
   Made with ❤️ by the Gemini-Kit Team<br>
-  <a href="https://github.com/nth5693/gemini-kit">GitHub</a> •
-  <a href="https://github.com/nth5693/gemini-kit/releases">Releases</a> •
-  <a href="https://github.com/nth5693/gemini-kit/issues">Issues</a>
+  <a href="https://github.com/hanh-nd/gemini-kit">GitHub</a> •
+  <a href="https://github.com/hanh-nd/gemini-kit/releases">Releases</a> •
+  <a href="https://github.com/hanh-nd/gemini-kit/issues">Issues</a>
 </p>

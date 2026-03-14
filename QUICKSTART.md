@@ -16,14 +16,14 @@ Get started with Gemini-Kit in 5 minutes!
 ### Step 1: Clone & Build (2 min)
 
 ```bash
-# Clone repository
-git clone https://github.com/nth5693/gemini-kit.git ~/.gemini/extensions/gemini-kit
+# 1. Clone repository
+git clone https://github.com/hanh-nd/gemini-kit.git
 
-# Install dependencies
-cd ~/.gemini/extensions/gemini-kit
+# 2. Install & build
+cd gemini-kit
 npm install && npm run build
 
-# Link extension
+# 3. Link extension
 gemini extensions link $(pwd)
 ```
 
@@ -37,124 +37,46 @@ cd /your/project
 gemini
 
 # Check status
-> /status
-```
-
-**Expected output:**
-```
-📊 PROJECT STATUS
-================
-📋 Active Specs: 0
-📝 Active Plans: 0
-✅ Active Todos: 0
-🏥 Compound Health: Good
+> /help
 ```
 
 ---
 
 ## Essential Commands
 
-### The Compound Loop (Recommended Workflow)
-
-```
-/explore  →  Research topic, understand best practices
-    ↓
-/plan     →  Create detailed implementation plan
-    ↓
-/work     →  Execute the plan, write code
-    ↓
-/review   →  Review code, find issues
-    ↓
-/compound →  Document solution for future use
-    ↓
-/housekeeping → Cleanup, then git push!
-```
-
 ### Top 10 Commands
 
 | Command | What it does | When to use |
 |---------|--------------|-------------|
-| `/status` | Show project status | Start of each session |
-| `/explore [topic]` | Research before implementing | Before new feature |
+| `/scout [path]` | Explore codebase structure | New projects or features |
 | `/plan [description]` | Create implementation plan | Before coding |
-| `/work` | Execute plan step by step | When plan exists |
+| `/code [task]` | Implement features based on a plan | During execution |
 | `/cook [task]` | Full cycle (plan→code→test→review) | Quick tasks |
 | `/debug [issue]` | Debug with root cause analysis | Runtime errors |
-| `/test [file]` | Write and run tests | Quality assurance |
-| `/review [file]` | Code review | Before merging |
-| `/scout [path]` | Explore codebase | New projects |
-| `/housekeeping` | Cleanup before push | Before git push |
-
-### Development Commands
-
-| Command | Purpose |
-|---------|---------|
-| `/code [task]` | Write code |
-| `/fix [error]` | Quick fix |
-| `/fullstack [feature]` | End-to-end development |
-| `/db [task]` | Database operations |
-
-### Documentation Commands
-
-| Command | Purpose |
-|---------|---------|
-| `/doc [path]` | Update folder docs |
-| `/docs [task]` | Generate documentation |
-| `/adr [decision]` | Architecture Decision Record |
-| `/changelog` | Generate changelog |
-
-### Git Commands
-
-| Command | Purpose |
-|---------|---------|
-| `/git [action]` | Git operations |
-| `/pr [description]` | Create Pull Request |
-| `/review-pr [number]` | Review Pull Request |
-
-### Research & Design
-
-| Command | Purpose |
-|---------|---------|
-| `/research [topic]` | Research technologies |
-| `/brainstorm [topic]` | Brainstorm ideas |
-| `/design [ui]` | UI/UX design |
-
-### Utilities
-
-| Command | Purpose |
-|---------|---------|
-| `/help` | Show all commands |
-| `/ask [question]` | Quick Q&A |
-| `/kit-setup` | Initialize project |
-| `/skill` | View/manage skills |
+| `/fix [error]` | Quick fix for specific issues | Simple bug fixes |
+| `/review-pr [number]` | Review a Pull Request | Before merging |
+| `/ticket [id]` | Start workflow from a Jira ticket | Task-driven work |
+| `/brainstorm [topic]` | Explore design trade-offs | Strategy phase |
+| `/help` | Show all available commands | Anytime |
 
 ---
 
 ## Using Agents
 
-### 19 Specialized Agents
+### 8 Specialized Agents
 
 Mention an agent by name to get specialized help:
 
-```bash
-> Use the security-auditor agent to review authentication
-> Use the frontend-specialist to optimize React components
-> Use the backend-specialist to design API architecture
-> Use the devops-engineer to setup CI/CD pipeline
-```
-
-### Primary Agents
-
-| Agent | Use for |
+| Agent | Purpose |
 |-------|---------|
-| **Planner** | "Create plan for feature X" |
-| **Coder** | "Write code for Y" |
-| **Reviewer** | "Review this code" |
-| **Debugger** | "Find error in Z" |
-| **Security Auditor** | "Check for vulnerabilities" |
-| **Frontend Specialist** | "Optimize React performance" |
-| **Backend Specialist** | "Design REST API" |
-| **DevOps Engineer** | "Setup GitHub Actions" |
+| **Orchestrator** | Master router. Analyzes tickets to select the next agent. |
+| **Scout** | Terrain mapper. Explores codebase structure and context. |
+| **Planner** | Architect. Creates detailed implementation blueprints. |
+| **Coder** | Builder. Writes clean, production-ready code. |
+| **Reviewer** | Quality gate. Performs deep-dive technical audits. |
+| **Debugger** | Problem solver. Analyzes errors and produces RCA runbooks. |
+| **Researcher** | Information gatherer. Finds technical documentation. |
+| **Brainstormer** | Strategic thinker. Explores design trade-offs. |
 
 ---
 
@@ -162,71 +84,15 @@ Mention an agent by name to get specialized help:
 
 Skills are **loaded automatically** based on your task. No configuration needed.
 
-### Available Skills (15 categories)
+### Available Skills (7 categories)
 
-| Category | Skills |
-|----------|--------|
-| **Frontend** | react-patterns, nextjs, tailwind, performance |
-| **Backend** | api-design, docker, security |
-| **Mobile** | mobile |
-| **Testing** | testing |
-| **Workflow** | code-review, debug, session-resume, compound-docs, file-todos, examples |
-
----
-
-## Example Workflows
-
-### Starting a New Feature
-
-```bash
-> /explore JWT authentication best practices
-> /plan Add JWT authentication with refresh tokens
-> /work
-> /review
-> /housekeeping
-```
-
-### Debugging an Issue
-
-```bash
-> /debug Why does the API return 500 on large file uploads?
-```
-
-### Security Audit
-
-```bash
-> Use the security-auditor agent to audit src/api/auth.ts
-```
-
-### Creating Tests
-
-```bash
-> /test Write tests for src/services/UserService.ts
-```
-
----
-
-## Project Setup (Optional)
-
-For first-time setup, run:
-
-```bash
-> /kit-setup
-```
-
-This creates project context files in `.gemini-kit/`:
-- `product.md` - Product description
-- `tech-stack.md` - Technologies used
-- `guidelines.md` - Coding guidelines
-
----
-
-## Update to Latest Version
-
-```bash
-cd ~/.gemini/extensions/gemini-kit
-git pull && npm install && npm run build
-```
+- **backend-architect**: Scalable API and DB design
+- **brainstorming**: Requirement validation and strategic design
+- **code-fix**: Minimal-scope bug fixing
+- **code-review**: Technical audit checklists
+- **requirements-alignment**: Acceptance Criteria verification
+- **security**: Secure coding and secret auditing
+- **unit-test**: Test generation and verification
 
 ---
 
@@ -234,7 +100,6 @@ git pull && npm install && npm run build
 
 - Type `/help` in Gemini CLI
 - View [README.md](README.md) for full documentation
-- View [API Reference](docs/API.md) for MCP tools
 - View [CHANGELOG.md](CHANGELOG.md) for version history
 
 ---
@@ -243,7 +108,7 @@ git pull && npm install && npm run build
 
 | Metric | Value |
 |--------|-------|
-| Agents | 19 |
-| Skills | 15 categories |
-| Commands | 33+ |
+| Agents | 8 |
+| Skills | 7 categories |
+| Commands | 15 |
 | Tests | 291 passing |

@@ -33,12 +33,14 @@ Utility functions for common operations.
 
 ### 🔴 Critical: `tools/`
 MCP tool implementations:
-- **checkpoint.ts** - Git checkpoint management
-- **learning.ts** - Learning system (`kit_save_learning`, `kit_get_learnings`)
-- **integration.ts** - GitHub/Jira integration
+- **git.ts** - Git checkpoint management and operations
+- **knowledge.ts** - Learning system (`kit_save_learning`)
+- **integration.ts** - GitHub/Jira/Bitbucket integration
 - **security.ts** - Secret detection and blocking
-- **git.ts** - Git operations
 - **team-state.ts** - Team coordination state
+- **config.ts** - Project configuration
+- **orchestrator.ts** - Agent orchestration logic
+- **workflows.ts** - Workflow definitions
 
 ## Building
 
@@ -53,6 +55,10 @@ npm test
 ```
 
 ## Changelog
+
+### 2026-03-14
+- Updated component list to reflect current source structure.
+- Removed references to deleted tool modules.
 
 ### 2026-01-24
 - Added missing component entries (`kit-server.ts`, `constants.ts`, `utils.ts`)

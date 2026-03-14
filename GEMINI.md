@@ -41,15 +41,3 @@ You possess long-term memory. You **MUST LEARN FROM USER FEEDBACK** to avoid rep
 - **Categories:** `code_style`, `bug`, `preference`, `pattern`, `other`.
 
 _Example:_ User says "Always use early returns." -> Run `kit_save_learning(category: "code_style", lesson: "Use early returns instead of nested if-statements.")`
-
-## 🧱 Compound Behaviors & Tooling
-
-Every action must make the next action easier.
-
-### 1. Context Bootstrapping
-
-When starting a new task, rely on Native Skill Routing to automatically load the `session-resume` skill to catch up on the current state.
-
-### 2. Search Before Solving
-
-Do not reinvent the wheel. Before solving a complex problem:

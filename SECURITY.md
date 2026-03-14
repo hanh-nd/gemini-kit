@@ -62,9 +62,6 @@ Before making changes:
 - `kit_create_checkpoint` - Creates git checkpoint
 - `kit_restore_checkpoint` - Rollback if needed
 
-### 5. Dry-Run Mode
-- `/code-preview` - Preview changes before applying
-
 ## Best Practices
 
 ### For Users
