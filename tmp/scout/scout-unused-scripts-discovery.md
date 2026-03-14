@@ -2,45 +2,70 @@
 
 ## 1. Landscape Overview
 
-- **Tech Stack:** TypeScript (Node.js MCP Server), Bash Automation Scripts.
-- **Relevant Files:** 47 scripts in `scripts/`, 10 scripts in `scripts/validators/`.
-- **Project Name:** gemini-kit
+- **Tech Stack:** TypeScript (MCP SDK), Bash Automation Scripts.
+- **Relevant Files:** 43 `.sh` files found in `scripts/` directory.
 
 ## 2. Categorized Findings
 
-### 🏗️ Core Automation (Used)
-These scripts are actively integrated into the `pre-push-housekeeping.sh` or `compound-dashboard.sh` workflows.
-- `archive-completed.sh`, `audit-solution-freshness.sh`, `audit-state-drift.sh`, `bootstrap-folder-docs.sh`, `check-deprecated-adrs.sh`, `cleanup-redundancy.sh`, `compound-dashboard.sh`, `compound-health.sh`, `compound-metrics.sh`, `compound-search.sh`, `discover-undocumented-folders.sh`, `git-hygiene.sh`, `log-skill.sh`, `next-todo-id.sh`, `pre-push-housekeeping.sh`, `rotate-logs.sh`, `score-todo.sh`, `suggest-skills.sh`, `sync-spec.sh`, `update-solution-ref.sh`, `update-spec-phase.sh`, `validate-changelog.sh`, `validate-codebase-map.sh`, `validate-compound.sh`, `validate-docs.sh`, `validate-folder-docs.sh`, `validate-patterns.sh`, `validate-prerequisites.sh`, `validate-spec-consistency.sh`, `validate-todo-consistency.sh`.
+### 🏗️ Core Logic / Services (Used Scripts)
+
+These scripts are explicitly mentioned in `@agents/`, `@skills/`, `@commands/`, or `@src/`.
+
+- `scripts/log-skill.sh`: Used in `skills/session-resume/SKILL.md` and `skills/code-review/SKILL.md` for telemetry.
+- `scripts/compound-dashboard.sh`: Used in `skills/session-resume/SKILL.md` for health checks.
 
 ### 🗑️ Unused Scripts (No References Found)
-These scripts are not called by any other script, command, or codebase logic.
-- `backfill-solution-metrics.sh`: Historical data processing (documented but uncalled).
-- `check-docs-freshness.sh`: Doc validation (documented but uncalled).
-- `complete-plan.sh`: Atomic plan completion (documented but uncalled).
-- `complete-todo.sh`: Atomic todo completion (documented but uncalled).
-- `consolidate-imports.sh`: Leftover from another project (refers to non-existent `app` directory).
-- `debug-scores.sh`: Debug utility (documented but uncalled).
-- `done-todo.sh`: Alternative to `complete-todo.sh` (uncalled).
-- `integrate-housekeeping-system.sh`: Setup utility (documented but uncalled).
-- `log-workflow.sh`: Telemetry (documented but uncalled).
-- `next-adr-id.sh`: ADR utility (uncalled).
-- `normalize-todo-status.sh`: Maintenance utility (documented but uncalled).
-- `push-env.sh`: Deployment utility (documented but uncalled).
-- `score-solution.sh`: Scoring utility (documented but uncalled).
-- `start-todo.sh`: Lifecycle utility (documented but uncalled).
-- `status-dashboard.sh`: Metrics dashboard (documented but uncalled).
-- `validate-architecture.sh`: Doc integrity (documented but uncalled).
 
-### 🔄 Redundant Wrappers (scripts/validators/)
-All scripts in this directory appear to be unused delegators/wrappers that are not integrated into the main workflows.
-- `changelog.sh`, `codebase-map.sh`, `compound.sh`, `folder-docs.sh`, `freshness.sh`, `patterns.sh`, `specs.sh`, `todos.sh`, `undocumented.sh`.
+The following scripts were not found mentioned in any of the specified folders (`agents/`, `skills/`, `commands/`, `src/`) and are thus considered unused by the current definition:
+
+- `scripts/compound-search.sh`: (Note: Mentioned in root `GEMINI.md`, but not in target folders)
+- `scripts/validate-spec-consistency.sh`
+- `scripts/update-solution-ref.sh`
+- `scripts/create-todo.sh`
+- `scripts/rotate-logs.sh`
+- `scripts/suggest-skills.sh`
+- `scripts/next-todo-id.sh`
+- `scripts/validate-compound.sh`
+- `scripts/compound-metrics.sh`
+- `scripts/validate-todo-consistency.sh`
+- `scripts/validate-codebase-map.sh`
+- `scripts/sync-spec.sh`
+- `scripts/discover-undocumented-folders.sh`
+- `scripts/validate-docs.sh`
+- `scripts/validate-folder-docs.sh`
+- `scripts/update-spec-phase.sh`
+- `scripts/validate-prerequisites.sh`
+- `scripts/validate-changelog.sh`
+- `scripts/audit-state-drift.sh`
+- `scripts/git-hygiene.sh`
+- `scripts/lib/error_handling.sh`
+- `scripts/lib/prerequisite_validation.sh`
+- `scripts/lib/integration_wiring.sh`
+- `scripts/bootstrap-folder-docs.sh`
+- `scripts/validators/changelog.sh`
+- `scripts/validators/compound.sh`
+- `scripts/validators/folder-docs.sh`
+- `scripts/validators/codebase-map.sh`
+- `scripts/validators/freshness.sh`
+- `scripts/validators/specs.sh`
+- `scripts/validators/todos.sh`
+- `scripts/validators/patterns.sh`
+- `scripts/validators/undocumented.sh`
+- `scripts/audit-solution-freshness.sh`
+- `scripts/check-deprecated-adrs.sh`
+- `scripts/pre-push-housekeeping.sh`
+- `scripts/validate-patterns.sh`
+- `scripts/archive-completed.sh`
+- `scripts/score-todo.sh`
+- `scripts/compound-health.sh`
+- `scripts/cleanup-redundancy.sh`
 
 ## 3. Integration Points
 
-- `pre-push-housekeeping.sh` --(calls)--> `validate-docs.sh`, `archive-completed.sh`, etc.
-- `compound-dashboard.sh` --(calls)--> `audit-solution-freshness.sh`, `compound-metrics.sh`.
-- `create-todo.sh` --(calls)--> `next-todo-id.sh`.
-- `validate-compound.sh` --(calls)--> `validate-patterns.sh`.
+- `skills/session-resume/SKILL.md` --(calls)--> `scripts/log-skill.sh`
+- `skills/session-resume/SKILL.md` --(calls)--> `scripts/compound-dashboard.sh`
+- `skills/code-review/SKILL.md` --(calls)--> `scripts/log-skill.sh`
+- `commands/skill.toml` --(references)--> `validate-webhook.sh` (File does not exist)
 
 ## 4. Planner Context
 

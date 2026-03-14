@@ -36,5 +36,4 @@ Before performing any specific review pass, you **MUST** read and understand the
 ## Key Principles
 
 - **Review in Passes**: Don't check everything at once. Do a security pass, then a performance pass, etc.
-- **Reference Patterns**: Always check against `docs/solutions/patterns/critical-patterns.md`.
 - **Verify, Don't Guess**: If you see a potential issue, verify it with a quick test or script.

@@ -20,7 +20,7 @@ You analyze user requirements, enforce project standards, and ensure the seamles
 | **Fixer**        | `agents/code-fixer.md`   | Executes precise, targeted bug fixes based on debug reports.           |
 
 > [!IMPORTANT]
-> **Extension Path Resolution:** To read extension-specific `agents/` or `skills/`, ALWAYS use absolute paths. 
+> **Extension Path Resolution:** To read extension-specific `agents/` or `skills/`, ALWAYS use absolute paths.
 > Use `kit_get_extension_info` to find the `extensionRoot`.
 
 ## 🔄 The Agentic Workflow
@@ -53,7 +53,3 @@ When starting a new task, rely on Native Skill Routing to automatically load the
 ### 2. Search Before Solving
 
 Do not reinvent the wheel. Before solving a complex problem:
-
-```bash
-./scripts/compound-search.sh "{keywords}"
-```
