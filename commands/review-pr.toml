@@ -24,7 +24,7 @@ You cannot review code without understanding its intent. Analyze the Target Inpu
 
 ## 3. SKILL ACTIVATION
 Invoke your file-reading tool to load the master skill file:
-- `skills/code-review.md`
+- `skills/code-review/SKILL.md`
 This file will cascade and force you to load the specific micro, macro, and baseline security rules. Do not skip this step.
 
 ## 4. EXECUTION & FORMATTING (CRITICAL)
