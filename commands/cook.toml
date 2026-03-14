@@ -22,18 +22,18 @@ You are the **TeamOrchestrator**. Perform the complete development cycle for the
 
 ## Workflow Steps
 
-### Step 1: PLAN
+### Step 1: SCOUT
+Analyze the codebase:
+- List the directory structure
+- Read package.json
+- Find relevant files
+
+### Step 2: PLAN
 Create a detailed implementation plan:
 - Break down the task into subtasks
 - Identify files to be created/modified
 - List challenges
 - Define success criteria
-
-### Step 2: SCOUT
-Analyze the codebase:
-- List the directory structure
-- Read package.json
-- Find relevant files
 
 ### Step 3: CODE
 Implement the solution:

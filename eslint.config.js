@@ -1,40 +1,29 @@
 import js from '@eslint/js';
-import tseslint from 'typescript-eslint';
+import ts from 'typescript-eslint';
 
-export default tseslint.config(
+export default [
     js.configs.recommended,
-    ...tseslint.configs.recommended,
+    ...ts.configs.recommended,
     {
-        ignores: ['dist/**', 'node_modules/**', 'scripts/**', 'skills/**/templates/**'],
+        ignores: ['dist/**', 'node_modules/**', 'skills/**/templates/**'],
     },
     {
-        // TypeScript files
         files: ['**/*.ts'],
-        rules: {
-            '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
-            '@typescript-eslint/no-explicit-any': 'error',
-            'no-console': 'off',
-        },
-    },
-    {
-        // JavaScript hooks (Node.js environment)
-        files: ['hooks/**/*.js'],
         languageOptions: {
-            globals: {
-                console: 'readonly',
-                process: 'readonly',
-                Buffer: 'readonly',
-                URL: 'readonly',
-                __dirname: 'readonly',
-                __filename: 'readonly',
-                module: 'readonly',
-                require: 'readonly',
+            parser: ts.parser,
+            parserOptions: {
+                project: './tsconfig.json',
             },
         },
         rules: {
-            'no-empty': ['error', { allowEmptyCatch: true }],
-            '@typescript-eslint/no-unused-vars': 'warn',
-            'no-console': 'off',
+            '@typescript-eslint/no-explicit-any': 'warn',
+            '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
         },
-    }
-);
+    },
+    {
+        files: ['**/*.test.ts'],
+        rules: {
+            '@typescript-eslint/no-unused-expressions': 'off',
+        },
+    },
+];

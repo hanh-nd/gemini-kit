@@ -48,7 +48,7 @@ Create new skill:
 
 ## SKILL FILE STRUCTURE
 
-Create skill file at: `~/.gemini-kit/skills/[skill-name].md`
+Create skill file at: `~/.gemini-kit/skills/[skill-name]/SKILL.md`
 
 ```markdown
 # [Skill Name] Skill
@@ -103,7 +103,7 @@ Create skill file at: `~/.gemini-kit/skills/[skill-name].md`
 ## OUTPUT FILES
 
 After creation:
-1. **Skill file:** `~/.gemini-kit/skills/[skill-name].md`
+1. **Skill file:** `~/.gemini-kit/skills/[skill-name]/SKILL.md`
 2. **Activation:** Skill auto-activates on matching keywords
 
 ---
@@ -226,7 +226,7 @@ When input starts with "add":
 **Output:**
 ```
 Adding reference to mongodb skill...
-✓ Skill found: ~/.gemini-kit/skills/mongodb.md
+✓ Skill found: ~/.gemini-kit/skills/mongodb/SKILL.md
 ✓ Reference: https://docs.mongodb.com/llms.txt
 ✓ Content: 12KB, 45 endpoints
 ✓ Updated: mongodb.md

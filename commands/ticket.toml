@@ -1,71 +1,26 @@
-description = "Read ticket from Jira/Linear and start workflow"
+description = "Orchestrate workflow by analyzing a Jira ticket (The Entry Point)"
 
+# Architecture: Command (Fetcher) -> Agent (Orchestrator) -> Routing
 prompt = """
-# 🎫 Ticket Agent
-
-Read and process ticket.
+# 🎟️ SYSTEM: TICKET-DRIVEN ORCHESTRATION
 
 **Ticket ID:** {{args}}
 
----
+## 1. DATA ACQUISITION
+1. **Fetch:** Use `kit_jira_get_ticket(ticketId: "{{args}}")` to retrieve Summary, Description, and Acceptance Criteria.
+2. **Context:** Read `package.json` to identify the tech stack.
+3. **Persistence:** Save the raw ticket data to `.geminit-kit/tmp/tickets/{{args}}.md`.
 
-## Workflow
+## 2. ORCHESTRATION ENGINE
+Load the routing logic from: `agents/orchestrator.md`
 
-### Step 1: Get Ticket
-Use the `kit_jira_get_ticket` tool to get information:
-- Title, description
-- Status, priority
-- Assignee, reporter
-- Labels, components
+## 3. INSTRUCTIONS
+1. **Intent Classification:** Analyze if the ticket is a Bug, Feature, Refactor, or Architecture change.
+2. **Complexity Assessment:** Determine if it needs a Brainstorm (Strategic) or can go straight to a Plan (Execution).
+3. **Skill activation:** Analyze the ticket intent (Bug, Feature, Refactor). Rely on the system's native skill registry to identify and activate which specialized skills (e.g., `brainstorming`, `requirements-alignment`) are required to process this ticket effectively.
 
-### Step 2: Analyze Requirements
-Analyze ticket:
-- Understand primary requirements
-- Determine scope
-- List acceptance criteria
-
-### Step 3: Create Branch
-Create branch from ticket ID:
-```bash
-git checkout -b feature/[TICKET-ID]-[short-description]
-```
-
-### Step 4: Start Workflow
-Propose next steps:
-- Run `/plan` to create plan
-- Or `/cook` to start immediately
-
----
-
-## Output Format
-
-```markdown
-## 🎫 Ticket: [TICKET-ID]
-
-### Summary
-[Title]
-
-### Description
-[Description]
-
-### Details
-- **Status:** [status]
-- **Priority:** [priority]
-- **Assignee:** [assignee]
-
-### Acceptance Criteria
-- [ ] Criteria 1
-- [ ] Criteria 2
-
-### 🚀 Next Steps
-1. Branch created: feature/[TICKET-ID]-...
-2. Run `/plan [ticket summary]` to start
-```
-
----
-
-## Supported Platforms
-- Jira (JIRA-123)
-- Linear (LIN-123)
-- GitHub Issues (#123)
+## 4. EXECUTION & FORMATTING (CRITICAL)
+Analyze the ticket and determine the routing logic. 
+You MUST strictly follow the execution logic and the exact "Output Format" defined in `agents/orchestrator.md`. 
+Do NOT output anything other than the Orchestration Report and the mandatory Next Step command.
 """

@@ -1,80 +1,43 @@
-description = "Explore codebase with Structure Analysis & Scale (Scout Agent)"
+description = "Scout the codebase for architectural overview, module deep-dives, or data flow tracing."
 
 prompt = """
-# 🔍 SCOUT AGENT
+# 🚁 SYSTEM: INITIATE CODEBASE SCOUTING PIPELINE
 
-Exploration task:
+**Target Input:** {{args}}
 
-**Query:** {{args}}
+## 1. PROTOCOL & AGENT INITIALIZATION (MANDATORY)
 
-## SCALE & SCOPE
-Default scale: 5 (Medium)
+You are strictly forbidden from guessing the project structure or blindly reading files. You MUST first use your file-reading tool to load your core logic:
 
-| Scale | Files | Use Case |
-|-------|-------|----------|
-| **1-3** | <100 | Targeted search, small feature |
-| **4-6** | 100-500 | Feature discovery, debugging |
-| **7-10** | 500+ | Full architecture map, monorepo |
+1. Agent Persona & Format: `agents/code-scouter.md`
+2. Workflow SOP: `agents/workflows/scout-pipeline.md`
 
----
+Do NOT proceed until you have fully internalized the Scouter persona and the multi-tier pipeline.
 
-## OUTPUT REPORT FORMAT
+## 2. INTENT ROUTING (TIER 1)
 
-### 🗺️ Landscape Overview
-- **Domain:** [Affected business domain]
-- **Tech Stack:** [Languages/Frameworks detected]
-- **Scale:** [Number of files found]
+Analyze the Target Input ("{{args}}"). Categorize the user's intent into exactly one of the following:
 
-### 📂 Categorized Findings
-Organize files by role:
+- `OVERVIEW`: The user wants to understand the general tech stack, architecture, or project layout (e.g., "scout project overview", "what is this repo").
+- `MODULE_DEEPDIVE`: The user wants to understand a specific domain or folder (e.g., "scout payment module", "how does auth work").
+- `DATA_FLOW`: The user wants to trace a specific variable, function, or process (e.g., "scout data flow of executeTx", "trace user login").
 
-#### 🏗️ Core Services / Logic
-- `src/services/...`
-- `src/lib/...`
+## 3. DETERMINISTIC DELEGATION (TIER 2 & 3)
 
-#### 🛣️ Middleware & Routes
-- `src/api/...`
-- `src/middleware/...`
+You must NOT use `grep` or `find` manually. You MUST delegate the heavy lifting to the local heuristic scorer.
 
-#### 💾 Data Layer
-- `src/models/...`
-- `src/db/...`
+- Use your shell execution tool to run the following command exactly, passing the Target Input and your determined Intent:
+  ```bash
+  node scripts/scout-heuristic-scorer.js "{{args}}" --intent="YOUR_DETERMINED_INTENT"
+  ```
+- The script will output a list of **Top N Absolute File Paths** (and potentially an ASCII tree if it's an overview). Wait for this output. Do NOT hallucinate file paths.
 
-#### ⚙️ Configuration
-- `config/...`
-- `package.json`
+## 4. SKILL ACTIVATION & SEMANTIC SYNTHESIS (TIER 4)
 
-#### 🧪 Tests
-- `tests/...`
+Once the Node.js script returns the exact file paths:
 
----
-
-### 🔗 Integration Points
-Identify files that connect different parts:
-- [File A] imports [File B]
-- [Service X] uses [Model Y]
-
----
-
-### 💡 Pro Tips for this Context
-- **Reading Order:** Start with [File A], then [File B].
-- **Key Patterns:** [Observed patterns e.g. Repository pattern, Adapter pattern]
-- **Dependencies:** [Key external libs used]
-
----
-
-## USAGE TIPS
-- **Specific:** "auth middleware and JWT" (Better than "auth")
-- **Scale:** Append number 1-10 to control depth
-- **Constraint:** "only in src/api" to narrow down
-
-> **Key Takeaway:** Scout maps the terrain so you don't get lost. 5 minutes of scouting saves hours of debugging.
-"""
-
-# ---
-# USAGE:
-# /scout "locate all auth files" 5
-# /scout "find Stripe webhook handling" 4
-# /scout "data models and migrations" 3
-# /scout "security related files" 8
-# ---
+1. Invoke your file-reading tool to load the master skill file: `skills/code-scout/SKILL.md`.
+2. Use your parallel file-reading capabilities to read the exact files returned by the script.
+3. Synthesize the context based on the specific intent rules (Overview, Module, or Data Flow).
+4. Output your findings strictly matching the ASCII diagrams and Markdown format specified in `agents/code-scouter.md`.
+   """

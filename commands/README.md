@@ -1,78 +1,29 @@
-# Commands
+# Slash Commands
 
 This directory contains all **custom slash commands** for the Gemini-Kit extension. Commands are defined as TOML files and automatically loaded by Gemini CLI.
 
-## Overview
+## Available Commands (16)
 
-Commands extend Gemini CLI's capabilities by providing specialized prompts for specific tasks. Each command file follows the TOML format with `description` and `prompt` fields.
+| Command | File | Description | Status |
+|---------|------|-------------|--------|
+| `/brainstorm` | `brainstorm.toml` | Strategic design trade-offs | ✅ Active |
+| `/code` | `code.toml` | Implement features based on a plan | ✅ Active |
+| `/cook` | `cook.toml` | Full development cycle (plan→scout→code→test→review) | ✅ Active |
+| `/debug` | `debug.toml` | Analyze and diagnose errors | ✅ Active |
+| `/do` | `do.toml` | Unified task router (auto-selects agents) | ✅ Active |
+| `/fix` | `fix.toml` | Execute targeted bug fixes | ✅ Active |
+| `/help` | `help.toml` | Show all available commands | ✅ Active |
+| `/kit-setup` | `kit-setup.toml` | Initialize project context | ✅ Active |
+| `/mcp` | `mcp.toml` | MCP tool inspection and help | ✅ Active |
+| `/plan` | `plan.toml` | Create detailed implementation blueprints | ✅ Active |
+| `/review-pr` | `review-pr.toml` | Review a Pull Request (GitHub/Bitbucket) | ✅ Active |
+| `/scout` | `scout.toml` | Explore and map codebase structure | ✅ Active |
+| `/session` | `session.toml` | Manage session context | ✅ Active |
+| `/skill` | `skill.toml` | Create and manage agent skills | ✅ Active |
+| `/ticket` | `ticket.toml` | Orchestrate workflow from a Jira ticket | ✅ Active |
+| `/unit-test` | `unit-test.toml` | Generate unit tests for a file | ✅ Active |
 
-## Command Categories
-
-| Category | Commands | Purpose |
-|----------|----------|---------|
-| **Planning** | `plan`, `brainstorm` | Create implementation plans |
-| **Coding** | `code`, `fix`, `debug`, `fullstack` | Write and debug code |
-| **Review** | `review`, `review-pr`, `pr` | Code review and PR management |
-| **Documentation** | `docs`, `doc-rules`, `help` | Documentation tasks |
-| **Project** | `project`, `pm`, `status` | Project management |
-| **Git** | `git`, `session` | Git and session management |
-| **Research** | `research`, `scout`, `scout-ext` | Codebase exploration |
-| **Content** | `content`, `copywrite`, `chat` | Content creation |
-| **Database** | `db` | Database operations |
-| **Design** | `design` | UI/UX design tasks |
-| **Testing** | `test` | Testing and QA |
-| **Tools** | `mcp`, `skill`, `screenshot`, `video` | Tool integrations |
-
-## Components
-
-| Component | Purpose | Status |
-|-----------|---------|--------|
-| `ask.toml` | General Q&A with context | ✅ Active |
-| `brainstorm.toml` | Creative ideation | ✅ Active |
-| `chat.toml` | Conversational interactions | ✅ Active |
-| `code.toml` | Code implementation | ✅ Active |
-| `code-preview.toml` | Code preview mode | ✅ Active |
-| `content.toml` | Content creation | ✅ Active |
-| `cook.toml` | Execute plans step-by-step | ✅ Active |
-| `copywrite.toml` | Marketing copy | ✅ Active |
-| `db.toml` | Database operations | ✅ Active |
-| `debug.toml` | Debugging assistance | ✅ Active |
-| `design.toml` | UI/UX design | ✅ Active |
-| `dev-rules.toml` | Development rules loader | ✅ Active |
-| `do.toml` | Quick task execution | ✅ Active |
-| `doc-rules.toml` | Documentation rules | ✅ Active |
-| `docs.toml` | Documentation management | ✅ Active |
-| `fix.toml` | Bug fixing | ✅ Active |
-| `fullstack.toml` | Full-stack development | ✅ Active |
-| `git.toml` | Git operations | ✅ Active |
-| `help.toml` | Help and guidance | ✅ Active |
-| `integrate.toml` | Integration tasks | ✅ Active |
-| `journal.toml` | Session journaling | ✅ Active |
-| `kit-setup.toml` | Project setup wizard | ✅ Active |
-| `mcp.toml` | MCP server management | ✅ Active |
-| `orchestration.toml` | Multi-agent orchestration | ✅ Active |
-| `plan.toml` | Implementation planning | ✅ Active |
-| `pm.toml` | Project management | ✅ Active |
-| `pr.toml` | Pull request creation | ✅ Active |
-| `project.toml` | Project context | ✅ Active |
-| `research.toml` | Research tasks | ✅ Active |
-| `review-pr.toml` | PR review | ✅ Active |
-| `review.toml` | Code review | ✅ Active |
-| `scout-ext.toml` | Extended codebase exploration | ✅ Active |
-| `scout.toml` | Codebase scout | ✅ Active |
-| `screenshot.toml` | Screenshot capture | ✅ Active |
-| `session.toml` | Session management | ✅ Active |
-| `skill.toml` | Skill creation | ✅ Active |
-| `status.toml` | Status reporting | ✅ Active |
-| `team.toml` | Team coordination | ✅ Active |
-| `test.toml` | Testing tasks | ✅ Active |
-| `ticket.toml` | Issue/ticket management | ✅ Active |
-| `use.toml` | Use existing patterns | ✅ Active |
-| `video.toml` | Video processing | ✅ Active |
-| `watzup.toml` | Quick status check | ✅ Active |
-| `workflow.toml` | Workflow management | ✅ Active |
-
-## TOML Structure
+## Structure
 
 Each command file follows this structure:
 
@@ -106,10 +57,14 @@ prompt = '''
 # Examples
 /plan Add user authentication
 /code Implement login form
-/review @src/auth/login.ts
+/review-pr 123
 ```
 
 ## Changelog
+
+### 2026-03-14
+- Updated command list to reflect current 15 active commands.
+- Removed references to deleted and non-existent commands.
 
 ### 2026-01-24
 - Fixed TOML parsing failure in `docs.toml` by switching from basic strings (`"""`) to literal strings (`'''`) - Issue #9

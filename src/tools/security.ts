@@ -33,7 +33,7 @@ export function sanitize(input: string): string {
 /**
  * Validate file path to prevent path traversal attacks
  * Uses stricter path.sep check to prevent prefix matching flaws
- * (e.g., /tmp/app should not match /tmp/app-secret)
+ * (e.g., /.geminit-kit/tmp/app should not match /.geminit-kit/tmp/app-secret)
  */
 export function validatePath(filePath: string, baseDir: string = process.cwd()): string {
   const resolved = path.resolve(baseDir, filePath);
@@ -116,55 +116,6 @@ export function commandExists(cmd: string): boolean {
 }
 
 /**
- * Cross-platform file finder (replaces Unix-only find/grep/head)
- * MEDIUM 2: Uses iterative queue-based approach to prevent stack overflow
- */
-export function findFiles(
-  dir: string,
-  extensions: string[],
-  maxFiles: number,
-  excludeDirs: string[] = ['node_modules', '.git', 'dist', 'build', 'coverage']
-): string[] {
-  const results: string[] = [];
-  // Use queue instead of recursion to prevent stack overflow on deep dirs
-  const queue: Array<{ fullPath: string; relativePath: string }> = [
-    { fullPath: dir, relativePath: '' },
-  ];
-
-  while (queue.length > 0 && results.length < maxFiles) {
-    const current = queue.shift()!;
-
-    let entries;
-    try {
-      entries = fs.readdirSync(current.fullPath, { withFileTypes: true });
-    } catch {
-      continue; // Skip directories we can't read
-    }
-
-    for (const entry of entries) {
-      if (results.length >= maxFiles) break;
-
-      const entryFullPath = path.join(current.fullPath, entry.name);
-      const entryRelPath = current.relativePath
-        ? path.join(current.relativePath, entry.name)
-        : entry.name;
-
-      if (entry.isDirectory()) {
-        if (!excludeDirs.includes(entry.name)) {
-          queue.push({ fullPath: entryFullPath, relativePath: entryRelPath });
-        }
-      } else if (entry.isFile()) {
-        if (extensions.some((ext) => entry.name.endsWith(ext))) {
-          results.push(entryRelPath);
-        }
-      }
-    }
-  }
-
-  return results;
-}
-
-/**
  * Async file finder - non-blocking for large repos
  * Uses queue-based approach to prevent stack overflow on deep directories
  */
@@ -213,52 +164,8 @@ export async function findFilesAsync(
   return results;
 }
 
-/**
- * Detect git provider from remote URL
- * Returns 'github', 'bitbucket', or 'unknown'
- */
-export type GitProvider = 'github' | 'bitbucket' | 'unknown';
-
-export function detectGitProvider(cwd?: string): GitProvider {
-  try {
-    const remoteUrl = safeGit(['remote', 'get-url', 'origin'], { cwd }).trim();
-    if (remoteUrl.includes('github.com')) return 'github';
-    if (remoteUrl.includes('bitbucket.org')) return 'bitbucket';
-    return 'unknown';
-  } catch {
-    return 'unknown';
-  }
-}
-
-/**
- * Parse Bitbucket workspace and repo slug from git remote URL
- * Supports both HTTPS and SSH formats:
- *   https://bitbucket.org/workspace/repo.git
- *   git@bitbucket.org:workspace/repo.git
- */
-export function parseBitbucketRemote(cwd?: string): { workspace: string; repoSlug: string } | null {
-  try {
-    const remoteUrl = safeGit(['remote', 'get-url', 'origin'], { cwd }).trim();
-
-    // HTTPS: https://bitbucket.org/workspace/repo.git
-    const httpsMatch = remoteUrl.match(/bitbucket\.org\/([^/]+)\/([^/.]+)/);
-    if (httpsMatch) {
-      return { workspace: httpsMatch[1], repoSlug: httpsMatch[2] };
-    }
-
-    // SSH: git@bitbucket.org:workspace/repo.git
-    const sshMatch = remoteUrl.match(/bitbucket\.org:([^/]+)\/([^/.]+)/);
-    if (sshMatch) {
-      return { workspace: sshMatch[1], repoSlug: sshMatch[2] };
-    }
-
-    return null;
-  } catch {
-    return null;
-  }
-}
-
 // Configurable timeout for Bitbucket CLI (bkt)
+
 const BKT_TIMEOUT = parseInt(process.env.GEMINI_KIT_BKT_TIMEOUT || '60000', 10);
 
 /**
