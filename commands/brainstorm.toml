@@ -11,7 +11,7 @@ Load Persona and Strategic Framework from: `agents/brainstormer.md`
 
 ## 2. DYNAMIC CONTEXT SCAN
 - **Project Pulse:** Scan the root directory and `package.json` to understand the current technical ecosystem (e.g., Node.js, Fedora environment, existing tools).
-- **Previous Context:** Check `tmp/` for any existing scout reports or plans that might influence this decision.
+- **Previous Context:** Check `.geminit-kit/tmp/` for any existing scout reports or plans that might influence this decision.
 
 ## 3. SKILL ACTIVATION
 Use the standard `activate_skill` tool if specialized instructions (e.g., Security, Testing) are needed for this task.

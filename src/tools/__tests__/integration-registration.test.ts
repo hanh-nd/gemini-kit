@@ -54,24 +54,41 @@ describe('registerIntegrationTools - Remaining Tools', () => {
     };
   });
 
-  it('should register remaining integration tools', async () => {
+  it('should register refactored integration tools', async () => {
     const { registerIntegrationTools } = await import('../integration.js');
     registerIntegrationTools(
       mockServer as unknown as Parameters<typeof registerIntegrationTools>[0]
     );
 
-    expect(registeredTools.has('kit_github_get_pr')).toBe(true);
+    expect(registeredTools.has('kit_get_provider')).toBe(true);
+    expect(registeredTools.has('kit_get_pr')).toBe(true);
+    expect(registeredTools.has('kit_get_pr_diff')).toBe(true);
     expect(registeredTools.has('kit_jira_get_ticket')).toBe(true);
-    expect(registeredTools.has('kit_bitbucket_get_pr')).toBe(true);
     
-    // Removed tools should NOT be registered
-    expect(registeredTools.has('kit_github_create_pr')).toBe(false);
-    expect(registeredTools.has('kit_github_get_issue')).toBe(false);
-    expect(registeredTools.has('kit_bitbucket_create_pr')).toBe(false);
+    // Removed/Internalized tools should NOT be registered
+    expect(registeredTools.has('kit_github_get_pr')).toBe(false);
+    expect(registeredTools.has('kit_bitbucket_get_pr')).toBe(false);
   });
 
-  describe('kit_github_get_pr', () => {
-    it('should get PR successfully', async () => {
+  describe('kit_get_provider', () => {
+    it('should detect GitHub from URL', async () => {
+      const { registerIntegrationTools } = await import('../integration.js');
+      registerIntegrationTools(
+        mockServer as unknown as Parameters<typeof registerIntegrationTools>[0]
+      );
+
+      const tool = registeredTools.get('kit_get_provider');
+      const result = await tool!.handler({ input: 'https://github.com/owner/repo/pull/123' });
+
+      const data = JSON.parse(result.content[0].text);
+      expect(data.provider).toBe('github');
+      expect(data.prId).toBe(123);
+      expect(data.repo).toBe('owner/repo');
+    });
+  });
+
+  describe('kit_get_pr', () => {
+    it('should get GitHub PR successfully', async () => {
       const security = await import('../security.js');
       vi.mocked(security.commandExists).mockReturnValue(true);
       vi.mocked(security.safeGh).mockReturnValue(JSON.stringify({
@@ -90,11 +107,30 @@ describe('registerIntegrationTools - Remaining Tools', () => {
         mockServer as unknown as Parameters<typeof registerIntegrationTools>[0]
       );
 
-      const tool = registeredTools.get('kit_github_get_pr');
-      const result = await tool!.handler({ prNumber: 123 });
+      const tool = registeredTools.get('kit_get_pr');
+      const result = await tool!.handler({ provider: 'github', prId: 123, repo: 'owner/repo' });
 
-      expect(result.content[0].text).toBeDefined();
       expect(result.content[0].text).toContain('PR #123');
+      expect(result.content[0].text).toContain('Test PR');
+    });
+  });
+
+  describe('kit_get_pr_diff', () => {
+    it('should get PR diff successfully', async () => {
+      const security = await import('../security.js');
+      vi.mocked(security.commandExists).mockReturnValue(true);
+      vi.mocked(security.safeGh).mockReturnValue('diff content');
+
+      const { registerIntegrationTools } = await import('../integration.js');
+      registerIntegrationTools(
+        mockServer as unknown as Parameters<typeof registerIntegrationTools>[0]
+      );
+
+      const tool = registeredTools.get('kit_get_pr_diff');
+      const result = await tool!.handler({ provider: 'github', prId: 123, repo: 'owner/repo' });
+
+      expect(result.content[0].text).toContain('### Diff');
+      expect(result.content[0].text).toContain('diff content');
     });
   });
 

@@ -47,13 +47,13 @@ Based on your analysis, you must output a clear "Next Step".
 
 Execute the following command to proceed:
 
-**[SYSTEM*COMMAND: ROUTE_TO*[AGENT], CONTEXT: @tmp/tickets/[Jira_ID].md]**
+**[SYSTEM*COMMAND: ROUTE_TO*[AGENT], CONTEXT: @.geminit-kit/tmp/tickets/[Jira_ID].md]**
 
 ---
 
 ### 🚀 Suggested Command:
 
-`/[agent_command] @tmp/tickets/[Jira_ID].md`
+`/[agent_command] @.geminit-kit/tmp/tickets/[Jira_ID].md`
 ```
 
 ## Best Practices

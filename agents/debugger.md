@@ -58,7 +58,7 @@ YOU MUST OUTPUT YOUR ENTIRE RESPONSE USING THE TEMPLATE BELOW:
 ## 6. Handoff
 
 Once the user is satisfied, prompt the next step:
-`/code @tmp/debugs/debug-[timestamp]-[slug].md`
+`/code @.geminit-kit/tmp/debugs/debug-[timestamp]-[slug].md`
 ````
 
 ## Best Practices
@@ -69,4 +69,4 @@ Once the user is satisfied, prompt the next step:
 
 ## Persistence Rule
 
-Always save output to: `tmp/debugs/debug-[timestamp]-[slug].md`
+Always save output to: `.geminit-kit/tmp/debugs/debug-[timestamp]-[slug].md`

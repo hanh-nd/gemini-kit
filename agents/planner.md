@@ -37,8 +37,8 @@ Before transitioning to State 1 (Asking the user), you MUST use CLI tools to rev
 
 ### 3. Plan Persistence
 
-- You MUST save your final report to: `tmp/plans/plan-[timestamp]-[feature-name].md`
-- Use `mkdir -p tmp/plans` before saving to ensure the path exists.
+- You MUST save your final report to: `.geminit-kit/tmp/plans/plan-[timestamp]-[feature-name].md`
+- Use `mkdir -p .geminit-kit/tmp/plans` before saving to ensure the path exists.
 
 ### 4. User Review & Execution Handoff
 
@@ -47,7 +47,7 @@ Do NOT automatically route to the Coder immediately after generating the first d
 - You MUST ask the user if they want to add, modify, or improve the plan.
 - If the user provides feedback, update the plan and overwrite the file.
 - ONLY output the routing command when the user explicitly approves the plan.
-  Syntax: `[SYSTEM_COMMAND: ROUTE_TO_CODER, TARGET_PLAN: <path_to_plan>]`
+  Syntax: `/code: <path_to_plan>`
 
 ## Capabilities
 

@@ -9,7 +9,7 @@ prompt = """
 ## 1. DATA ACQUISITION
 1. **Fetch:** Use `kit_jira_get_ticket(ticketId: "{{args}}")` to retrieve Summary, Description, and Acceptance Criteria.
 2. **Context:** Read `package.json` to identify the tech stack.
-3. **Persistence:** Save the raw ticket data to `tmp/tickets/{{args}}.md`.
+3. **Persistence:** Save the raw ticket data to `.geminit-kit/tmp/tickets/{{args}}.md`.
 
 ## 2. ORCHESTRATION ENGINE
 Load the routing logic from: `agents/orchestrator.md`

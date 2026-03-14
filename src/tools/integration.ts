@@ -19,13 +19,6 @@ const PrDetailSchema = z.object({
   deletions: z.number(),
 });
 
-const PrListItemSchema = z.object({
-  number: z.number(),
-  title: z.string(),
-  state: z.string(),
-  author: z.object({ login: z.string() }),
-});
-
 // MEDIUM 2: Jira ticket schema for runtime validation
 // ADF (Atlassian Document Format) can have many nested content types
 // We use a more permissive schema that accepts any ADF structure
@@ -98,9 +91,16 @@ function extractAdfText(adf: Record<string, unknown> | null | undefined): string
 /**
  * Helper: Get GitHub PR data
  */
-async function getGitHubPr(prNumber: number, includeDiff: boolean = false, repo?: string) {
+async function getGitHubPr(prNumber: number, action: 'view' | 'diff' = 'view', repo?: string) {
   if (!commandExists('gh')) {
     throw new Error('❌ GitHub CLI (gh) not installed. Install with: brew install gh');
+  }
+
+  if (action === 'diff') {
+    const diffArgs = ['pr', 'diff', String(prNumber)];
+    if (repo) diffArgs.push('--repo', sanitize(repo));
+    const diff = safeGh(diffArgs);
+    return `### Diff\n\`\`\`diff\n${diff.slice(0, 5000)}${diff.length > 5000 ? '\n... (truncated)' : ''}\n\`\`\``;
   }
 
   const prArgs = [
@@ -119,7 +119,7 @@ async function getGitHubPr(prNumber: number, includeDiff: boolean = false, repo?
     throw new Error(`❌ Failed to parse PR data: ${parseResult.error.message}`);
   }
   const pr = parseResult.data;
-  let output = `## PR #${prNumber}: ${pr.title}
+  const output = `## PR #${prNumber}: ${pr.title}
 
 **State:** ${pr.state}
 **Author:** ${pr.author.login}
@@ -129,17 +129,6 @@ async function getGitHubPr(prNumber: number, includeDiff: boolean = false, repo?
 ### Description
 ${pr.body || 'No description'}`;
 
-  if (includeDiff) {
-    try {
-      const diffArgs = ['pr', 'diff', String(prNumber)];
-      if (repo) diffArgs.push('--repo', sanitize(repo));
-      const diff = safeGh(diffArgs);
-      output += `\n\n### Diff\n\`\`\`diff\n${diff.slice(0, 3000)}${diff.length > 3000 ? '\n... (truncated)' : ''}\n\`\`\``;
-    } catch {
-      /* diff not available, ignore */
-    }
-  }
-
   return output;
 }
 
@@ -148,13 +137,23 @@ ${pr.body || 'No description'}`;
  */
 async function getBitbucketPr(
   prId: number,
-  includeDiff: boolean = false,
+  action: 'view' | 'diff' = 'view',
   workspace?: string,
   repoSlug?: string,
   context?: string
 ) {
   if (!commandExists('bkt')) {
     throw new Error('❌ Bitbucket CLI (bkt) not installed.');
+  }
+
+  if (action === 'diff') {
+    const diffArgs = ['pr', 'diff', String(prId)];
+    if (workspace) diffArgs.push('--workspace', sanitize(workspace));
+    if (repoSlug) diffArgs.push('--repo', sanitize(repoSlug));
+    if (context) diffArgs.push('--context', sanitize(context));
+
+    const diff = safeBkt(diffArgs);
+    return `### Diff\n\`\`\`diff\n${diff.slice(0, 5000)}${diff.length > 5000 ? '\n... (truncated)' : ''}\n\`\`\``;
   }
 
   const viewArgs = ['pr', 'view', String(prId), '--json'];
@@ -165,35 +164,20 @@ async function getBitbucketPr(
   const prInfo = safeBkt(viewArgs);
   const pr = JSON.parse(prInfo);
 
-  let output = `## PR #${prId} Details\n\n\`\`\`json\n${JSON.stringify(pr, null, 2)}\n\`\`\``;
-
-  if (includeDiff) {
-    try {
-      const diffArgs = ['pr', 'diff', String(prId)];
-      if (workspace) diffArgs.push('--workspace', sanitize(workspace));
-      if (repoSlug) diffArgs.push('--repo', sanitize(repoSlug));
-      if (context) diffArgs.push('--context', sanitize(context));
-
-      const diff = safeBkt(diffArgs);
-      output += `\n\n### Diff\n\`\`\`diff\n${diff.slice(0, 3000)}${diff.length > 3000 ? '\n... (truncated)' : ''}\n\`\`\``;
-    } catch {
-      /* diff not available, ignore */
-    }
-  }
+  const output = `## PR #${prId} Details\n\n\`\`\`json\n${JSON.stringify(pr, null, 2)}\n\`\`\``;
 
   return output;
 }
 
 export function registerIntegrationTools(server: McpServer): void {
-  // TOOL 14: UNIVERSAL GET PR
+  // TOOL: DETECT PR PROVIDER
   server.tool(
-    'kit_get_pr',
-    'Get PR details by detecting provider and repository from URL or local git context',
+    'kit_get_provider',
+    'Detect git provider and PR metadata from URL or numeric ID',
     {
       input: z.string().describe('PR URL or Numeric ID'),
-      includeDiff: z.boolean().optional().default(false).describe('Include diff in output'),
     },
-    async ({ input, includeDiff = false }) => {
+    async ({ input }) => {
       try {
         let prId: number | undefined;
         let provider: 'github' | 'bitbucket' | undefined;
@@ -203,7 +187,9 @@ export function registerIntegrationTools(server: McpServer): void {
 
         // 1. Detect input type
         const githubMatch = input.match(/github\.com\/([^/]+\/[^/]+)\/pull\/(\d+)/);
-        const bitbucketMatch = input.match(/bitbucket\.org\/([^/]+)\/([^/]+)\/pull-requests\/(\d+)/);
+        const bitbucketMatch = input.match(
+          /bitbucket\.org\/([^/]+)\/([^/]+)\/pull-requests\/(\d+)/
+        );
         const numericMatch = input.match(/^\d+$/);
 
         if (githubMatch) {
@@ -217,25 +203,19 @@ export function registerIntegrationTools(server: McpServer): void {
           prId = parseInt(bitbucketMatch[3], 10);
         } else if (numericMatch) {
           prId = parseInt(input, 10);
-          // 1.1. Detect provider from git remote
+          // Detect provider from git remote
           const { safeGit } = await import('./security.js');
           let remoteUrl: string;
           try {
             remoteUrl = safeGit(['remote', 'get-url', 'origin']).trim();
           } catch (error) {
-            return {
-              content: [
-                {
-                  type: 'text' as const,
-                  text: `❌ Failed to identify git provider from local repository: ${error instanceof Error ? error.message : String(error)}`,
-                },
-              ],
-            };
+            throw new Error(
+              `❌ Failed to identify git provider from local repository: ${error instanceof Error ? error.message : String(error)}`
+            );
           }
 
           if (remoteUrl.includes('github.com')) {
             provider = 'github';
-            // Extract repo from something like https://github.com/owner/repo.git or git@github.com:owner/repo.git
             const m = remoteUrl.match(/github\.com[:/]([^/]+\/[^/.]+)(\.git)?$/);
             if (m) repo = m[1];
           } else if (remoteUrl.includes('bitbucket.org')) {
@@ -249,24 +229,43 @@ export function registerIntegrationTools(server: McpServer): void {
         }
 
         if (!provider || !prId) {
-          return {
-            content: [
-              {
-                type: 'text' as const,
-                text: `❌ Could not detect provider or PR ID from input: ${input}`,
-              },
-            ],
-          };
+          throw new Error(`❌ Could not detect provider or PR ID from input: ${input}`);
         }
 
-        // 2. Call appropriate helper
+        return {
+          content: [
+            {
+              type: 'text' as const,
+              text: JSON.stringify({ provider, prId, repo, workspace, repoSlug }, null, 2),
+            },
+          ],
+        };
+      } catch (error) {
+        const errorMsg = error instanceof Error ? error.message : String(error);
+        return { content: [{ type: 'text' as const, text: `❌ Error: ${errorMsg}` }] };
+      }
+    }
+  );
+
+  // TOOL: GET PR DETAILS
+  server.tool(
+    'kit_get_pr',
+    'Get PR details by provider and PR ID',
+    {
+      provider: z.enum(['github', 'bitbucket']),
+      prId: z.number().int().positive().describe('PR ID or number'),
+      repo: z.string().optional().describe('GitHub repo (owner/repo)'),
+      workspace: z.string().optional().describe('Bitbucket workspace'),
+      repoSlug: z.string().optional().describe('Bitbucket repo slug'),
+    },
+    async ({ provider, prId, repo, workspace, repoSlug }) => {
+      try {
         let result: string;
         if (provider === 'github') {
-          result = await getGitHubPr(prId, includeDiff, repo);
+          result = await getGitHubPr(prId, 'view', repo);
         } else {
-          result = await getBitbucketPr(prId, includeDiff, workspace, repoSlug);
+          result = await getBitbucketPr(prId, 'view', workspace, repoSlug);
         }
-
         return { content: [{ type: 'text' as const, text: result }] };
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : String(error);
@@ -275,59 +274,29 @@ export function registerIntegrationTools(server: McpServer): void {
     }
   );
 
-  // TOOL 15: GITHUB GET PR
+  // TOOL: GET PR DIFF
   server.tool(
-    'kit_github_get_pr',
-    'Get Pull Request details from GitHub',
+    'kit_get_pr_diff',
+    'Get Pull Request diff by provider and PR ID',
     {
-      prNumber: z.number().int().positive().optional().describe('PR number'),
-      includeDiff: z.boolean().optional().default(false).describe('Include diff in output'),
-      repo: z
-        .string()
-        .regex(/^[a-zA-Z0-9_\-./]+$/)
-        .optional()
-        .describe('Repository in owner/repo format'),
+      provider: z.enum(['github', 'bitbucket']),
+      prId: z.number().int().positive().describe('PR ID or number'),
+      repo: z.string().optional().describe('GitHub repo (owner/repo)'),
+      workspace: z.string().optional().describe('Bitbucket workspace'),
+      repoSlug: z.string().optional().describe('Bitbucket repo slug'),
     },
-    async ({ prNumber, includeDiff = false, repo }) => {
+    async ({ provider, prId, repo, workspace, repoSlug }) => {
       try {
-        if (prNumber) {
-          const output = await getGitHubPr(prNumber, includeDiff, repo);
-          return { content: [{ type: 'text' as const, text: output }] };
+        let result: string;
+        if (provider === 'github') {
+          result = await getGitHubPr(prId, 'diff', repo);
         } else {
-          const listArgs = [
-            'pr',
-            'list',
-            '--limit',
-            '10',
-            '--json',
-            'number,title,state,author',
-          ];
-
-          if (repo) listArgs.push('--repo', sanitize(repo));
-          const list = safeGh(listArgs);
-
-          // MEDIUM 3: Validate JSON with zod
-          const parseResult = z.array(PrListItemSchema).safeParse(JSON.parse(list));
-          if (!parseResult.success) {
-            return {
-              content: [
-                {
-                  type: 'text' as const,
-                  text: `❌ Failed to parse PR list: ${parseResult.error.message}`,
-                },
-              ],
-            };
-          }
-          const prs = parseResult.data;
-          const output = `## Recent Pull Requests\n\n${prs
-            .map((pr) => `- **#${pr.number}** ${pr.title} (${pr.state}) by @${pr.author.login}`)
-            .join('\n')}`;
-
-          return { content: [{ type: 'text' as const, text: output }] };
+          result = await getBitbucketPr(prId, 'diff', workspace, repoSlug);
         }
+        return { content: [{ type: 'text' as const, text: result }] };
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : String(error);
-        return { content: [{ type: 'text' as const, text: `Error: ${errorMsg}` }] };
+        return { content: [{ type: 'text' as const, text: `❌ Error: ${errorMsg}` }] };
       }
     }
   );
@@ -346,19 +315,12 @@ export function registerIntegrationTools(server: McpServer): void {
             content: [
               {
                 type: 'text' as const,
-                text: `❌ Atlassian CLI (acli) not installed.
-
-Install it from:
-https://developer.atlassian.com/cloud/acli/guides/how-to-get-started/
-
-Then authenticate:
-acli jira auth login --web`,
+                text: `❌ Atlassian CLI (acli) not installed.\n\nInstall it from:\nhttps://developer.atlassian.com/cloud/acli/guides/how-to-get-started/\n\nThen authenticate:\nacli jira auth login --web`,
               },
             ],
           };
         }
 
-        // FIX: Validate ticketId format to prevent command injection
         const safeTicketId = ticketId.match(/^[A-Z]+-\d+$/)?.[0];
         if (!safeTicketId) {
           return {
@@ -371,10 +333,7 @@ acli jira auth login --web`,
           };
         }
 
-        // Use acli to get ticket info in JSON format
         const ticketInfo = safeAcli(['jira', 'workitem', 'view', safeTicketId, '--json']);
-
-        // MEDIUM 2: Validate Jira response with Zod schema
         const jsonData = JSON.parse(ticketInfo);
         const parseResult = JiraTicketSchema.safeParse(jsonData);
         if (!parseResult.success) {
@@ -425,69 +384,4 @@ ${ticket.fields.labels?.join(', ') || 'None'}`;
       }
     }
   );
-
-  // TOOL 18: BITBUCKET GET PR
-  server.tool(
-    'kit_bitbucket_get_pr',
-    'Get Pull Request details from Bitbucket using bkt CLI. Requires bkt context to be set up first.',
-    {
-      prId: z.number().int().positive().optional().describe('PR ID (omit to list recent PRs)'),
-      includeDiff: z.boolean().optional().default(false).describe('Include diff in output'),
-      workspace: z.string().optional().describe('Bitbucket workspace override'),
-      repoSlug: z.string().optional().describe('Repository slug override'),
-      context: z.string().optional().describe('Bitbucket context name'),
-    },
-    async ({ prId, includeDiff = false, workspace, repoSlug, context }) => {
-      try {
-        if (prId) {
-          const output = await getBitbucketPr(prId, includeDiff, workspace, repoSlug, context);
-          return { content: [{ type: 'text' as const, text: output }] };
-        } else {
-          if (!commandExists('bkt')) {
-            return {
-              content: [
-                {
-                  type: 'text' as const,
-                  text: `❌ Bitbucket CLI (bkt) not installed.
-
-Install bkt using one of these methods:
-
-  # Homebrew (macOS/Linux)
-  brew install avivsinai/tap/bitbucket-cli
-
-  # Go Install
-  go install github.com/avivsinai/bitbucket-cli/cmd/bkt@latest
-
-  # From Source
-  git clone https://github.com/avivsinai/bitbucket-cli.git
-  cd bitbucket-cli && make build
-
-Then authenticate and set up context:
-  bkt auth login https://bitbucket.org --kind cloud --web
-  bkt context create my-cloud --host api.bitbucket.org --workspace <your-workspace> --set-active
-
-More info: https://github.com/avivsinai/bitbucket-cli`,
-                },
-              ],
-            };
-          }
-          const listArgs = ['pr', 'list', '--state', 'OPEN', '--limit', '10', '--json'];
-          if (workspace) listArgs.push('--workspace', sanitize(workspace));
-          if (repoSlug) listArgs.push('--repo', sanitize(repoSlug));
-          if (context) listArgs.push('--context', sanitize(context));
-
-          const list = safeBkt(listArgs);
-          const prs = JSON.parse(list);
-
-          const output = `## Recent Pull Requests\n\n\`\`\`json\n${JSON.stringify(prs, null, 2)}\n\`\`\``;
-
-          return { content: [{ type: 'text' as const, text: output }] };
-        }
-      } catch (error) {
-        const errorMsg = error instanceof Error ? error.message : String(error);
-        return { content: [{ type: 'text' as const, text: `❌ Error: ${errorMsg}` }] };
-      }
-    }
-  );
 }
-

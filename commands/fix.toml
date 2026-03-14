@@ -9,7 +9,7 @@ prompt = """
 Load Persona and Fix Logic from: `agents/coder.md`
 
 ## 2. CONTEXT INGESTION
-- **If Input is a Debug Report:** If {{args}} points to `tmp/debugs/debug-*.md`, you MUST use `read_file` to ingest the Root Cause and Fix Plan.
+- **If Input is a Debug Report:** If {{args}} points to `.geminit-kit/tmp/debugs/debug-*.md`, you MUST use `read_file` to ingest the Root Cause and Fix Plan.
 - **If Input is a Manual Prompt:** Treat "{{args}}" as the direct fix requirement.
 
 ## 3. SKILL ACTIVATION
