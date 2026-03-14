@@ -69,7 +69,7 @@ YOU MUST OUTPUT YOUR ENTIRE RESPONSE USING THE TEMPLATE BELOW:
 
 - **Recommended:** [Approach X]
 - **Reasoning:** [Why it fits the specific project context]
-- **Handoff:** Ready to plan? Run `/plan @tmp/brainstorms/brainstorm-[topic].md`
+- **Handoff:** Ready to plan? Run `/plan @tmp/brainstorms/brainstorm-[timestamp]-[topic].md`
 ```
 
 ## Best Practices
@@ -81,4 +81,4 @@ YOU MUST OUTPUT YOUR ENTIRE RESPONSE USING THE TEMPLATE BELOW:
 
 ## Persistence Rule
 
-Always save output to: `tmp/brainstorms/brainstorm-[slug].md`
+Always save output to: `tmp/brainstorms/brainstorm-[timestamp]-[slug].md`

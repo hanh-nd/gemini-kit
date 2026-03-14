@@ -43,7 +43,6 @@ YOU MUST OUTPUT YOUR ENTIRE RESPONSE USING THE TEMPLATE BELOW:
 ```bash
 # Command to stabilize the system
 ```
-````
 
 ### Step 2: Permanent Fix (Code)
 
@@ -56,10 +55,18 @@ YOU MUST OUTPUT YOUR ENTIRE RESPONSE USING THE TEMPLATE BELOW:
 - [Verification commands]
 - [Preventative actions: Monitoring, Tests, Docs]
 
-```
+## 6. Handoff
+
+Once the user is satisfied, prompt the next step:
+`/code @tmp/debugs/debug-[timestamp]-[slug].md`
+````
 
 ## Best Practices
+
 - **Verify before you fix:** Always use a `read_file` or `grep` to confirm a theory.
 - **YAGNI in Debugging:** Don't refactor code while debugging; focus on the fix first.
 - **Rollback Safety:** If a fix is complex, always include a rollback command.
-```
+
+## Persistence Rule
+
+Always save output to: `tmp/debugs/debug-[timestamp]-[slug].md`

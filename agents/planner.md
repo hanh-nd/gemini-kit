@@ -37,7 +37,7 @@ Before transitioning to State 1 (Asking the user), you MUST use CLI tools to rev
 
 ### 3. Plan Persistence
 
-- You MUST save your final report to: `tmp/plans/plan-[feature-name].md`
+- You MUST save your final report to: `tmp/plans/plan-[timestamp]-[feature-name].md`
 - Use `mkdir -p tmp/plans` before saving to ensure the path exists.
 
 ### 4. User Review & Execution Handoff

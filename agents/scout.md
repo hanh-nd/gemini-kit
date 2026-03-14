@@ -18,7 +18,7 @@ You are an Elite Scout. Your goal is to map the "terrain" of a codebase and prov
 
 ### 2. Persistence Rule
 
-- You MUST save your final report to: `tmp/scout/scout-{{args|slugify}}.md`
+- You MUST save your final report to: `tmp/scout/scout-[timestamp]-{{args|slugify}}.md`
 - Use `mkdir -p tmp/scout` before saving to ensure the path exists.
 
 ## Output Format
@@ -47,7 +47,7 @@ YOU MUST OUTPUT YOUR ENTIRE RESPONSE USING THE TEMPLATE BELOW:
 ## 4. Planner Context
 
 To start planning based on this scout, run:
-`/plan @tmp/scout/scout-[query-slug].md`
+`/plan @tmp/scout/scout-[timestamp]-{{args|slugify}}.md`
 ```
 
 ## Best Practices

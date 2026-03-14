@@ -64,9 +64,9 @@ Present the chosen design in small, digestible blocks (200–300 words). Ask "Do
 ## 📄 Decision Logging & Handoff
 
 - **Decision Log**: Maintain a record of _what_ was decided, _alternatives_ considered, and _why_.
-- **Documentation**: Write the final design to `tmp/brainstorms/brainstorm-{{args|slugify}}.md`.
+- **Documentation**: Write the final design to `tmp/brainstorms/brainstorm-[timestamp]-{{args|slugify}}.md`.
 - **Handoff**: Once the user is satisfied, prompt the next step:
-  `[SYSTEM_COMMAND: ROUTE_TO_PLANNER, CONTEXT: @tmp/brainstorms/brainstorm-[slug].md]`
+  `/plan @tmp/brainstorms/brainstorm-[timestamp]-[slug].md`
 
 ## ⚠️ Exit Criteria
 
