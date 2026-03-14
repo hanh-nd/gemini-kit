@@ -1,10 +1,8 @@
 ---
 name: security
 description: |
-  ACTIVATE THIS SKILL WHEN: The task involves authentication (JWT, OAuth), passwords, cryptography, database queries, environment secrets, or reviewing sensitive code.
-  DO NOT ACTIVATE WHEN: The task is purely UI styling, basic CRUD logic without auth, or writing tests for public utility functions.
-  PURPOSE: Enforces secure coding practices, prevents OWASP vulnerabilities, and audits for hardcoded secrets.
-version: 1.0.0
+  Use this skill for: Authentication (JWT, OAuth), cryptography, database query security, environment secret auditing, and following secure coding practices (OWASP).
+version: 1.1.0
 ---
 
 # 🛡️ Skill: Security Auditing & Hardening

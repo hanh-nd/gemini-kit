@@ -61,3 +61,4 @@ Execute the following command to proceed:
 1. **Don't Over-complicate:** If a problem is simple, don't send it to `/brainstorm`.
 2. **Scout First for Bugs:** Never plan a bug fix without scouting the affected code first.
 3. **Context First:** Always ensure context contains the full problem description before handoff.
+4. **Self-Activation:** Use the standard `activate_skill` tool if specialized instructions are needed for the current task.

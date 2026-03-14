@@ -1,10 +1,8 @@
 ---
 name: requirements-alignment
 description: |
-  ACTIVATE THIS SKILL WHEN: The user mentions a Jira ticket, Acceptance Criteria (AC), or asks to verify if a plan/code matches business requirements.
-  DO NOT ACTIVATE WHEN: The user asks for syntax corrections, performance profiling, or pure technical debugging.
-  PURPOSE: Audits technical artifacts against business requirements to prevent scope creep and ensure all acceptance criteria are met.
-version: 1.1.0
+  Use this skill for: Verifying if a plan or code matches business requirements, auditing implementation against Jira tickets/Acceptance Criteria, and preventing scope creep.
+version: 1.2.0
 ---
 
 # 🎟️ Skill: Requirement Alignment

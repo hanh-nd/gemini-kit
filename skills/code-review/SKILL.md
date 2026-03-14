@@ -1,10 +1,8 @@
 ---
 name: code-review
 description: |
-  ACTIVATE THIS SKILL WHEN: The user provides a Pull Request (PR) ID, a code diff, or explicitly asks to review newly written code.
-  DO NOT ACTIVATE WHEN: The user asks to fix a bug directly or write new implementation code.
-  PURPOSE: Performs a rigorous, multi-pass technical audit focusing on logic flaws, performance bottlenecks, and coding standards.
-version: 1.0.0
+  Use this skill for: Multi-pass technical audits, security reviews, performance checks, architecture consistency, and ensuring coding standards in PRs or new code.
+version: 1.1.0
 ---
 
 # Code Review Skill

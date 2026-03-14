@@ -13,12 +13,8 @@ Load Persona and Strategic Framework from: `agents/brainstormer.md`
 - **Project Pulse:** Scan the root directory and `package.json` to understand the current technical ecosystem (e.g., Node.js, Fedora environment, existing tools).
 - **Previous Context:** Check `tmp/` for any existing scout reports or plans that might influence this decision.
 
-## 3. SKILL ACTIVATION (CRITICAL)
-Before executing the core task, you MUST perform the following steps in exact order:
-1. Call the `kit_get_skill_list` tool to retrieve all available skills and their descriptions.
-2. Analyze the user's request and the target files to determine which skills are strictly necessary.
-3. If you determine that you need a skill, load the content of the chosen skills from path of the skill.
-4. Do NOT proceed with the main task until the chosen skills are fully loaded into your context.
+## 3. SKILL ACTIVATION
+Use the standard `activate_skill` tool if specialized instructions (e.g., Security, Testing) are needed for this task.
 
 ## 4. EXECUTION & FORMATTING (CRITICAL)
 Execute the brainstorming session. 

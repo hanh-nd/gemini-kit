@@ -1,10 +1,8 @@
 ---
 name: code-fix
 description: |
-  ACTIVATE THIS SKILL WHEN: The user provides a debug report, points out a specific runtime error, or asks to patch a broken function.
-  DO NOT ACTIVATE WHEN: The user asks to build a new feature, review a Pull Request, or write unit tests.
-  PURPOSE: Executes precise, minimal-scope bug fixes to resolve issues without introducing regressions or unnecessary refactoring.
-version: 1.0.0
+  Use this skill for: Executing precise, minimal-scope bug fixes, resolving runtime errors, patching broken functions, or applying fixes from debug reports.
+version: 1.1.0
 ---
 
 # Code Fix Skill

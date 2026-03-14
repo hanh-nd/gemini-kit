@@ -1,10 +1,8 @@
 ---
 name: backend-architect
 description: |
-  ACTIVATE THIS SKILL WHEN: The user requests to design a new API, plan microservices, structure a database, handle high scalability, or define system boundaries.
-  DO NOT ACTIVATE WHEN: The user asks for frontend UI changes, simple bug fixes, or routine script writing.
-  PURPOSE: Provides expert guidance on scalable API contracts, distributed systems, and resilient backend architecture.
-version: 1.0.0
+  Use this skill for: Designing new APIs, microservices, database schemas, or defining system boundaries and scalability requirements.
+version: 1.1.0
 ---
 
 # 🏗️ Skill: Backend System Architecture

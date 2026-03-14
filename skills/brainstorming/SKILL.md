@@ -1,10 +1,8 @@
 ---
 name: brainstorming
 description: |
-  ACTIVATE THIS SKILL WHEN: The user presents a vague idea, asks for architectural trade-offs, or wants to plan a new complex feature from scratch.
-  DO NOT ACTIVATE WHEN: The user provides a strict plan, asks for a direct bug fix, or requests immediate code generation.
-  PURPOSE: Facilitates requirement validation, constraint discovery, and strategic design before any implementation begins.
-version: 1.1.0
+  Use this skill for: Architectural trade-offs, planning new complex features from scratch, requirement validation, or strategic design before coding begins.
+version: 1.2.0
 ---
 
 # 💡 Skill: Brainstorming Ideas Into Designs

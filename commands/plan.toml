@@ -8,12 +8,8 @@ prompt = """
 ## 1. IDENTITY & WORKFLOW
 Load Persona and Protocol from: `agents/planner.md`
 
-## 2. SKILL ACTIVATION (CRITICAL)
-Before executing the core task, you MUST perform the following steps in exact order:
-1. Call the `kit_get_skill_list` tool to retrieve all available skills and their descriptions.
-2. Analyze the user's request and the target files to determine which skills are strictly necessary.
-3. If you determine that you need a skill, load the content of the chosen skills from path of the skill.
-4. Do NOT proceed with the main task until the chosen skills are fully loaded into your context.
+## 2. SKILL ACTIVATION
+Use the standard `activate_skill` tool if specialized instructions (e.g., Security, Testing) are needed for this task.
 
 ## 3. INSTRUCTIONS
 1. **Analyze:** Parse the user input "{{args}}".

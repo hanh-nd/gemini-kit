@@ -1,10 +1,8 @@
 ---
 name: unit-test
 description: |
-  ACTIVATE THIS SKILL WHEN: The user asks to write tests, increase test coverage, mock external dependencies, or fix failing test suites.
-  DO NOT ACTIVATE WHEN: The user asks to write core business logic, design database schemas, or troubleshoot deployment issues.
-  PURPOSE: Enforces the Arrange-Act-Assert (AAA) pattern and ensures code is tested in complete isolation using proper mocking strategies.
-version: 1.0.0
+  Use this skill for: Writing unit tests, increasing test coverage, mocking external dependencies, following AAA patterns, or fixing failing test suites.
+version: 1.1.0
 ---
 
 # 🧪 Skill: Unit Testing Excellence

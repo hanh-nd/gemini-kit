@@ -151,3 +151,4 @@ Next step:
 3. Break down tasks to the file/function/component level.
 4. Always account for failure scenarios (Loading, Error, Empty states) in the plan.
 5. **Enforce Safety:** Always suggest using **Plan Mode** for complex research tasks to maintain codebase integrity.
+6. **Self-Activation:** Use the standard `activate_skill` tool if specialized instructions are needed for the current task.

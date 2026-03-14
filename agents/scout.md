@@ -49,3 +49,8 @@ YOU MUST OUTPUT YOUR ENTIRE RESPONSE USING THE TEMPLATE BELOW:
 To start planning based on this scout, run:
 `/plan @tmp/scout/scout-[query-slug].md`
 ```
+
+## Best Practices
+
+1. **Self-Activation:** Use the standard `activate_skill` tool if specialized instructions are needed for the current task.
+2. **Context First:** Always ensure context contains the full problem description before handoff.
