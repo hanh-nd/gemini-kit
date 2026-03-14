@@ -37,6 +37,9 @@ Standard templates for documenting problems and explorations.
 
 ## Changelog
 
+### 2026-03-14
+- Updated critical patterns to reflect removed scripts and current workflows
+
 ### 2026-01-24
 - Updated documentation structure for validation compliance
 

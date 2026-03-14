@@ -1,6 +1,6 @@
 ---
 tags: [patterns, compound-learning, workflows, architecture]
-last_referenced: "2026-01-24"
+last_referenced: "2026-03-14"
 ---
 
 # Antigravity Critical Patterns
@@ -26,7 +26,7 @@ A pattern is promoted to this document when:
 ### Pattern #1: Search Before Solving
 **Problem**: Reinventing the wheel or missing existing context.
 **Solution**: Always run `./scripts/compound-search.sh` or check `docs/solutions/` before starting a new task.
-**Trigger**: Starting a new `/plan` or `/work` session.
+**Trigger**: Starting a new `/plan` or `/code` session.
 
 ---
 
@@ -77,7 +77,7 @@ git push
 Relying on a static setup guide to remind agents to run a specific script.
 
 **✅ CORRECT:**
-Embed the behavioral trigger directly into the **Execution Workflow** files (`.agent/workflows/*.md`) as a mandatory "Step 0".
+Embed the behavioral trigger directly into the **Agent Protocol** files (`agents/*.md`) or commands.
 
 ---
 
@@ -88,7 +88,7 @@ Embed the behavioral trigger directly into the **Execution Workflow** files (`.a
 Printing bug reproduction results but creating no todo file.
 
 **✅ CORRECT:**
-Any workflow that generates actionable output MUST persist that output as a todo file.
+Any workflow that generates actionable output MUST persist that output as a todo file or implementation plan.
 
 ---
 
@@ -109,11 +109,11 @@ Extracted from reference solutions:
 
 ---
 
-### Pattern #7: Explicit Workflow Skill Integration
-**Problem:** Agents fail to use available skills because workflows rely on implicit "agent memory".
+### Pattern #7: Explicit Skill Integration
+**Problem:** Agents fail to use available skills because they rely on implicit "agent memory".
 
 **✅ CORRECT:**
-Workflows must contain **Explicit Blocking Steps** (Step 0) that trigger relevant agent skills commands.
+Prompts must contain **Explicit Blocking Steps** that trigger relevant agent skills commands.
 
 ---
 
@@ -132,15 +132,15 @@ Workflows must contain **Explicit Blocking Steps** (Step 0) that trigger relevan
 **Problem:** Lifecycle documents (todos, plans) can drift from their completion checkboxes when state transitions require manual steps.
 
 **✅ CORRECT:**
-Use atomic scripts (like `complete-todo.sh` or `complete-plan.sh`) that update metadata and rename files in a single operation.
+Use atomic operations or scripts that update metadata and rename files in a single operation.
 
 ---
 
-### Pattern #10: Explore Before Plan
+### Pattern #10: Scout Before Plan
 **Problem:** Plans for complex features are often built on assumptions.
 
 **✅ CORRECT:**
-Use the `/explore` workflow before `/plan` to conduct research, analyze multi-order consequences, and assess long-term implications.
+Use the `/scout` command before `/plan` to conduct research, analyze multi-order consequences, and assess long-term implications.
 
 ---
 
@@ -148,7 +148,7 @@ Use the `/explore` workflow before `/plan` to conduct research, analyze multi-or
 **Problem:** Project state becomes inconsistent when multiple files attempt to track the same status.
 
 **✅ CORRECT:**
-Define once, track in one place (e.g., `03-tasks.md`), and link elsewhere.
+Define once, track in one place (e.g., `package.json` or a dedicated status file), and link elsewhere.
 
 ---
 
@@ -156,7 +156,7 @@ Define once, track in one place (e.g., `03-tasks.md`), and link elsewhere.
 **Problem:** Scripts and skills that do not self-report usage create blind spots.
 
 **✅ CORRECT:**
-Every tool/script must call `./scripts/log-skill.sh` or `./scripts/log-workflow.sh`.
+Every tool/script should call `./scripts/log-skill.sh` if applicable.
 
 ---
 
@@ -164,12 +164,12 @@ Every tool/script must call `./scripts/log-skill.sh` or `./scripts/log-workflow.
 **Problem:** When users approve a plan or solve a problem, agents often default to ad-hoc actions instead of formal workflows.
 
 **Trigger Protocol Table:**
-| Phrase Category | Example Phrases | Triggered Workflow |
-|-----------------|-----------------|--------------------|
-| Investigation | "I need to understand...", "Why is X doing Y?" | `/explore` |
-| Plan Approval | "Proceed", "Go ahead", "LGTM" | `/work` |
-| Work Completion | "Ship it", "Ready to merge" | `/review` |
-| Problem Solved | "That worked", "It's fixed" | `/compound` |
+| Phrase Category | Example Phrases | Triggered Command |
+|-----------------|-----------------|-------------------|
+| Investigation | "I need to understand...", "Why is X doing Y?" | `/scout` |
+| Plan Approval | "Proceed", "Go ahead", "LGTM" | `/code` |
+| Work Completion | "Ship it", "Ready to merge" | `/review-pr` |
+| Problem Solved | "That worked", "It's fixed" | `kit_save_learning` |
 
 ---
 
@@ -177,7 +177,7 @@ Every tool/script must call `./scripts/log-skill.sh` or `./scripts/log-workflow.
 **Problem:** When agents finish a task but don't update the `task_boundary`, the UI shows the task as "active".
 
 **✅ CORRECT:**
-Update `task_boundary` to a terminal state (e.g., `[COMPLETED]`) before calling `notify_user`.
+Update session state to a terminal state (e.g., `completed`) before notifying the user.
 
 ---
 
@@ -185,7 +185,7 @@ Update `task_boundary` to a terminal state (e.g., `[COMPLETED]`) before calling 
 **Problem:** When fallback values are hardcoded in components, they inevitably drift.
 
 **✅ CORRECT:**
-Centralize fallback values in a constants file (e.g., `lib/constants/defaults.ts`). One change updates everywhere.
+Centralize fallback values in a constants file (e.g., `src/constants.ts`). One change updates everywhere.
 
 ---
 
@@ -203,7 +203,7 @@ Centralize fallback values in a constants file (e.g., `lib/constants/defaults.ts
 **Problem:** Documentation naturally drifts from the actual state of the codebase.
 
 **✅ CORRECT:**
-Enforce documentation accuracy with **Active Validation Scripts** that fail the build/push if drift is detected.
+Enforce documentation accuracy with **Active Validation Scripts** (like `validate-docs.sh`) that fail the push if drift is detected.
 
 ---
 
@@ -211,7 +211,7 @@ Enforce documentation accuracy with **Active Validation Scripts** that fail the 
 **Problem:** System-initiated redirects that happen without a visual cue disorient the user.
 
 **✅ CORRECT:**
-Provide feedback (e.g., a Toast message) and a short delay before redirecting.
+Provide feedback and a short delay before redirecting.
 
 ---
 
@@ -219,7 +219,7 @@ Provide feedback (e.g., a Toast message) and a short delay before redirecting.
 **Problem:** Metadata status fields develop "enum drift" when non-standard values are used.
 
 **✅ CORRECT:**
-Define canonical enum values in READMEs and enforce them via atomic scripts and validation.
+Define canonical enum values in documentation and enforce them via scripts and validation.
 
 ---
 
@@ -261,4 +261,4 @@ Gate workflows with automated checks (e.g., `./scripts/validate-folder-docs.sh`)
 
 
 
-*Last updated: 2025-12-23*
+*Last updated: 2026-03-14*

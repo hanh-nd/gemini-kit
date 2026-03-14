@@ -11,14 +11,14 @@ The Compound System transforms Gemini-Kit from a session-to-session amnesiac int
 │                      COMPOUND SYSTEM FLOW                           │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                     │
-│   🔍 EXPLORE        📋 PLAN          ⚙️ WORK          👀 REVIEW     │
-│   Deep research   Create plan    Implement        Validate         │
+│   🔍 SCOUT          📋 PLAN          ⚙️ CODE          🧪 TEST       │
+│   Explore code    Create plan    Implement        Verify           │
 │        │               │              │               │             │
 │        └───────────────┴──────────────┴───────────────┘             │
 │                                │                                    │
 │                                ▼                                    │
-│                        📚 COMPOUND                                  │
-│                    Document solution                                │
+│                        👀 REVIEW                                    │
+│                    Validate & Document                              │
 │                                │                                    │
 │                                ▼                                    │
 │                    ┌───────────────────┐                           │
@@ -63,35 +63,33 @@ Modular capabilities that agents can invoke:
 | Skill | Purpose |
 |-------|---------|
 | `session-resume` | Restore context at session start |
-| `compound-docs` | Search and document solutions |
-| `file-todos` | Manage file-based tasks |
 | `code-review` | Systematic quality gates |
-| `testing` | Unified test patterns |
-| `debug` | Structured root cause analysis |
+| `code-fix` | Targeted bug resolution |
+| `unit-test` | Unified test patterns |
+| `requirements-alignment` | Verify implementation vs AC |
 
-### 3. Workflows (`.agent/workflows/`)
+### 3. Workflows
 
-32 structured workflows for systematic development:
+10 structured workflows for systematic development:
 
 **Core Loop:**
-- `/explore` → Deep investigation
+- `/scout` → Deep investigation
 - `/plan` → Create implementation plan
-- `/work` → Execute plan
-- `/review` → Validate changes
-- `/compound` → Document solutions
+- `/code` → Execute plan
+- `/test` → Validate changes
 - `/housekeeping` → Archive and cleanup
 
 ### 4. Scripts (`scripts/`)
 
-50+ automation scripts:
+30+ automation scripts:
 
 | Category | Examples |
 |----------|----------|
 | Search | `compound-search.sh` |
 | Health | `compound-dashboard.sh`, `compound-health.sh` |
-| Todos | `create-todo.sh`, `complete-todo.sh` |
+| Todos | `create-todo.sh`, `next-todo-id.sh` |
 | Validation | `validate-*.sh` |
-| Metrics | `log-skill.sh`, `log-workflow.sh` |
+| Metrics | `log-skill.sh` |
 
 ### 5. Telemetry (`.agent/metrics/`, `.agent/logs/`)
 
@@ -104,20 +102,20 @@ Track system health and usage:
 │   └── unused_workflows.txt   # Workflow coverage
 └── logs/
     ├── compound_usage.log     # Search usage
-    └── workflow_usage.log     # Workflow invocations
+    └── skill_usage.log        # Skill invocations
 ```
 
 ## The Compound Loop
 
 ```
-/explore → /plan → /work → /review → /compound → /housekeeping → repeat
+/scout → /plan → /code → /test → /review-pr → /housekeeping → repeat
 ```
 
-1. **Explore**: Research before deciding (optional, for complex problems)
+1. **Scout**: Research before deciding
 2. **Plan**: Create detailed implementation plan
-3. **Work**: Execute the plan systematically
-4. **Review**: Validate changes meet criteria
-5. **Compound**: Document the solution for future reference
+3. **Code**: Execute the plan systematically
+4. **Test**: Verify changes meet criteria
+5. **Review**: Final audit and documentation update
 6. **Housekeeping**: Archive completed work, maintain clean state
 
 ## Integration with Gemini-Kit
@@ -136,9 +134,8 @@ Gemini-Kit's `kit_save_learning` + Compound's Knowledge Base:
 
 Agents should:
 1. **Search before solving**: `./scripts/compound-search.sh`
-2. **Document after solving**: `/compound` workflow
-3. **Check health daily**: `./scripts/compound-dashboard.sh`
-4. **Resume context**: Read `skills/session-resume/SKILL.md`
+2. **Check health daily**: `./scripts/compound-dashboard.sh`
+3. **Resume context**: Read `skills/session-resume/SKILL.md`
 
 ## Health Monitoring
 
@@ -156,5 +153,4 @@ Agents should:
 
 - [Critical Patterns](../solutions/patterns/critical-patterns.md)
 - [Schema](../solutions/schema.yaml)
-- [Workflows README](../../.agent/workflows/README.md)
 - [Scripts README](../../scripts/README.md)

@@ -1,7 +1,7 @@
 # 📚 Gemini-Kit Handbook
 
 > **Sổ tay tham chiếu nhanh** cho Gemini-Kit v4.0  
-> 27 Agents | 33 Workflows | 14 Skills | 44 Commands
+> 15 Agents | 10 Core Workflows | 8 Skills | 16 Commands
 
 ---
 
@@ -10,18 +10,18 @@
 ```bash
 # 5 lệnh dùng nhiều nhất
 /status           # Kiểm tra project
-/explore [topic]  # Nghiên cứu trước khi code
+/scout [topic]    # Nghiên cứu codebase
 /plan [task]      # Lập kế hoạch chi tiết
-/work             # Thực thi theo plan
-/review           # Review code trước commit
+/code [task]      # Thực thi code
+/review-pr [id]   # Review pull request
 ```
 
 ### Workflow cơ bản
 
 ```
-/explore → /plan → /work → /review → /compound → /housekeeping
-   ↓         ↓        ↓        ↓          ↓            ↓
-Research  Planning  Execute  Review   Document     Cleanup
+/scout → /plan → /code → /test → /review → /housekeeping
+   ↓        ↓        ↓        ↓         ↓            ↓
+Explore  Planning  Execute   Verify   Audit       Cleanup
 ```
 
 ---
@@ -33,40 +33,31 @@ Research  Planning  Execute  Review   Document     Cleanup
 | Command | Mô tả | Ví dụ |
 |---------|-------|-------|
 | `/code` | Viết code | `/code Create UserService` |
-| `/cook` | Full cycle (plan→code→test→review) | `/cook Add login` |
+| `/cook` | Full cycle (plan→scout→code→test→review) | `/cook Add login` |
 | `/debug` | Debug issues | `/debug API returns 500` |
 | `/fix` | Quick fix | `/fix ESLint errors` |
-| `/test` | Viết tests | `/test UserService` |
-| `/fullstack` | End-to-end feature | `/fullstack Dashboard` |
+| `/plan` | Lập kế hoạch | `/plan Auth module` |
 
 ### Documentation
 
 | Command | Mô tả | Ví dụ |
 |---------|-------|-------|
-| `/doc` | Update folder docs | `/doc src/services` |
-| `/docs` | Generate docs | `/docs API reference` |
-| `/adr` | Architecture Decision | `/adr Use PostgreSQL` |
-| `/changelog` | Generate changelog | `/changelog` |
-
-### Git & PR
-
-| Command | Mô tả | Ví dụ |
-|---------|-------|-------|
-| `/git` | Git operations | `/git commit "feat: add auth"` |
-| `/pr` | Create PR | `/pr Create feature PR` |
-| `/review-pr` | Review PR | `/review-pr 123` |
-
-### Research
-
-| Command | Mô tả | Ví dụ |
-|---------|-------|-------|
 | `/scout` | Explore codebase | `/scout src/` |
-| `/research` | Research tech | `/research React vs Vue` |
 | `/brainstorm` | Brainstorm ideas | `/brainstorm Auth approaches` |
+| `/help` | Trợ giúp lệnh | `/help plan` |
+
+### Session & Status
+
+| Command | Mô tả | Ví dụ |
+|---------|-------|-------|
+| `/status` | Project status | `/status` |
+| `/session` | Quản lý session | `/session save` |
+| `/ticket` | Xử lý Jira ticket | `/ticket PROJ-123` |
+| `/kit-setup` | Setup project | `/kit-setup` |
 
 ---
 
-## 🤖 Agent Menu (27 Agents)
+## 🤖 Agent Menu (15 Agents)
 
 ### Core Development
 
@@ -77,133 +68,64 @@ Research  Planning  Execute  Review   Document     Cleanup
 | 💻 `coder` | Viết code | Implement features |
 | 🧪 `tester` | Testing | Viết unit/integration tests |
 | 👀 `reviewer` | Code review | Review trước merge |
-
-### Specialists
-
-| Agent | Chuyên môn | Khi nào dùng |
-|-------|------------|--------------|
-| ⚛️ `frontend-specialist` | React, Next.js, UI | Frontend development |
-| 🖥️ `backend-specialist` | API, Database | Backend development |
-| 🔐 `security-auditor` | OWASP, Security | Security reviews |
 | 🐛 `debugger` | Root cause analysis | Debug lỗi phức tạp |
-| 📱 `mobile-developer` | React Native, Flutter | Mobile apps |
-| 🎮 `game-developer` | Unity, Godot | Game development |
-| 🚀 `devops-engineer` | CI/CD, K8s | Infrastructure |
-| 🗄️ `database-admin` | Schema, migrations | Database work |
-| ⚡ `performance-optimizer` | Web Vitals, profiling | Performance issues |
+| 🛠️ `fixer` | Code fixing | Thực thi bug fixes |
 
-### Support & Management
+### Strategy & Architecture
 
 | Agent | Chuyên môn | Khi nào dùng |
 |-------|------------|--------------|
-| 🎨 `ui-designer` | UI/UX design | Design work |
-| 🌐 `fullstack-developer` | Full-stack | End-to-end features |
-| 🔀 `git-manager` | Git operations | Version control |
-| 📝 `docs-manager` | Documentation | README, API docs |
-| 🔬 `researcher` | Research | Technology decisions |
-| 💡 `brainstormer` | Ideas | Problem solving |
-| 📊 `project-manager` | Sprint planning | Project management |
-| 👤 `product-owner` | Requirements, backlog | Product decisions |
-| ✍️ `copywriter` | Marketing copy | Content |
-
-### Specialized
-
-| Agent | Chuyên môn | Khi nào dùng |
-|-------|------------|--------------|
-| 🎯 `orchestrator` | Multi-agent coordination | Complex tasks |
-| 🏺 `code-archaeologist` | Legacy code | Refactoring old code |
-| 🔓 `penetration-tester` | Security testing | Pentest |
-| 📈 `seo-specialist` | SEO/GEO | SEO optimization |
-
-### Cách sử dụng
-
-```bash
-> Use the security-auditor agent to review auth
-> Use the frontend-specialist to optimize components
-> Use the debugger agent to find root cause
-```
+| 🎯 `orchestrator` | Điều phối agents | Phân tích ticket phức tạp |
+| 💡 `brainstormer` | Ý tưởng & thiết kế | Giai đoạn ideation |
+| 🔬 `researcher` | Nghiên cứu tech | Tìm giải pháp mới |
+| 🏗️ `architect` | System design | Thiết kế hệ thống |
 
 ---
 
-## 📝 Workflow Decision Tree
+## 🔄 Workflow Decision Tree
 
 ```
 Bạn muốn làm gì?
 │
 ├── 🆕 Bắt đầu feature mới
-│   └── /explore → /plan → /work → /review
+│   └── /scout → /plan → /code → /review
 │
 ├── 🐛 Fix bug
-│   └── /debug (hoặc reproduce-bug → debug)
-│
-├── 📖 Review code
-│   └── /review-compound
+│   └── /debug → /fix → /test
 │
 ├── 📦 Commit & Push
 │   └── /housekeeping → git push
 │
-├── 📚 Document solution
-│   └── /compound
-│
-├── 📋 Tạo spec cho big feature
-│   └── /specs
-│
 └── 🔍 Research trước khi decide
-    └── /explore
+    └── /brainstorm
 ```
 
 ### Workflow chi tiết
 
-| Workflow | Mục đích | File |
-|----------|----------|------|
-| `explore` | Deep research trước planning | `.agent/workflows/explore.md` |
-| `plan-compound` | Tạo plan với solution search | `.agent/workflows/plan-compound.md` |
-| `work` | Execute plan step-by-step | `.agent/workflows/work.md` |
-| `review-compound` | Multi-pass code review | `.agent/workflows/review-compound.md` |
-| `compound` | Document solution cho reuse | `.agent/workflows/compound.md` |
-| `housekeeping` | Cleanup trước git push | `.agent/workflows/housekeeping.md` |
-| `triage` | Triage review findings | `.agent/workflows/triage.md` |
-| `specs` | Multi-session specifications | `.agent/workflows/specs.md` |
-| `adr` | Architecture Decision Record | `.agent/workflows/adr.md` |
-| `cycle` | Full workflow cycle | `.agent/workflows/cycle.md` |
+| Workflow | Mục đích |
+|----------|----------|
+| `cook` | Full development cycle: Plan → Scout → Code → Test → Review |
+| `quickfix` | Quick bug fix: Debug → Code → Test |
+| `feature` | New feature: Design → Plan → Code → Test → Docs |
+| `review` | Code review: Scout → Review → Security |
+| `refactor` | Refactoring: Scout → Plan → Code → Test → Review |
+| `tdd` | TDD: Write tests first, then implement |
+| `docs` | Documentation: Scout → Analyze → Write → Review |
 
 ---
 
-## 🛠️ Skills Reference (14 Skills)
+## 🛠️ Skills Reference (8 Skills)
 
-### Frontend
-
-| Skill | Nội dung | Agents sử dụng |
-|-------|----------|----------------|
-| `react-patterns` | Hooks, state, composition | frontend-specialist |
-| `nextjs` | App Router, Server Components | frontend-specialist |
-| `tailwind` | Tailwind CSS v4, responsive | frontend-specialist, ui-designer |
-| `performance` | Core Web Vitals, optimization | performance-optimizer |
-
-### Backend
-
-| Skill | Nội dung | Agents sử dụng |
-|-------|----------|----------------|
-| `api-design` | RESTful, validation, rate limiting | backend-specialist |
-| `docker` | Multi-stage builds, Compose | devops-engineer |
-| `security` | OWASP Top 10, JWT, XSS/CSRF | security-auditor |
-
-### Mobile & Testing
-
-| Skill | Nội dung | Agents sử dụng |
-|-------|----------|----------------|
-| `mobile` | React Native, Flutter | mobile-developer |
-| `testing` | Vitest, MSW, snapshot | tester |
-
-### Workflow
-
-| Skill | Nội dung | Agents sử dụng |
-|-------|----------|----------------|
-| `code-review` | Review checklist, patterns | reviewer |
-| `debug` | 4-phase debugging methodology | debugger |
-| `session-resume` | Context recovery | All |
-| `compound-docs` | Knowledge documentation | All |
-| `file-todos` | Task tracking | All |
+| Skill | Nội dung |
+|-------|----------|
+| `session-resume` | Khôi phục context session cũ |
+| `code-review` | Review checklist, patterns |
+| `code-fix` | 4-phase debugging methodology |
+| `unit-test` | Vitest, MSW, snapshot |
+| `backend-architect` | API design, DB schema |
+| `brainstorming` | Strategic ideation |
+| `requirements-alignment` | Audit implementation vs AC |
+| `security` | OWASP Top 10, auditing |
 
 ---
 
@@ -230,8 +152,8 @@ Bạn muốn làm gì?
 | Script | Mục đích | Cách dùng |
 |--------|----------|-----------|
 | `create-todo.sh` | Create todo file | `./scripts/create-todo.sh p2 "desc"` |
-| `log-workflow.sh` | Log workflow usage | `./scripts/log-workflow.sh "/plan"` |
 | `generate-changelog.js` | Generate changelog | `node scripts/generate-changelog.js` |
+| `next-todo-id.sh` | Generate ID cho todo | `./scripts/next-todo-id.sh` |
 
 ---
 
@@ -257,33 +179,16 @@ Bạn muốn làm gì?
 
 ---
 
-## 🔗 Deep Links
-
-| Tài liệu | Mô tả | Path |
-|----------|-------|------|
-| README | Project overview | `README.md` |
-| Quick Start | Hướng dẫn cài đặt | `QUICKSTART.md` |
-| API Reference | MCP tools API | `docs/API.md` |
-| Security | Security features | `SECURITY.md` |
-| Compound System | Knowledge system | `docs/architecture/compound-system.md` |
-| Critical Patterns | 23 patterns quan trọng | `docs/solutions/patterns/critical-patterns.md` |
-| Best Practices | Coding best practices | `docs/BEST-PRACTICES.md` |
-
----
-
 ## 📊 Stats (v4.0.0)
 
 | Metric | Value |
 |--------|-------|
-| Agents | 27 |
-| Workflows | 33 |
-| Skills | 14 |
-| Commands | 44 |
-| Scripts | 47 |
-| Tests | 291 passing |
-| Coverage | ~81% |
+| Agents | 15 |
+| Workflows | 10 |
+| Skills | 8 |
+| Commands | 16 |
+| Scripts | 30+ |
 
 ---
 
 > **Tip**: Dùng `Ctrl+F` để search nhanh trong file này!
-

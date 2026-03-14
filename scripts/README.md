@@ -10,17 +10,15 @@ Automation scripts for compound engineering workflows, knowledge management, and
 
 | Category | Count | Description |
 |----------|-------|-------------|
-| Workflow Core | 3 | Logging and pre-push checks |
+| Workflow Core | 1 | Pre-push checks |
 | Compound System | 5 | Knowledge search, metrics, validation |
-| Todo Management | 3 | Create, complete, audit todos |
-| Maintenance | 4 | Archive, rotate, environment |
-| Metrics | 6 | Instrumentation and scoring |
-| Utilities | 4 | Architecture and lifecycle |
+| Todo Management | 2 | Create and audit todos |
+| Maintenance | 3 | Archive, rotate, and hygiene |
+| Metrics | 3 | Instrumentation and scoring |
+| Utilities | 5 | Specification and lifecycle |
 
 ## Workflow Core
 
-- **`log-workflow.sh`**: Logs workflow initiations to simple text logs.
-- **`check-docs-freshness.sh`**: ✨ Checks if recent code changes have accompanying documentation updates.
 - **`pre-push-housekeeping.sh`**: Master script run before pushes to ensure repo health.
 
 ## Knowledge & Compound System
@@ -34,32 +32,28 @@ Automation scripts for compound engineering workflows, knowledge management, and
 ## Todo Management
 
 - **`create-todo.sh`**: Standardized creation of todo files.
-- **`complete-todo.sh`**: Marks todos as completed and updates archives.
 - **`audit-state-drift.sh`**: Syncs file metadata with content state.
 
 ## Maintenance
 
 - **`archive-completed.sh`**: Moves finished work to archive directories.
 - **`rotate-logs.sh`**: Manages log file sizes.
-- **`check-deprecated-adrs.sh`**: Alerts on stale architectural decisions.
-- **`push-env.sh`**: Environment deployment utility.
+- **`git-hygiene.sh`**: Standardizes git history and repository cleanliness.
 
 ## Metrics & Instrumentation
 
 - **`log-skill.sh`**: Logs skill usage for telemetry.
-- **`score-solution.sh`**: Heuristic scoring for solution documents.
 - **`score-todo.sh`**: Heuristic scoring for todo verification.
-- **`debug-scores.sh`**: Debug utility for scoring logic.
 - **`compound-health.sh`**: Weekly deep health validation.
-- **`backfill-solution-metrics.sh`**: Historical data processing.
 - **`suggest-skills.sh`**: Analyzes usage to suggest new skills.
 
 ## Utilities
 
-- **`validate-architecture.sh`**: Enforces architecture documentation integrity.
 - **`update-solution-ref.sh`**: Updates solution reference counts.
 - **`update-spec-phase.sh`**: Manages specification lifecycles.
+- **`sync-spec.sh`**: Synchronizes specification documents.
 - **`next-todo-id.sh`**: Generates unique IDs for todos.
+- **`bootstrap-folder-docs.sh`**: Scaffolds README documentation for folders.
 
 ## Component Details
 
@@ -75,7 +69,6 @@ Automation scripts for compound engineering workflows, knowledge management, and
 
 | Script | Purpose |
 |--------|---------|
-| `log-workflow.sh` | Workflow telemetry |
 | `log-skill.sh` | Skill usage tracking |
 | `generate-changelog.js` | Changelog generation from commits |
 | `bootstrap-folder-docs.sh` | README scaffolding |
@@ -94,10 +87,14 @@ Automation scripts for compound engineering workflows, knowledge management, and
 Most scripts are designed to be run via the agent workflows (e.g. `/work`, `/housekeeping`), but can be run manually for debugging.
 
 ```bash
-./scripts/check-docs-freshness.sh
+./scripts/pre-push-housekeeping.sh
 ```
 
 ## Changelog
+
+### 2026-03-14
+- Removed 16 unused top-level scripts and `scripts/validators/` directory
+- Updated README to reflect current automation suite
 
 ### 2026-01-24
 - Added Component Details section with tiered script documentation

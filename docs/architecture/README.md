@@ -37,6 +37,9 @@ When documenting significant architectural decisions or systems:
 
 ## Changelog
 
+### 2026-03-14
+- Updated compound system documentation to align with current script and workflow counts
+
 ### 2026-01-24
 - Added Purpose, Component Details, and Changelog sections
 

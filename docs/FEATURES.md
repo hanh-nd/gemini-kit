@@ -62,15 +62,13 @@ Gemini-Kit has 15 specialized agents, each with its own expertise.
 
 ---
 
-## 🛠️ Scripts (50+)
+## 🛠️ Scripts (30+)
 
 ### Workflow Core
 
 | Script | Purpose |
 |--------|---------|
-| `log-workflow.sh` | Log workflow usage |
 | `pre-push-housekeeping.sh` | Pre-push checks |
-| `check-docs-freshness.sh` | Doc freshness |
 
 ### Knowledge System
 
@@ -86,12 +84,11 @@ Gemini-Kit has 15 specialized agents, each with its own expertise.
 | Script | Purpose |
 |--------|---------|
 | `create-todo.sh` | Create todo |
-| `complete-todo.sh` | Complete todo |
 | `audit-state-drift.sh` | Sync states |
 
 ---
 
-## 🎯 Skills (7)
+## 🎯 Skills (8)
 
 Modular capabilities for agents.
 
@@ -99,11 +96,12 @@ Modular capabilities for agents.
 |-------|----------|---------|
 | Session Resume | `skills/session-resume/` | Resume context |
 | Code Review | `skills/code-review/` | Review checklists |
-| Compound Docs | `skills/compound-docs/` | Document solutions |
-| Debug | `skills/debug/` | Bug investigation |
-| Testing | `skills/testing/` | Test patterns |
-| File Todos | `skills/file-todos/` | Todo management |
-| Supabase (Example) | `skills/examples/supabase/` | DB patterns |
+| Backend Architect | `skills/backend-architect/` | Design backend systems |
+| Brainstorming | `skills/brainstorming/` | Generate ideas |
+| Code Fix | `skills/code-fix/` | Resolve bugs |
+| Requirements Alignment | `skills/requirements-alignment/` | Verify AC compliance |
+| Security | `skills/security/` | Security auditing |
+| Unit Test | `skills/unit-test/` | Test creation/verification |
 
 ---
 
@@ -157,9 +155,9 @@ gemini-kit/
 ├── commands/          # Slash commands (.toml)
 ├── hooks/             # Lifecycle hooks
 ├── src/tools/         # MCP tool implementations
-├── .agent/workflows/  # 32 workflow definitions
-├── scripts/           # 50+ automation scripts
-├── skills/            # 7 modular skills
+├── .agent/            # Agent state and logs
+├── scripts/           # 30+ automation scripts
+├── skills/            # 8 modular skills
 ├── docs/
 │   ├── architecture/  # System design
 │   ├── decisions/     # ADRs
