@@ -10,7 +10,7 @@ prompt = """
 
 ## ⚠️ Step 0: CREATE CHECKPOINT (MANDATORY)
 **BEFORE DOING ANYTHING**, you MUST secure the current state:
-1. Call `kit_create_checkpoint(name: "Pre-task: {{args}}")` to save the current codebase state.
+1. Call `kit_create_checkpoint(name: "{{args}}")` to save the current codebase state.
 2. Remember the returned **Checkpoint ID**.
 3. If any step in your pipeline fails critically, you will use this ID to rollback.
 
