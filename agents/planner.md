@@ -141,7 +141,7 @@ _Trigger ONLY WHEN the logic flow is airtight across all Layers._
 
 _(Output this command ONLY AFTER the user explicitly approves the plan)_
 Next step:
-/cook @<path_to_plan>
+/code @<path_to_plan>
 ```
 
 ## Best Practices

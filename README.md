@@ -36,13 +36,13 @@
 
 **Gemini-Kit** transforms Gemini CLI into a **virtual engineering team** with:
 
-| Feature          | Count | Description                                                |
-| ---------------- | ----- | ---------------------------------------------------------- |
-| 🤖 **AI Agents** | 8     | Specialized roles (Scout, Planner, Coder, Reviewer...)     |
-| 🛠️ **Skills**    | 7     | Knowledge modules (React, Security, Testing...)            |
-| ⌨️ **Commands**  | 15    | Slash commands for every task                              |
-| 🔒 **Security**  | 30+   | Secret detection patterns                                  |
-| 📜 **Scripts**   | 3     | Core automation scripts                                    |
+| Feature          | Count | Description                                            |
+| ---------------- | ----- | ------------------------------------------------------ |
+| 🤖 **AI Agents** | 8     | Specialized roles (Scout, Planner, Coder, Reviewer...) |
+| 🛠️ **Skills**    | 7     | Knowledge modules (React, Security, Testing...)        |
+| ⌨️ **Commands**  | 15    | Slash commands for every task                          |
+| 🔒 **Security**  | 30+   | Secret detection patterns                              |
+| 📜 **Scripts**   | 3     | Core automation scripts                                |
 
 ### Key Features
 
@@ -98,16 +98,16 @@ gemini
 
 Gemini-Kit includes 8 specialized agents. Use `/help` to see full details for each.
 
-| Agent | Purpose |
-|-------|---------|
-| **Orchestrator** | Master router. Analyzes tickets to select the next agent. |
-| **Scout** | Terrain mapper. Explores codebase structure and context. |
-| **Planner** | Architect. Creates detailed implementation blueprints. |
-| **Coder** | Builder. Writes clean, production-ready code. |
-| **Reviewer** | Quality gate. Performs deep-dive technical audits. |
-| **Debugger** | Problem solver. Analyzes errors and produces RCA runbooks. |
-| **Researcher** | Information gatherer. Finds technical documentation. |
-| **Brainstormer** | Strategic thinker. Explores design trade-offs. |
+| Agent            | Purpose                                                    |
+| ---------------- | ---------------------------------------------------------- |
+| **Orchestrator** | Master router. Analyzes tickets to select the next agent.  |
+| **Scout**        | Terrain mapper. Explores codebase structure and context.   |
+| **Planner**      | Architect. Creates detailed implementation blueprints.     |
+| **Coder**        | Builder. Writes clean, production-ready code.              |
+| **Reviewer**     | Quality gate. Performs deep-dive technical audits.         |
+| **Debugger**     | Problem solver. Analyzes errors and produces RCA runbooks. |
+| **Researcher**   | Information gatherer. Finds technical documentation.       |
+| **Brainstormer** | Strategic thinker. Explores design trade-offs.             |
 
 ---
 
@@ -117,7 +117,7 @@ Modular capabilities that can be activated on-demand:
 
 - `code-review`: Technical audit checklists
 - `code-fix`: Minimal-scope bug fixing
-- `unit-test`: Test generation and verification
+- `unit-testing`: Test generation and verification
 - `backend-architect`: Scalable API and DB design
 - `brainstorming`: Requirement validation and strategic design
 - `requirements-alignment`: Acceptance Criteria verification
@@ -127,30 +127,30 @@ Modular capabilities that can be activated on-demand:
 
 ## ⌨️ Commands
 
-| Command | Purpose |
-|---------|---------|
-| `/scout` | Explore and map codebase structure |
-| `/plan` | Create detailed implementation plans |
-| `/code` | Implement features based on a plan |
-| `/review-pr` | Review a Pull Request |
-| `/debug` | Analyze and diagnose errors |
-| `/fix` | Execute targeted bug fixes |
-| `/ticket` | Start workflow from a Jira ticket |
-| `/brainstorm` | Strategic design trade-offs |
+| Command       | Purpose                              |
+| ------------- | ------------------------------------ |
+| `/scout`      | Explore and map codebase structure   |
+| `/plan`       | Create detailed implementation plans |
+| `/code`       | Implement features based on a plan   |
+| `/review-pr`  | Review a Pull Request                |
+| `/debug`      | Analyze and diagnose errors          |
+| `/fix`        | Execute targeted bug fixes           |
+| `/ticket`     | Start workflow from a Jira ticket    |
+| `/brainstorm` | Strategic design trade-offs          |
 
 ---
 
 ## 📊 Stats (v4.0.0)
 
-| Metric    | Value         |
-| --------- | ------------- |
-| Tests     | 291 passing   |
-| Lint      | 0 errors      |
-| Agents    | 8             |
-| Skills    | 7 categories  |
-| Commands  | 15            |
-| Scripts   | 3             |
-| Coverage  | ~81%          |
+| Metric   | Value        |
+| -------- | ------------ |
+| Tests    | 291 passing  |
+| Lint     | 0 errors     |
+| Agents   | 8            |
+| Skills   | 7 categories |
+| Commands | 15           |
+| Scripts  | 3            |
+| Coverage | ~81%         |
 
 ---
 
