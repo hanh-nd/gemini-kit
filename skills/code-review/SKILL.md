@@ -18,13 +18,6 @@ A systematic approach to code review that moves beyond "it looks good" to rigoro
 Before performing any specific review pass, you **MUST** read and understand the core constraints and objectives in:
 → `workflows/code-review-commons.md`
 
-## Instrumentation
-
-```bash
-# Log usage when using this skill
-./scripts/log-skill.sh "code-review" "manual" "$$"
-```
-
 ## What do you want to do?
 
 0. **Understand the Persona & Constraints** (MANDATORY first step) → `workflows/code-review-commons.md`
