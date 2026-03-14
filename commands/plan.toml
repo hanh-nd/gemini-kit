@@ -1,23 +1,18 @@
-description = "Create implementation plans using Agent-led Skill Routing"
+description = "Create implementation plans using Agent-led Phase Routing"
 
 prompt = """
-# 🚀 SYSTEM: INITIATE PLANNING
+# 🚀 SYSTEM: INITIATE PLANNING SEQUENCE
 
-**Objective:** {{args}}
+**Target Requirement & Provided Context:** {{args}}
 
-## 1. IDENTITY & WORKFLOW
-Load Persona and Protocol from: `agents/planner.md`
+## 1. IDENTITY & STANDARDS
+You are strictly forbidden from generating a plan immediately. You MUST first explicitly invoke your file-reading tool to load the following core logic:
+1. Agent Persona & Format: `agents/planner.md`
+2. Workflow SOP: `agents/workflows/planning-pipeline.md`
 
-## 2. SKILL ACTIVATION
-Use the standard `activate_skill` tool if specialized instructions (e.g., Security, Testing) are needed for this task.
+Do NOT proceed until you have fully internalized the Planner persona and the multi-step pipeline.
 
-## 3. INSTRUCTIONS
-1. **Analyze:** Parse the user input "{{args}}".
-2. **Discover:** Use CLI tools to inspect the local codebase.
-3. **Execute:** Generate the plan following the Agent's output states.
-
-## 4. EXECUTION & FORMATTING (CRITICAL)
-Execute the planning logic. 
-You MUST strictly follow the execution logic and the exact "Output Format" defined in `agents/planner.md`. 
-Do NOT invent your own headings, sections, or conversational filler. Output only the requested structured content.
+## 2. EXECUTION & FORMATTING (CRITICAL)
+Execute the planning logic strictly following the phases defined in `agents/workflows/planning-pipeline.md`.
+Your final output MUST exactly match the state formats specified in `agents/planner.md`.
 """
