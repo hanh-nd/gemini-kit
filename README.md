@@ -5,13 +5,13 @@
 [![Version](https://img.shields.io/badge/version-4.0.0-blue.svg)](https://github.com/nth5693/gemini-kit/releases)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/tests-291%20passed-brightgreen.svg)]()
-[![Agents](https://img.shields.io/badge/AI%20Agents-8-purple.svg)]()
+[![Agents](https://img.shields.io/badge/AI%20Agents-9-purple.svg)]()
 [![Skills](https://img.shields.io/badge/Skills-7-orange.svg)]()
-[![Commands](https://img.shields.io/badge/Commands-15-yellow.svg)]()
+[![Commands](https://img.shields.io/badge/Commands-16-yellow.svg)]()
 
 ### 🎯 Transform Your Terminal into an AI Engineering Team
 
-**Gemini-Kit** is an extension for [Gemini CLI](https://github.com/google-gemini/gemini-cli) that brings **8 specialized AI agents** and **15 commands** to help you code 10x faster.
+**Gemini-Kit** is an extension for [Gemini CLI](https://github.com/google-gemini/gemini-cli) that brings **9 specialized AI agents** and **16 commands** to help you code 10x faster.
 
 [🚀 Quick Start](#-quick-start) • [🤖 Agents](#-agents) • [🛠️ Skills](#️-skills) • [⌨️ Commands](#️-commands)
 
@@ -38,9 +38,9 @@
 
 | Feature          | Count | Description                                            |
 | ---------------- | ----- | ------------------------------------------------------ |
-| 🤖 **AI Agents** | 8     | Specialized roles (Scout, Planner, Coder, Reviewer...) |
+| 🤖 **AI Agents** | 9     | Specialized roles (Scout, Planner, Coder, Reviewer...) |
 | 🛠️ **Skills**    | 7     | Knowledge modules (React, Security, Testing...)        |
-| ⌨️ **Commands**  | 15    | Slash commands for every task                          |
+| ⌨️ **Commands**  | 16    | Slash commands for every task                          |
 | 🔒 **Security**  | 30+   | Secret detection patterns                              |
 | 📜 **Scripts**   | 3     | Core automation scripts                                |
 
@@ -106,6 +106,7 @@ Gemini-Kit includes 8 specialized agents. Use `/help` to see full details for ea
 | **Coder**        | Builder. Writes clean, production-ready code.              |
 | **Reviewer**     | Quality gate. Performs deep-dive technical audits.         |
 | **Debugger**     | Problem solver. Analyzes errors and produces RCA runbooks. |
+| **Tester**       | Senior SDET. Writes robust, isolated unit tests.           |
 | **Researcher**   | Information gatherer. Finds technical documentation.       |
 | **Brainstormer** | Strategic thinker. Explores design trade-offs.             |
 
@@ -135,6 +136,7 @@ Modular capabilities that can be activated on-demand:
 | `/review-pr`  | Review a Pull Request                |
 | `/debug`      | Analyze and diagnose errors          |
 | `/fix`        | Execute targeted bug fixes           |
+| `/unit-test`  | Generate unit tests for a file       |
 | `/ticket`     | Start workflow from a Jira ticket    |
 | `/brainstorm` | Strategic design trade-offs          |
 
@@ -146,9 +148,9 @@ Modular capabilities that can be activated on-demand:
 | -------- | ------------ |
 | Tests    | 291 passing  |
 | Lint     | 0 errors     |
-| Agents   | 8            |
+| Agents   | 9            |
 | Skills   | 7 categories |
-| Commands | 15           |
+| Commands | 16           |
 | Scripts  | 3            |
 | Coverage | ~81%         |
 

@@ -1,43 +1,35 @@
-# 🗺️ Scout Report: Documentation Update After Massive Removal
+# 🗺️ Scout Report: Documentation Update Discovery
 
 ## 1. Landscape Overview
 
-- **Tech Stack:** TypeScript (MCP), Markdown.
-- **Relevant Files:** `README.md`, `QUICKSTART.md`, `GEMINI.md`, `SECURITY.md`, `src/README.md`, `commands/README.md`, `skills/brainstorming/SKILL.md`.
+- **Tech Stack:** Markdown (Docs), TOML (Command Definitions).
+- **Relevant Files:** `GEMINI.md`, `README.md`, `commands/README.md`, `agents/*.md`, `commands/*.toml`.
 
 ## 2. Categorized Findings
 
-### 🏗️ Broken Documentation (Entry Points)
+### 🏗️ Core Logic / Services (Documentation)
 
-These files contain dead links to deleted `docs/` and `scripts/` directories, or refer to removed agents/commands/workflows.
+- `GEMINI.md`: Main persona and agent roster for Orchestrator routing. **STATUS: OUTDATED**. Missing 'Tester', 'Researcher'. Incorrect filename for 'Reviewer' (should be `agents/code-reviewer.md`).
+- `README.md`: Project overview and high-level stats. **STATUS: OUTDATED**. Stats (8 agents, 15 commands) are incorrect (now 9 agents, 16 commands).
+- `commands/README.md`: List of available slash commands. **STATUS: OUTDATED**. Missing `/unit-test`.
 
-- `README.md`:
-    - Links to `docs/API.md`, `docs/README.md`, `docs/HANDBOOK.md`, `docs/FEATURES.md`, `docs/BEST-PRACTICES.md` (all deleted).
-    - Outdated stats: "10 workflows" (0 left), "Skills: 8" (actually 7 left as `session-resume` is gone).
-    - Mentions "Compound System" which heavily relied on deleted scripts.
-    - Command table includes `/status` (not in `commands/`), `/ticket` (not in `commands/`? wait, let me double check).
-- `QUICKSTART.md`:
-    - Heavily outdated: mentions 19 agents, 33+ commands, 15 skills.
-    - Describes "Compound Loop" which is broken (scripts gone).
-    - Mentions `/status`, `/explore`, `/work`, `/review`, `/compound`, `/housekeeping` (all gone).
-- `GEMINI.md`:
-    - Mentions `session-resume` skill (deleted).
-    - Mentions `scripts/compound-search.sh` (deleted).
-- `src/README.md`:
-    - Mentions `checkpoint.ts`, `learning.ts` (deleted/renamed).
-    - Mentions `kit_get_learnings` (deleted).
-- `SECURITY.md`:
-    - Mentions `/code-preview` command (deleted).
+### 📂 Agent Definitions (In-sync with codebase)
 
-### 🏗️ Code/Skill References
+- `agents/tester.md`: New agent found.
+- `agents/researcher.md`: New agent found.
+- `agents/code-reviewer.md`: Actual filename for Reviewer.
+- `agents/debugger.md`, `agents/coder.md`, etc.: Existing agents.
 
-- `skills/brainstorming/SKILL.md`: Mentions `docs/` (deleted).
-- `eslint.config.js`: Ignores `scripts/` (deleted).
+### 🛠️ Command Configs (In-sync with codebase)
+
+- `commands/unit-test.toml`: New command found.
+- `commands/cook.toml`, `commands/do.toml`, etc.: Recently added or updated commands.
 
 ## 3. Integration Points
 
-- Root `README.md` is the primary entry point and is most severely broken.
-- `GEMINI.md` is the agent instruction hub and contains broken workflow/skill references.
+- **Orchestrator** reads `GEMINI.md` to route tasks to specialized agents.
+- **User** reads `README.md` and `commands/README.md` for feature discovery.
+- **Gemini CLI** loads all `.toml` files in `commands/`.
 
 ## 4. Planner Context
 

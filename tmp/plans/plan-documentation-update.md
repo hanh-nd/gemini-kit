@@ -1,63 +1,50 @@
-# 📋 Programming Blueprint: Documentation Update After Massive Removal
+# 📋 Programming Blueprint: Documentation Update (Agents & Commands Expansion)
 
 ## 1. Technical Design
 
-- **Data/Type Definitions:** N/A (Documentation task).
-- **State/Logic Flow:** The task involves updating multiple Markdown files and one JavaScript config file to remove dead links and outdated information.
+- **Data/Type Definitions:** N/A (Documentation update).
+- **State/Logic Flow:** The Orchestrator's routing logic depends on the agent roster in `GEMINI.md`. Correcting this ensures proper task delegation to new agents (Tester, Researcher).
 - **Component/Architecture Tree:** 
-    - Root: `README.md`, `QUICKSTART.md`, `GEMINI.md`, `SECURITY.md`, `eslint.config.js`
-    - src: `src/README.md`
-    - commands: `commands/README.md`
-    - skills: `skills/brainstorming/SKILL.md`
+  - `GEMINI.md`: Update Agent Roster (9 agents) and Workflow.
+  - `README.md`: Update Stats, Agent list, and Command list.
+  - `commands/README.md`: Add `/unit-test` command.
 
 ## 2. Implementation Plan
 
-### Phase 1: Entry Point Cleanup (Foundation)
+### Phase 1: GEMINI.md Update (Core Agent Roster)
 
-- [ ] **Task 1.1:** Update root `README.md`:
-    - Remove dead links to `docs/*.md` (API.md, README.md, etc.).
-    - Update stats: Agents (8), Commands (15), Workflows (0), Skills (7), Scripts (3).
-    - Remove "Compound System" section as it relied on deleted scripts.
-- [ ] **Task 1.2:** Update `GEMINI.md`:
-    - Remove reference to `session-resume` skill.
-    - Remove "Search Before Solving" section referencing `compound-search.sh`.
+- [ ] **Task 1.1:** Add **Tester** and **Researcher** to the Agent Roster table.
+- [ ] **Task 1.2:** Correct the file path for **Reviewer** to `agents/code-reviewer.md`.
+- [ ] **Task 1.3:** Verify and update **Fixer** file path in roster.
 
-### Phase 2: Guide & Security Updates
+### Phase 2: README.md Update (Public Stats & Feature Discovery)
 
-- [ ] **Task 2.1:** Rewrite `QUICKSTART.md`:
-    - Update stats to match Task 1.1.
-    - Remove "The Compound Loop" and "Essential Commands" that are now broken.
-    - Simplified "Available Skills" list.
-- [ ] **Task 2.2:** Update `SECURITY.md`:
-    - Remove reference to `/code-preview` command.
+- [ ] **Task 2.1:** Update badges and stats: Agents (8 -> 9), Commands (15 -> 16).
+- [ ] **Task 2.2:** Add **Tester** and **Researcher** to the Agents table.
+- [ ] **Task 2.3:** Add `/unit-test` to the Commands table.
+- [ ] **Task 2.4:** Update total command count in text.
 
-### Phase 3: Sub-directory & Config Cleanup
+### Phase 3: commands/README.md Update (Command Reference)
 
-- [ ] **Task 3.1:** Update `src/README.md`:
-    - Update `tools/` details to reflect actual file names and remove deleted tools (`kit_get_learnings`).
-- [ ] **Task 3.2:** Update `commands/README.md`:
-    - Remove references to deleted/non-existent commands (`/status`, `/screenshot`).
-- [ ] **Task 3.3:** Update `skills/brainstorming/SKILL.md`:
-    - Remove reference to `docs/` directory.
-- [ ] **Task 3.4:** Update `eslint.config.js`:
-    - Remove `scripts/**` from `ignores` list.
+- [ ] **Task 3.1:** Add `/unit-test` to the "Available Commands" table.
+- [ ] **Task 3.2:** Update the total command count to (16).
 
-### Phase 4: Final Validation
+### Phase 4: Validation & Consistency Check
 
-- [ ] **Task 4.1:** Verify all internal Markdown links in modified files.
-- [ ] **Task 4.2:** Run a final `grep` for any remaining "scripts/" or "docs/" references.
+- [ ] **Task 4.1:** Verify all agent filenames in `GEMINI.md` actually exist.
+- [ ] **Task 4.2:** Ensure the "Agentic Workflow" in `GEMINI.md` reflects current best practices.
 
 ## 3. Coder Instructions
 
-- Perform surgical edits to avoid breaking existing formatting.
-- Ensure all numbers (Agents, Skills, etc.) are strictly consistent across all files.
-- Use literal strings (`'''`) in TOML files if any prompt updates are needed (though not expected here).
+- Use surgical `replace` calls to preserve existing formatting and links.
+- Maintain the professional tone and visual style (emojis, tables) of the current documentation.
+- **Critical:** Check the exact filename for the "Fixer" agent in `agents/` before updating `GEMINI.md`.
 
 ## 4. Review & Refine
 
-**Wait for User Input:** _Please review the proposed plan above. I've updated the stats based on the current directory contents (8 agents, 15 commands, 7 skills, 3 scripts). Does this look correct?_
+**Wait for User Input:** _Please review the proposed plan above. Are there any steps you would like to add, modify, or improve? Let me know, or type "Approve" to proceed with coding._
 
 ## 5. Execution Handoff
 
 Next step:
-/cook @tmp/plans/plan-documentation-update.md
+/code @tmp/plans/plan-documentation-update.md

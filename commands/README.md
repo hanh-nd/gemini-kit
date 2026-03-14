@@ -2,7 +2,7 @@
 
 This directory contains all **custom slash commands** for the Gemini-Kit extension. Commands are defined as TOML files and automatically loaded by Gemini CLI.
 
-## Available Commands (15)
+## Available Commands (16)
 
 | Command | File | Description | Status |
 |---------|------|-------------|--------|
@@ -21,6 +21,7 @@ This directory contains all **custom slash commands** for the Gemini-Kit extensi
 | `/session` | `session.toml` | Manage session context | ✅ Active |
 | `/skill` | `skill.toml` | Create and manage agent skills | ✅ Active |
 | `/ticket` | `ticket.toml` | Orchestrate workflow from a Jira ticket | ✅ Active |
+| `/unit-test` | `unit-test.toml` | Generate unit tests for a file | ✅ Active |
 
 ## Structure
 
