@@ -9,243 +9,83 @@ import * as crypto from 'crypto';
 import { z } from 'zod';
 import { debounce } from '../utils.js';
 
-// Zod schemas for runtime validation (HIGH 1 fix)
-const AgentResultSchema = z.object({
+
+// ═══════════════════════════════════════════════════════════════
+// SCHEMAS & TYPES
+// ═══════════════════════════════════════════════════════════════
+
+export const AgentResultSchema = z.object({
     agent: z.string(),
-    status: z.enum(['success', 'failure', 'pending']),
+    status: z.enum(['pending', 'success', 'failure', 'retry', 'abort']),
     output: z.string(),
     timestamp: z.string(),
     duration: z.number().optional(),
+    error: z.string().optional(),
 });
 
-const TeamSessionSchema = z.object({
+export type AgentResult = z.infer<typeof AgentResultSchema>;
+
+export const TeamSessionSchema = z.object({
     id: z.string(),
     name: z.string(),
-    startTime: z.string(),
-    endTime: z.string().optional(),
     status: z.enum(['active', 'completed', 'failed']),
     goal: z.string(),
     agents: z.array(AgentResultSchema),
     context: z.record(z.unknown()),
-    workflowType: z.string().optional(),
-    retryCount: z.number(),
-    maxRetries: z.number(),
+    retryCount: z.number().default(0),
+    maxRetries: z.number().default(3),
+    startTime: z.string(),
+    endTime: z.string().optional(),
 });
 
-export interface AgentResult {
-    agent: string;
-    status: 'success' | 'failure' | 'pending';
-    output: string;
-    timestamp: string;
-    duration?: number;
-}
+export type TeamSession = z.infer<typeof TeamSessionSchema>;
 
-export interface TeamSession {
-    id: string;
-    name: string;
-    startTime: string;
-    endTime?: string;
-    status: 'active' | 'completed' | 'failed';
-    goal: string;
-    agents: AgentResult[];
-    context: Record<string, unknown>;
-    workflowType?: string;
-    retryCount: number;
-    maxRetries: number;
-}
-
-export interface TeamStateConfig {
-    sessionDir: string;
-    maxRetries: number;
-    autoSave: boolean;
-}
-
-const DEFAULT_CONFIG: TeamStateConfig = {
-    sessionDir: '.gemini-kit/sessions',
-    maxRetries: 3,
-    autoSave: true,
-};
-
-// Active session pointer file (HIGH 2: O(1) recovery instead of O(N) scan)
-const ACTIVE_SESSION_POINTER = '.gemini-kit/active-session.json';
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
 
 let currentSession: TeamSession | null = null;
-let config: TeamStateConfig = DEFAULT_CONFIG;
+
+const config = {
+    sessionDir: path.join(process.cwd(), '.gemini-kit', 'sessions'),
+};
+
+const ACTIVE_SESSION_POINTER = 'active-session.json';
+
+// ═══════════════════════════════════════════════════════════════
+// CORE LOGIC
+// ═══════════════════════════════════════════════════════════════
 
 /**
- * Get active session ID from pointer file (O(1) lookup)
+ * Initialize team state
  */
-function getActiveSessionPointer(): string | null {
-    try {
-        if (fs.existsSync(ACTIVE_SESSION_POINTER)) {
-            const data = JSON.parse(fs.readFileSync(ACTIVE_SESSION_POINTER, 'utf-8'));
-            return data.sessionId || null;
-        }
-    } catch {
-        // Ignore corrupted pointer
-    }
-    return null;
-}
-
-/**
- * Set active session pointer
- */
-function setActiveSessionPointer(sessionId: string | null): void {
-    try {
-        const dir = path.dirname(ACTIVE_SESSION_POINTER);
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir, { recursive: true });
-        }
-        if (sessionId) {
-            fs.writeFileSync(ACTIVE_SESSION_POINTER, JSON.stringify({ sessionId, updatedAt: new Date().toISOString() }));
-        } else if (fs.existsSync(ACTIVE_SESSION_POINTER)) {
-            fs.unlinkSync(ACTIVE_SESSION_POINTER);
-        }
-    } catch {
-        // Best effort
-    }
-}
-
-/**
- * Initialize team state with optional config
- * Also attempts to recover any active session from previous run
- * CRITICAL FIX: Now registers shutdown handlers with guard to prevent accumulation
- */
-let shutdownHandlersRegistered = false;
-
-export function initTeamState(customConfig?: Partial<TeamStateConfig>): void {
-    config = { ...DEFAULT_CONFIG, ...customConfig };
-
-    // Ensure session directory exists
+export function initTeamState(_customConfig?: { maxRetries?: number }): void {
     if (!fs.existsSync(config.sessionDir)) {
         fs.mkdirSync(config.sessionDir, { recursive: true });
     }
-
-    // Try to recover last active session
-    if (!currentSession) {
-        const recoveredSession = recoverActiveSession();
-        if (recoveredSession) {
-            currentSession = recoveredSession;
-            console.error(`[gemini-kit] Recovered active session: ${recoveredSession.id}`);
-        }
-    }
-
-    // CRITICAL FIX: Register shutdown handlers only once
-    if (!shutdownHandlersRegistered) {
-        process.on('beforeExit', gracefulShutdown);
-        process.on('SIGINT', () => {
-            gracefulShutdown();
-            process.exit(0);
-        });
-        process.on('SIGTERM', () => {
-            gracefulShutdown();
-            process.exit(0);
-        });
-        process.on('uncaughtException', (error) => {
-            console.error('[gemini-kit] Uncaught exception, saving session...', error);
-            gracefulShutdown();
-            process.exit(1);
-        });
-        shutdownHandlersRegistered = true;
-    }
-}
-
-/**
- * Attempt to recover an active session from disk
- * HIGH 2 FIX: First check pointer file for O(1) recovery,
- * fallback to scan only if pointer missing
- */
-function recoverActiveSession(): TeamSession | null {
-    if (!fs.existsSync(config.sessionDir)) {
-        return null;
-    }
-
-    // First: Try O(1) lookup via pointer file
-    const pointerId = getActiveSessionPointer();
-    if (pointerId) {
-        const pointerFile = path.join(config.sessionDir, `${pointerId}.json`);
-        try {
-            if (fs.existsSync(pointerFile)) {
-                const data = fs.readFileSync(pointerFile, 'utf-8');
-                const parsed = TeamSessionSchema.safeParse(JSON.parse(data));
-                if (parsed.success && parsed.data.status === 'active') {
-                    return parsed.data;
-                }
-            }
-        } catch {
-            // Pointer is stale, clear it and fallback to scan
-            setActiveSessionPointer(null);
-        }
-    }
-
-    // Fallback: Scan for active session (legacy behavior)
-    // HIGH FIX: Sort by mtime first, only read top 5 most recent
-    try {
-        const files = fs.readdirSync(config.sessionDir)
-            .filter(f => f.endsWith('.json') && f !== ACTIVE_SESSION_POINTER);
-
-        // Get file stats and sort by modification time (newest first)
-        const fileStats = files.map(f => {
-            try {
-                const filePath = path.join(config.sessionDir, f);
-                const stat = fs.statSync(filePath);
-                return { file: f, mtime: stat.mtime.getTime() };
-            } catch {
-                return { file: f, mtime: 0 };
-            }
-        }).sort((a, b) => b.mtime - a.mtime);
-
-        // Only check top 5 most recent files
-        const recentFiles = fileStats.slice(0, 5);
-
-        for (const { file } of recentFiles) {
-            try {
-                const filePath = path.join(config.sessionDir, file);
-                const data = fs.readFileSync(filePath, 'utf-8');
-                const parsed = TeamSessionSchema.safeParse(JSON.parse(data));
-
-                if (parsed.success && parsed.data.status === 'active') {
-                    // Update pointer for next time
-                    setActiveSessionPointer(parsed.data.id);
-                    return parsed.data;
-                }
-            } catch {
-                continue;
-            }
-        }
-    } catch {
-        // Session directory read error
-    }
-
-    return null;
+    registerShutdownHandlers();
 }
 
 /**
  * Start a new team session
  */
 export function startSession(goal: string, name?: string): TeamSession {
-    // Use UUID to prevent collision when multiple sessions created in same millisecond
-    const id = `session-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`;
+    const timestamp = Date.now();
+    const sessionId = `session-${timestamp}-${crypto.randomUUID().slice(0, 8)}`;
 
     currentSession = {
-        id,
-        name: name || `Team Session ${new Date().toISOString().slice(0, 10)}`,
-        startTime: new Date().toISOString(),
+        id: sessionId,
+        name: name || `Session ${new Date().toLocaleString()}`,
         status: 'active',
         goal,
         agents: [],
         context: {},
         retryCount: 0,
-        maxRetries: config.maxRetries,
+        maxRetries: 3,
+        startTime: new Date().toISOString(),
     };
 
-    if (config.autoSave) {
-        saveSession();
-    }
-
-    // Set pointer for O(1) recovery
-    setActiveSessionPointer(currentSession.id);
-
+    saveSessionSync();
     return currentSession;
 }
 
@@ -258,56 +98,26 @@ export function getCurrentSession(): TeamSession | null {
 
 /**
  * Add agent result to session
- * Issue 3 FIX: Truncate output to prevent memory leak
- * MEDIUM FIX: Configurable via GEMINI_KIT_MAX_OUTPUT env var (default 50KB)
  */
-// Safely parse env var with validation to prevent NaN/Infinity
-const parsedMaxOutput = parseInt(process.env.GEMINI_KIT_MAX_OUTPUT || '51200', 10);
-const MAX_OUTPUT_SIZE = Number.isFinite(parsedMaxOutput) && parsedMaxOutput > 0 ? parsedMaxOutput : 51200;
-
 export function addAgentResult(result: AgentResult): void {
     if (!currentSession) {
-        throw new Error('No active session. Call startSession first.');
+        throw new Error('No active session.');
     }
 
-    // Issue 3 FIX: Truncate large outputs to prevent OOM
-    const truncatedResult = {
-        ...result,
-        output: result.output.length > MAX_OUTPUT_SIZE
-            ? result.output.slice(0, MAX_OUTPUT_SIZE) + '\n... [truncated]'
-            : result.output
-    };
-
-    currentSession.agents.push(truncatedResult);
-
-    if (config.autoSave) {
-        saveSession();
-    }
+    currentSession.agents.push(result);
+    saveSession();
 }
 
 /**
- * Update session context (shared data between agents)
+ * Update context
  */
 export function updateContext(key: string, value: unknown): void {
     if (!currentSession) {
-        throw new Error('No active session. Call startSession first.');
+        throw new Error('No active session.');
     }
 
     currentSession.context[key] = value;
-
-    if (config.autoSave) {
-        saveSession();
-    }
-}
-
-/**
- * Get context value
- */
-export function getContext(key: string): unknown {
-    if (!currentSession) {
-        return undefined;
-    }
-    return currentSession.context[key];
+    saveSession();
 }
 
 /**
@@ -319,11 +129,7 @@ export function incrementRetry(): number {
     }
 
     currentSession.retryCount++;
-
-    if (config.autoSave) {
-        saveSession();
-    }
-
+    saveSession();
     return currentSession.retryCount;
 }
 
@@ -331,33 +137,29 @@ export function incrementRetry(): number {
  * Check if can retry
  */
 export function canRetry(): boolean {
-    if (!currentSession) {
-        return false;
-    }
+    if (!currentSession) return false;
     return currentSession.retryCount < currentSession.maxRetries;
 }
 
 /**
- * End session
+ * End team session
  */
 export function endSession(status: 'completed' | 'failed' = 'completed'): TeamSession | null {
-    if (!currentSession) {
-        return null;
-    }
+    if (!currentSession) return null;
 
     currentSession.status = status;
     currentSession.endTime = new Date().toISOString();
 
-    saveSession(true); // Immediate save for critical operation
-
-    // Clear pointer since session is no longer active
-    setActiveSessionPointer(null);
-
     const session = currentSession;
+    saveSessionSync();
     currentSession = null;
 
     return session;
 }
+
+// ═══════════════════════════════════════════════════════════════
+// PERSISTENCE
+// ═══════════════════════════════════════════════════════════════
 
 /**
  * Save session to file (internal sync version)
@@ -371,74 +173,26 @@ function saveSessionSync(): void {
 
 /**
  * Debounced save - reduces file I/O when called rapidly
- * Uses 150ms delay (reduced from 500ms) to minimize data loss risk on crash
  */
-let hasPendingChanges = false;
-
 const debouncedSave = debounce(() => {
     saveSessionSync();
-    hasPendingChanges = false;
 }, 150);
 
 /**
  * Save session - uses debounce for frequent calls, sync for critical operations
- * Tracks pending changes to enable immediate save on demand
  */
 function saveSession(immediate = false): void {
     if (!currentSession) return;
 
     if (immediate) {
-        // Critical operations (end session) - save immediately
         saveSessionSync();
-        hasPendingChanges = false;
     } else {
-        // Regular operations - debounce with pending flag
-        hasPendingChanges = true;
         debouncedSave();
     }
 }
 
 /**
- * Flush any pending session changes immediately
- * Call this before risky operations to ensure data is saved
- */
-export function flushSession(): void {
-    if (hasPendingChanges && currentSession) {
-        saveSessionSync();
-        hasPendingChanges = false;
-    }
-}
-
-/**
- * Load session from file
- * Phase 1 FIX: Validates sessionId format to prevent path traversal
- */
-export function loadSession(sessionId: string): TeamSession | null {
-    // Validate sessionId format: alphanumeric + dashes only
-    if (!/^[a-zA-Z0-9-]+$/.test(sessionId)) {
-        console.error(`[gemini-kit] Invalid sessionId format: ${sessionId}`);
-        return null;
-    }
-
-    const filePath = path.join(config.sessionDir, `${sessionId}.json`);
-
-    if (!fs.existsSync(filePath)) {
-        return null;
-    }
-
-    const data = fs.readFileSync(filePath, 'utf-8');
-    const parsed = TeamSessionSchema.safeParse(JSON.parse(data));
-    if (!parsed.success) {
-        console.error(`[gemini-kit] Invalid session format: ${sessionId}`);
-        return null;
-    }
-    currentSession = parsed.data;
-    return currentSession;
-}
-
-/**
  * List all sessions
- * H1 FIX: Optimized - sort by mtime first, limit reads to most recent N
  */
 const MAX_SESSIONS_TO_LIST = parseInt(process.env.GEMINI_KIT_MAX_SESSIONS || '20', 10);
 
@@ -450,7 +204,6 @@ export function listSessions(limit: number = MAX_SESSIONS_TO_LIST): TeamSession[
     const files = fs.readdirSync(config.sessionDir)
         .filter((f: string) => f.endsWith('.json') && f !== ACTIVE_SESSION_POINTER);
 
-    // H1 FIX: Sort by mtime BEFORE reading file contents (much faster)
     const fileStats = files.map(file => {
         try {
             const filePath = path.join(config.sessionDir, file);
@@ -461,20 +214,15 @@ export function listSessions(limit: number = MAX_SESSIONS_TO_LIST): TeamSession[
         }
     }).sort((a, b) => b.mtime - a.mtime);
 
-    // Only read the most recent N files
     const recentFiles = fileStats.slice(0, limit);
 
     return recentFiles.map(({ file }) => {
         try {
             const data = fs.readFileSync(path.join(config.sessionDir, file), 'utf-8');
             const parsed = TeamSessionSchema.safeParse(JSON.parse(data));
-            if (!parsed.success) {
-                console.error(`[gemini-kit] Invalid session format: ${file}`);
-                return null;
-            }
+            if (!parsed.success) return null;
             return parsed.data;
         } catch {
-            console.error(`[gemini-kit] Skipping corrupted session file: ${file}`);
             return null;
         }
     })
@@ -514,20 +262,20 @@ ${currentSession.agents.map(a => `- **${a.agent}**: ${a.status} (${a.duration ||
 
 // ═══════════════════════════════════════════════════════════════
 // GRACEFUL SHUTDOWN HANDLERS
-// Prevent data loss on unexpected process termination
 // ═══════════════════════════════════════════════════════════════
 
-function gracefulShutdown(): void {
-    if (currentSession) {
-        try {
+function registerShutdownHandlers(): void {
+    process.on('exit', () => {
+        if (currentSession) {
             saveSessionSync();
-            hasPendingChanges = false;
-            console.error('[gemini-kit] Session saved on exit');
-        } catch {
-            // Best effort save on exit
         }
-    }
-}
+    });
 
-// CRITICAL FIX: Event listeners are now registered in initTeamState() to prevent accumulation
-// See registerShutdownHandlers() called from initTeamState()
+    process.on('SIGINT', () => {
+        process.exit(0);
+    });
+
+    process.on('SIGTERM', () => {
+        process.exit(0);
+    });
+}

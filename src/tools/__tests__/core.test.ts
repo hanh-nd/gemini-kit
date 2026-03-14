@@ -25,19 +25,7 @@ vi.mock('fs', () => ({
     mkdirSync: vi.fn(),
     writeFileSync: vi.fn(),
     readFileSync: vi.fn(),
-}));
-
-// Mock security
-vi.mock('../security.js', () => ({
-    safeGit: vi.fn().mockReturnValue('abc123 commit\ndef456 commit'),
-    findFiles: vi.fn().mockReturnValue(['index.ts', 'src/utils.ts']),
-    findFilesAsync: vi.fn().mockResolvedValue(['index.ts', 'src/utils.ts']),
-}));
-
-// Mock config
-vi.mock('../config.js', () => ({
-    DEFAULT_EXTENSIONS: ['.ts', '.js'],
-    getFileExtensions: vi.fn().mockReturnValue(['.ts', '.js']),
+    readdirSync: vi.fn(),
 }));
 
 import * as fs from 'fs';
@@ -57,141 +45,55 @@ describe('registerCoreTools', () => {
         };
     });
 
-    it('should register all core tools', async () => {
+    it('should register remaining core tools', async () => {
         const { registerCoreTools } = await import('../core.js');
         registerCoreTools(mockServer as unknown as Parameters<typeof registerCoreTools>[0]);
 
-        expect(registeredTools.has('kit_get_project_context')).toBe(true);
-        expect(registeredTools.has('kit_handoff_agent')).toBe(true);
-        expect(registeredTools.has('kit_save_artifact')).toBe(true);
+        expect(registeredTools.has('kit_get_extension_info')).toBe(true);
+        expect(registeredTools.has('kit_get_command_prompt')).toBe(true);
+        expect(registeredTools.has('kit_get_skill_list')).toBe(true);
+        
+        // Unused tools should NOT be registered
+        expect(registeredTools.has('kit_get_project_context')).toBe(false);
+        expect(registeredTools.has('kit_handoff_agent')).toBe(false);
+        expect(registeredTools.has('kit_save_artifact')).toBe(false);
+        expect(registeredTools.has('kit_list_commands')).toBe(false);
     });
 
-    describe('kit_get_project_context', () => {
-        it('should return project context', async () => {
-            vi.mocked(fs.existsSync).mockReturnValue(true);
-            vi.mocked(fs.readFileSync).mockReturnValue(JSON.stringify({
-                name: 'test-project',
-                version: '1.0.0',
-                dependencies: { lodash: '^4.0.0' }
-            }));
-
+    describe('kit_get_extension_info', () => {
+        it('should return extension information', async () => {
             const { registerCoreTools } = await import('../core.js');
             registerCoreTools(mockServer as unknown as Parameters<typeof registerCoreTools>[0]);
 
-            const tool = registeredTools.get('kit_get_project_context');
-            const result = await tool!.handler({ depth: 2 });
-
-            expect(result.content[0].text).toContain('structure');
-        });
-
-        it('should handle errors', async () => {
-            vi.mocked(fs.existsSync).mockImplementation(() => {
-                throw new Error('Read error');
-            });
-
-            const { registerCoreTools } = await import('../core.js');
-            registerCoreTools(mockServer as unknown as Parameters<typeof registerCoreTools>[0]);
-
-            const tool = registeredTools.get('kit_get_project_context');
+            const tool = registeredTools.get('kit_get_extension_info');
             const result = await tool!.handler({});
 
-            expect(result.content[0].text).toContain('Error');
+            const info = JSON.parse(result.content[0].text);
+            expect(info).toHaveProperty('extensionRoot');
+            expect(info).toHaveProperty('agentsDir');
+            expect(info).toHaveProperty('skillsDir');
         });
     });
 
-    describe('kit_handoff_agent', () => {
-        it('should create handoff', async () => {
-            vi.mocked(fs.mkdirSync).mockReturnValue(undefined);
-            vi.mocked(fs.writeFileSync).mockReturnValue(undefined);
+    describe('kit_get_skill_list', () => {
+        it('should list available skills', async () => {
+            vi.mocked(fs.existsSync).mockReturnValue(true);
+            vi.mocked(fs.readdirSync).mockReturnValue([
+                { name: 'test-skill', isDirectory: () => true }
+            ] as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+
+
+
+            vi.mocked(fs.readFileSync).mockReturnValue('name: Test Skill\ndescription: Test description\n---\n');
 
             const { registerCoreTools } = await import('../core.js');
             registerCoreTools(mockServer as unknown as Parameters<typeof registerCoreTools>[0]);
 
-            const tool = registeredTools.get('kit_handoff_agent');
-            const result = await tool!.handler({
-                fromAgent: 'planner',
-                toAgent: 'coder',
-                context: 'Plan ready',
-                artifacts: ['plan.md']
-            });
+            const tool = registeredTools.get('kit_get_skill_list');
+            const result = await tool!.handler({});
 
-            expect(result.content[0].text).toContain('Handoff');
-            expect(fs.writeFileSync).toHaveBeenCalled();
-        });
-
-        it('should handle errors', async () => {
-            vi.mocked(fs.mkdirSync).mockImplementation(() => {
-                throw new Error('Permission denied');
-            });
-
-            const { registerCoreTools } = await import('../core.js');
-            registerCoreTools(mockServer as unknown as Parameters<typeof registerCoreTools>[0]);
-
-            const tool = registeredTools.get('kit_handoff_agent');
-            const result = await tool!.handler({
-                fromAgent: 'a',
-                toAgent: 'b',
-                context: 'test'
-            });
-
-            expect(result.content[0].text).toContain('Error');
-        });
-    });
-
-    describe('kit_save_artifact', () => {
-        it('should save artifact', async () => {
-            vi.mocked(fs.mkdirSync).mockReturnValue(undefined);
-            vi.mocked(fs.writeFileSync).mockReturnValue(undefined);
-
-            const { registerCoreTools } = await import('../core.js');
-            registerCoreTools(mockServer as unknown as Parameters<typeof registerCoreTools>[0]);
-
-            const tool = registeredTools.get('kit_save_artifact');
-            const result = await tool!.handler({
-                name: 'my-plan',
-                type: 'plan',
-                content: '# Plan content'
-            });
-
-            expect(result.content[0].text).toContain('Artifact saved');
-            expect(fs.writeFileSync).toHaveBeenCalled();
-        });
-
-        it('should sanitize artifact name', async () => {
-            vi.mocked(fs.mkdirSync).mockReturnValue(undefined);
-            vi.mocked(fs.writeFileSync).mockReturnValue(undefined);
-
-            const { registerCoreTools } = await import('../core.js');
-            registerCoreTools(mockServer as unknown as Parameters<typeof registerCoreTools>[0]);
-
-            const tool = registeredTools.get('kit_save_artifact');
-            await tool!.handler({
-                name: '../../../evil-name.txt',
-                type: 'log',
-                content: 'test'
-            });
-
-            // Should have sanitized the name
-            const call = vi.mocked(fs.writeFileSync).mock.calls[0];
-            expect(call[0]).not.toContain('..');
-        });
-
-        it('should handle errors', async () => {
-            vi.mocked(fs.mkdirSync).mockImplementation(() => {
-                throw new Error('Permission denied');
-            });
-
-            const { registerCoreTools } = await import('../core.js');
-            registerCoreTools(mockServer as unknown as Parameters<typeof registerCoreTools>[0]);
-
-            const tool = registeredTools.get('kit_save_artifact');
-            const result = await tool!.handler({
-                name: 'test',
-                type: 'report',
-                content: 'test'
-            });
-
-            expect(result.content[0].text).toContain('Error');
+            expect(result.content[1].text).toContain('Available Skills');
+            expect(result.content[1].text).toContain('Test Skill');
         });
     });
 });

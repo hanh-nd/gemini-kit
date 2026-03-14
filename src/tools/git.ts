@@ -8,10 +8,8 @@
 
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
-import * as fs from 'fs';
-import * as path from 'path';
 import { execFileSync } from 'child_process';
-import { sanitize, safeGit, homeDir } from './security.js';
+import { sanitize, safeGit } from './security.js';
 
 /**
  * Check if Git is available in the system
@@ -117,104 +115,5 @@ Or use \`createBranch: true\` next time.`
             }
         }
     );
-
-    // TOOL 6: LIST CHECKPOINTS (FIX - use safeGit instead of execSync)
-    server.tool(
-        'kit_list_checkpoints',
-        'List available checkpoints',
-        {},
-        async () => {
-            try {
-                const tags = safeGit(['tag', '-l', 'kit-*', '--sort=-creatordate']);
-                const topTags = tags.split('\n').filter(Boolean).slice(0, 10).join('\n');
-
-                if (!topTags.trim()) {
-                    return { content: [{ type: 'text' as const, text: 'No checkpoints found. Use kit_create_checkpoint to create one.' }] };
-                }
-                return { content: [{ type: 'text' as const, text: `Available checkpoints:\n${topTags}` }] };
-            } catch {
-                return { content: [{ type: 'text' as const, text: 'Error listing checkpoints (not a git repository?)' }] };
-            }
-        }
-    );
-
-    // TOOL 11: AUTO ROLLBACK (FIX 9.1 - Create recovery branch instead of detached HEAD)
-    server.tool(
-        'kit_auto_rollback',
-        'Automatically rollback to last checkpoint if workflow fails. Creates a recovery branch.',
-        {
-            reason: z.string().max(500).describe('Reason for rollback'),
-            checkpointId: z.string().regex(/^kit-[\d\-T]+-.+$/).optional().describe('Checkpoint ID'),
-        },
-        async ({ reason, checkpointId }) => {
-            try {
-                let targetCheckpoint = checkpointId ? sanitize(checkpointId) : undefined;
-
-                // If no specific checkpoint, find the most recent one
-                if (!targetCheckpoint) {
-                    try {
-                        const tags = safeGit(['tag', '-l', 'kit-*', '--sort=-creatordate']);
-                        const latestTag = tags.split('\n')[0]?.trim();
-
-                        if (!latestTag) {
-                            return { content: [{ type: 'text' as const, text: '❌ No checkpoint found to rollback to!' }] };
-                        }
-                        targetCheckpoint = latestTag;
-                    } catch {
-                        return { content: [{ type: 'text' as const, text: '❌ Error finding checkpoint' }] };
-                    }
-                }
-
-                // Log the rollback
-                const rollbackDir = path.join(homeDir, '.gemini-kit', 'rollbacks');
-                fs.mkdirSync(rollbackDir, { recursive: true });
-
-                const recoveryBranch = `rollback-${Date.now()}`;
-                const rollbackLog = {
-                    timestamp: new Date().toISOString(),
-                    checkpoint: targetCheckpoint,
-                    reason: sanitize(reason),
-                    recoveryBranch,
-                    success: false,
-                };
-
-                // Perform rollback - create recovery branch instead of detached HEAD
-                try {
-                    safeGit(['checkout', '-b', recoveryBranch, targetCheckpoint]);
-                    rollbackLog.success = true;
-                } catch (error) {
-                    rollbackLog.success = false;
-                    fs.writeFileSync(
-                        path.join(rollbackDir, `rollback-${Date.now()}.json`),
-                        JSON.stringify(rollbackLog, null, 2)
-                    );
-                    return { content: [{ type: 'text' as const, text: `❌ Rollback failed: ${error}` }] };
-                }
-
-                fs.writeFileSync(
-                    path.join(rollbackDir, `rollback-${Date.now()}.json`),
-                    JSON.stringify(rollbackLog, null, 2)
-                );
-
-                return {
-                    content: [{
-                        type: 'text' as const,
-                        text: `🔄 AUTO-ROLLBACK COMPLETED
-
-**Checkpoint:** ${targetCheckpoint}
-**Recovery Branch:** \`${recoveryBranch}\`
-**Reason:** ${sanitize(reason)}
-
-✅ You are now on branch \`${recoveryBranch}\`.
-You can safely continue working here.
-
-To see what was changed: \`git log --oneline -5\`
-To go back to main: \`git checkout main\``
-                    }]
-                };
-            } catch (error) {
-                return { content: [{ type: 'text' as const, text: `Error: ${error}` }] };
-            }
-        }
-    );
 }
+
