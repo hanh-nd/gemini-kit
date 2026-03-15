@@ -30,7 +30,7 @@ vi.mock('fs', () => ({
 
 vi.mock('../security.js', () => ({
   sanitize: vi.fn((x: string) => x),
-  homeDir: '/.geminit-kit/tmp/test-home',
+  homeDir: '/.geminit-kit/handoffs/test-home',
 }));
 
 import * as fs from 'fs';

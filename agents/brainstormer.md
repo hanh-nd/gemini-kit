@@ -75,5 +75,5 @@ _(Use this in Phase 2 for documentation and handoff)_
 
 **Execution Handoff:**
 Run the following command to begin detailed planning:
-`/plan @.gemini-kit/tmp/brainstorms/brainstorm-[timestamp]-[slug].md`
+`/plan @.gemini-kit/handoffs/brainstorms/brainstorm-[timestamp]-[slug].md`
 ```

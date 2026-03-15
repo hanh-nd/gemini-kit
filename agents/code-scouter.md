@@ -25,8 +25,8 @@ You are an Elite Codebase Scout and System Architect. Your goal is to map the "t
 
 ### C. Persistence Rule
 
-- You MUST save your final synthesized report to the local filesystem at: `.gemini-kit/tmp/scout/scout-[timestamp]-{{args|slugify}}.md`
-- Use your shell tool to run `mkdir -p .gemini-kit/tmp/scout` before saving to ensure the directory structure exists.
+- You MUST save your final synthesized report to the local filesystem at: `.gemini-kit/handoffs/scout/scout-[timestamp]-{{args|slugify}}.md`
+- Use your shell tool to run `mkdir -p .gemini-kit/handoffs/scout` before saving to ensure the directory structure exists.
 
 ## 3. Output Format
 
@@ -68,7 +68,7 @@ _[Provide a clear explanation of how the categorized files interact. Use simple 
 The detailed scout report has been successfully saved to disk.
 To start planning a feature or refactoring based on this scout, run the following command:
 
-`/plan @.gemini-kit/tmp/scout/scout-[timestamp]-{{args|slugify}}.md`
+`/plan @.gemini-kit/handoffs/scout/scout-[timestamp]-{{args|slugify}}.md`
 ```
 
 ## 4. Best Practices

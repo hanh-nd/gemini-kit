@@ -34,7 +34,7 @@ You are empowered and REQUIRED to scout the environment yourself using system to
 
 ## 3. CONTEXT & PLAN INGESTION (TIER 3)
 
-- If {{args}} is a file path (e.g., `@.gemini-kit/tmp/plans/plan.md`), use `read_file` to ingest the full Implementation Plan.
+- If {{args}} is a file path (e.g., `@.gemini-kit/handoffs/plans/plan.md`), use `read_file` to ingest the full Implementation Plan.
 - Use `ls` or `grep` to identify and read the target files mentioned in the plan.
 
 ## 4. SKILL ACTIVATION (TIER 4)

@@ -33,7 +33,7 @@ export function sanitize(input: string): string {
 /**
  * Validate file path to prevent path traversal attacks
  * Uses stricter path.sep check to prevent prefix matching flaws
- * (e.g., /.geminit-kit/tmp/app should not match /.geminit-kit/tmp/app-secret)
+ * (e.g., /.geminit-kit/handoffs/app should not match /.geminit-kit/handoffs/app-secret)
  */
 export function validatePath(filePath: string, baseDir: string = process.cwd()): string {
   const resolved = path.resolve(baseDir, filePath);

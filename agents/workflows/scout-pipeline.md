@@ -41,6 +41,6 @@ You are executing the Code Scout Pipeline. You MUST process the scouting request
 2. **Action:** Synthesize the ingested code into a cohesive architectural map or data flow diagram.
 3. **Formatting:** Format your output EXACTLY as defined in the `agents/code-scouter.md` template.
 4. **Drafting:** If you identify issues (e.g., circular dependencies), document them as "Architectural Findings" rather than "Refactoring Tasks".
-5. **Persistence:** Save the exact output to `.gemini-kit/tmp/scout/scout-[timestamp]-[slugified-args].md`.
-   - If the folder `.gemini-kit/tmp/scout` does not exist, create it using the `shell` tool.
+5. **Persistence:** Save the exact output to `.gemini-kit/handoffs/scout/scout-[timestamp]-[slugified-args].md`.
+   - If the folder `.gemini-kit/handoffs/scout` does not exist, create it using the `shell` tool.
 6. **Final Output:** Print the synthesized report to the terminal for the user.

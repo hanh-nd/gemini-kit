@@ -12,7 +12,7 @@ You MUST execute the planning process strictly sequentially.
 
 - **Mandate:** You are FORBIDDEN from automatically invoking workspace scanning tools immediately. You must first evaluate existing data sources:
   1. **User Provided Context:** Analyze `{{args}}`. Has the user attached any context files (Markdown, Text, JSON) or code snippets?
-  2. **Previous Agent Artifacts:** Use the directory-reading tool to check `.gemini-kit/tmp/` for files prefixed with `scout` or `context`. If present, read them.
+  2. **Previous Agent Artifacts:** Use the directory-reading tool to check `.gemini-kit/handoffs/` for files prefixed with `scout` or `context`. If present, read them.
 - **Action:** - If sufficient context is gathered from the two sources above: Bypass OS workspace scanning commands entirely and proceed directly to Phase 2.
   - ONLY WHEN context is insufficient (e.g., the user only inputted `/plan build feature X` without attachments): you are permitted to use system tools to read `package.json` or the directory structure.
 
@@ -35,5 +35,5 @@ You MUST execute the planning process strictly sequentially.
 ## Phase 5: Persistence & Handoff
 
 - **Constraint Check:** Verify that no source code has been modified during the session.
-- **Action:** Save the final Blueprint to `.gemini-kit/tmp/plans/plan-[timestamp]-[feature].md`.
-- **Constraint:** This plan file acts as the Explicit Context for the `/code` Agent in the subsequent step. You must await explicit user approval (e.g., "Approve") before generating the handoff command: `/code @.gemini-kit/tmp/plans/...`.
+- **Action:** Save the final Blueprint to `.gemini-kit/handoffs/plans/plan-[timestamp]-[feature].md`.
+- **Constraint:** This plan file acts as the Explicit Context for the `/code` Agent in the subsequent step. You must await explicit user approval (e.g., "Approve") before generating the handoff command: `/code @.gemini-kit/handoffs/plans/...`.

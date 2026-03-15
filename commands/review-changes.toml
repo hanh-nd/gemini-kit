@@ -34,7 +34,7 @@ DIFF_DATA=$(git diff $BASE_TARGET -- . ':(exclude)*lock.json' ':(exclude)*.lock'
 
 echo "{\"ticket_id\": \"$TICKET_ID\", \"jira_context\": \"$JIRA_CONTEXT\", \"diff_length\": ${#DIFF_DATA}}"
 # Save the actual diff to a temp file to avoid terminal overflow if needed, or pass directly if supported.
-echo "$DIFF_DATA" > .gemini-kit/tmp/current_diff.txt
+echo "$DIFF_DATA" > .gemini-kit/handoffs/current_diff.txt
 ```
 
 ## 2. IDENTITY & PIPELINE INTEGRATION
@@ -44,7 +44,7 @@ echo "$DIFF_DATA" > .gemini-kit/tmp/current_diff.txt
 
 ## 3. EXECUTION INSTRUCTIONS
 
-1. **Context Ingestion:** Read the `.gemini-kit/tmp/current_diff.txt` file.
+1. **Context Ingestion:** Read the `.gemini-kit/handoffs/current_diff.txt` file.
 2. **Context Alignment:** If `jira_context` is NOT "NO_TICKET_CONTEXT", evaluate the diff against the Acceptance Criteria provided in the Jira ticket. If the diff introduces logic that contradicts the ticket, flag it as a "Requirement Violation".
 3. **Syntax & Convention:** Regardless of Jira context, apply your standard `coding-common` skills to detect code smells, security flaws, or convention violations in the diff.
 4. **Actionability Rule:** You are forbidden from leaving generic comments like "Refactor this". You MUST provide the corrected code snippet using the standard format.

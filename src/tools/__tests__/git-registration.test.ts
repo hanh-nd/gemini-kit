@@ -34,7 +34,7 @@ vi.mock('child_process', () => ({
 vi.mock('../security.js', () => ({
   sanitize: vi.fn((x: string) => x.replace(/[;&|`$]/g, '')),
   safeGit: vi.fn().mockReturnValue(''),
-  homeDir: '/.geminit-kit/tmp/test-home',
+  homeDir: '/.geminit-kit/handoffs/test-home',
 }));
 
 describe('registerGitTools - Remaining Tools', () => {

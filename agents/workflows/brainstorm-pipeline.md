@@ -11,7 +11,7 @@ You MUST execute the brainstorming process strictly sequentially through the fol
 ## Phase -1: Context Ingestion (MANDATORY)
 
 - **Action:** Evaluate the provided `{{args}}`. Did the user attach any scout reports or documentation files?
-- **Tooling:** Use directory reading tools to check `.gemini-kit/tmp/` for recent scout reports. Check `package.json` or `go.mod` to understand the tech stack constraints (e.g., Node.js ecosystem).
+- **Tooling:** Use directory reading tools to check `.gemini-kit/handoffs/` for recent scout reports. Check `package.json` or `go.mod` to understand the tech stack constraints (e.g., Node.js ecosystem).
 - **Constraint:** Do not output anything yet. Absorb the context silently.
 
 ## Phase 0: The Nuclear Challenge (HARD STOP)
@@ -29,5 +29,5 @@ You MUST execute the brainstorming process strictly sequentially through the fol
 
 - **Constraint Check:** Verify that no source code has been modified during the session.
 - **Action:** Transition to **State 2: Final Verdict State**.
-- **Persistence:** Save the finalized decision, including the ASCII diagram and reasoning, to `.gemini-kit/tmp/brainstorms/brainstorm-[timestamp]-[slug].md`.
+- **Persistence:** Save the finalized decision, including the ASCII diagram and reasoning, to `.gemini-kit/handoffs/brainstorms/brainstorm-[timestamp]-[slug].md`.
 - **Handoff:** Output the routing command to hand off to the Planner agent.
