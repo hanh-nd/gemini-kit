@@ -24,13 +24,13 @@ Analyze the Target Input ("{{args}}"). Categorize the user's intent into exactly
 
 ## 3. DETERMINISTIC DELEGATION (TIER 2 & 3)
 
-You must NOT use `grep` or `find` manually. You MUST delegate the heavy lifting to the local heuristic scorer.
+You must NOT use `grep` or `find` manually. You MUST delegate the heavy lifting to the local X-Ray linker.
 
-- Use your shell execution tool to run the following command exactly, passing the Target Input and your determined Intent:
+- Use your shell execution tool to run the following command exactly, passing the Target Input:
   ```bash
-  node scripts/scout-heuristic-scorer.js "{{args}}" --intent="YOUR_DETERMINED_INTENT"
+  node scripts/universal-linker.js "{{args}}"
   ```
-- The script will output a list of **Top N Absolute File Paths** (and potentially an ASCII tree if it's an overview). Wait for this output. Do NOT hallucinate file paths.
+- The script will output a list of **Primary Files** and a **Relationship Graph**. Wait for this output. Do NOT hallucinate file paths.
 
 ## 4. SKILL ACTIVATION & SEMANTIC SYNTHESIS (TIER 4)
 

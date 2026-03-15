@@ -13,7 +13,8 @@ You MUST execute the planning process strictly sequentially.
 - **Mandate:** You are FORBIDDEN from automatically invoking workspace scanning tools immediately. You must first evaluate existing data sources:
   1. **User Provided Context:** Analyze `{{args}}`. Has the user attached any context files (Markdown, Text, JSON) or code snippets?
   2. **Previous Agent Artifacts:** Use the directory-reading tool to check `.gemini-kit/handoffs/` for files prefixed with `scout` or `context`. If present, read them.
-- **Action:** - If sufficient context is gathered from the two sources above: Bypass OS workspace scanning commands entirely and proceed directly to Phase 2.
+  3. **Local X-Ray Report:** Read the output of `universal-linker.js` (if provided in the initiation) to understand the structural topology related to the request.
+- **Action:** - If sufficient context is gathered from the three sources above: Bypass OS workspace scanning commands entirely and proceed directly to Phase 2.
   - ONLY WHEN context is insufficient (e.g., the user only inputted `/plan build feature X` without attachments): you are permitted to use system tools to read `package.json` or the directory structure.
 
 ## Phase 2: Triaging & Gap Analysis

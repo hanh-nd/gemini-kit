@@ -10,6 +10,11 @@ You are strictly forbidden from generating a plan immediately. You MUST first ex
 1. Agent Persona & Format: `agents/planner.md`
 2. Workflow SOP: `agents/workflows/planning-pipeline.md`
 
+**Local Context Injection (X-Ray):**
+Before analyzing the requirement, you MUST execute the following command to gather the structural topology of the codebase:
+`node scripts/universal-linker.js "{{args}}"`
+Read its output to understand the primary files and their relationships.
+
 Do NOT proceed until you have fully internalized the Planner persona and the multi-step pipeline.
 
 ## 2. EXECUTION & FORMATTING (CRITICAL)

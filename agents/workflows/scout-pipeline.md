@@ -11,8 +11,8 @@ You are executing the Code Scout Pipeline. You MUST process the scouting request
 ## Phase 1: Wait for Deterministic Delegation (Tier 2 & 3)
 
 1. **Mandate:** You must NOT use tools to search for files manually.
-2. **Action:** Read the `stdout` (Standard Output) provided by the `scout-heuristic-scorer.js` script from the command initiation.
-3. **Extraction:** Identify the exact Intent (`OVERVIEW`, `MODULE_DEEPDIVE`, or `DATA_FLOW`) and the list of Top N Absolute File Paths returned by the script.
+2. **Action:** Read the `stdout` (Standard Output) provided by the `universal-linker.js` script from the command initiation.
+3. **Extraction:** Identify the **Primary Files** and the **Relationship Graph** returned by the script.
 
 ## Phase 2: Parallel Context Ingestion (Tier 4 - Initial Read)
 
