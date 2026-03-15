@@ -12,6 +12,21 @@ import * as path from 'path';
 export const homeDir = os.homedir();
 
 /**
+ * NEW: Resolve the actual user workspace root.
+ * MCP Servers often run with process.cwd() pointing to the extension folder.
+ * We fallback to INIT_CWD (npm), PWD (Unix shell), or explicit WORKSPACE_DIR.
+ */
+export function getWorkspaceRoot(): string {
+  return (
+    process.env.WORKSPACE_DIR ||
+    process.env.GEMINI_WORKSPACE ||
+    process.env.INIT_CWD ||
+    process.env.PWD ||
+    process.cwd()
+  );
+}
+
+/**
  * Sanitize string for safe use with execFileSync
  * Only removes dangerous shell operators - safe chars like !?#* are allowed
  * since execFileSync doesn't invoke a shell and handles args safely
@@ -66,13 +81,12 @@ const GH_TIMEOUT = parseInt(process.env.GEMINI_KIT_GH_TIMEOUT || '60000', 10);
  *
  * @param timeout Default from GEMINI_KIT_GIT_TIMEOUT env var or 30s
  */
-export function safeGit(args: string[], options?: { timeout?: number }): string {
+export function safeGit(args: string[], options?: { timeout?: number; cwd?: string }): string {
   try {
-    const cwd = process.env.GEMINI_PROJECT_DIR || process.cwd();
-    console.log({ cwd });
     return execFileSync('git', args, {
       encoding: 'utf8',
       timeout: options?.timeout || GIT_TIMEOUT,
+      cwd: options?.cwd || getWorkspaceRoot(),
       maxBuffer: 10 * 1024 * 1024, // 10MB
     });
   } catch (error) {
@@ -88,11 +102,12 @@ export function safeGit(args: string[], options?: { timeout?: number }): string 
  *
  * @param timeout Default from GEMINI_KIT_GH_TIMEOUT env var or 60s
  */
-export function safeGh(args: string[], options?: { timeout?: number }): string {
+export function safeGh(args: string[], options?: { timeout?: number; cwd?: string }): string {
   try {
     return execFileSync('gh', args, {
       encoding: 'utf8',
       timeout: options?.timeout || GH_TIMEOUT,
+      cwd: options?.cwd || getWorkspaceRoot(),
       maxBuffer: 10 * 1024 * 1024,
     });
   } catch (error) {
@@ -109,7 +124,12 @@ export function safeGh(args: string[], options?: { timeout?: number }): string {
 export function commandExists(cmd: string): boolean {
   try {
     const checkCmd = process.platform === 'win32' ? 'where' : 'which';
-    execFileSync(checkCmd, [cmd], { encoding: 'utf8', timeout: 5000, stdio: 'ignore' });
+    execFileSync(checkCmd, [cmd], {
+      encoding: 'utf8',
+      cwd: getWorkspaceRoot(),
+      timeout: 5000,
+      stdio: 'ignore',
+    });
     return true;
   } catch {
     return false;
@@ -185,7 +205,7 @@ export function safeBkt(args: string[], options?: { timeout?: number; cwd?: stri
       encoding: 'utf8',
       timeout: options?.timeout || BKT_TIMEOUT,
       maxBuffer: 10 * 1024 * 1024,
-      cwd: options?.cwd,
+      cwd: options?.cwd || getWorkspaceRoot(),
     });
   } catch (error) {
     const stderr = extractStderr(error);
@@ -211,7 +231,7 @@ export function safeAcli(args: string[], options?: { timeout?: number; cwd?: str
       encoding: 'utf8',
       timeout: options?.timeout || ACLI_TIMEOUT,
       maxBuffer: 10 * 1024 * 1024,
-      cwd: options?.cwd,
+      cwd: options?.cwd || getWorkspaceRoot(),
     });
   } catch (error) {
     const stderr = extractStderr(error);
