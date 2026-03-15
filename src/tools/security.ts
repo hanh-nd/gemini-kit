@@ -68,6 +68,7 @@ const GH_TIMEOUT = parseInt(process.env.GEMINI_KIT_GH_TIMEOUT || '60000', 10);
  */
 export function safeGit(args: string[], options?: { timeout?: number }): string {
   try {
+    console.log('DIR', process.cwd(), process.env.GEMINI_PROJECT_DIR);
     return execFileSync('git', args, {
       encoding: 'utf8',
       timeout: options?.timeout || GIT_TIMEOUT,
