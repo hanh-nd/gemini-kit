@@ -17,13 +17,16 @@ export const homeDir = os.homedir();
  * We fallback to INIT_CWD (npm), PWD (Unix shell), or explicit WORKSPACE_DIR.
  */
 export function getWorkspaceRoot(): string {
-  return (
+  const root =
     process.env.WORKSPACE_DIR ||
     process.env.GEMINI_WORKSPACE ||
     process.env.INIT_CWD ||
     process.env.PWD ||
-    process.cwd()
-  );
+    process.cwd();
+
+  console.error(`[gemini-kit-debug] Resolved Workspace Root: ${root}`);
+
+  return root;
 }
 
 /**
