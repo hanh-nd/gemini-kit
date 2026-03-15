@@ -7,11 +7,11 @@
 [![Tests](https://img.shields.io/badge/tests-291%20passed-brightgreen.svg)]()
 [![Agents](https://img.shields.io/badge/AI%20Agents-5-purple.svg)]()
 [![Skills](https://img.shields.io/badge/Skills-8-orange.svg)]()
-[![Commands](https://img.shields.io/badge/Commands-13-yellow.svg)]()
+[![Commands](https://img.shields.io/badge/Commands-14-yellow.svg)]()
 
 ### 🎯 Transform Your Terminal into an AI Engineering Team
 
-**Gemini-Kit** is an extension for [Gemini CLI](https://github.com/google-gemini/gemini-cli) that brings **5 specialized AI agents** and **13 commands** to help you code 10x faster.
+**Gemini-Kit** is an extension for [Gemini CLI](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) that brings **5 specialized AI agents** and **14 commands** to help you code 10x faster.
 
 [🚀 Quick Start](#-quick-start) • [🤖 Agents](#-agents) • [🛠️ Skills](#️-skills) • [⌨️ Commands](#️-commands)
 
@@ -40,7 +40,7 @@
 | ---------------- | ----- | ------------------------------------------------------ |
 | 🤖 **AI Agents** | 5     | Specialized roles (Scout, Planner, Coder, Reviewer...) |
 | 🛠️ **Skills**    | 8     | Knowledge modules (React, Security, Testing...)        |
-| ⌨️ **Commands**  | 13    | Slash commands for every task                          |
+| ⌨️ **Commands**  | 14    | Slash commands for every task                          |
 | 🔒 **Security**  | 30+   | Secret detection patterns                              |
 | 📜 **Scripts**   | 2     | Core automation scripts                                |
 
@@ -151,7 +151,7 @@ Modular capabilities that can be activated on-demand:
 | Lint     | 0 errors     |
 | Agents   | 5            |
 | Skills   | 8 categories |
-| Commands | 13           |
+| Commands | 14           |
 | Scripts  | 2            |
 | Coverage | ~81%         |
 

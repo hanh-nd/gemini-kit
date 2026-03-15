@@ -2,7 +2,7 @@
 
 This directory contains all **custom slash commands** for the Gemini-Kit extension. Commands are defined as TOML files and automatically loaded by Gemini CLI.
 
-## Available Commands (13)
+## Available Commands (14)
 
 | Command | File | Description | Status |
 |---------|------|-------------|--------|
@@ -11,6 +11,7 @@ This directory contains all **custom slash commands** for the Gemini-Kit extensi
 | `/code` | `code.toml` | Implement features based on a plan | ✅ Active |
 | `/review-pr` | `review-pr.toml` | Review a Pull Request in detail | ✅ Active |
 | `/review-changes` | `review-changes.toml` | Review local working tree changes | ✅ Active |
+| `/git` | `git.toml` | Context-aware Git wrapper & orchestrator | ✅ Active |
 | `/brainstorm` | `brainstorm.toml` | Strategic design trade-offs | ✅ Active |
 | `/do` | `do.toml` | Auto-orchestrate complex tasks | ✅ Active |
 | `/ticket` | `ticket.toml` | Orchestrate workflow from a Jira ticket | ✅ Active |

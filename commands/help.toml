@@ -24,7 +24,7 @@ If {{args}} is "hooks", explain the 5 lifecycle hooks.
 {{else}}
 # 🧰 Gemini-Kit Help
 
-## 📋 Available Commands (13)
+## 📋 Available Commands (14)
 
 ### 🏗️ Engineering Workflow
 | Command | Description |
@@ -34,6 +34,7 @@ If {{args}} is "hooks", explain the 5 lifecycle hooks.
 | `/code` | Implement features based on a plan |
 | `/review-pr` | Review a Pull Request in detail |
 | `/review-changes` | Review local working tree changes |
+| `/git` | Context-aware Git wrapper & orchestrator |
 | `/brainstorm` | Strategic design trade-offs |
 
 ### 🚀 Orchestration & Project

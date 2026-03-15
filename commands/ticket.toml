@@ -8,9 +8,10 @@ prompt = """
 
 ## 1. DATA ACQUISITION & ENVIRONMENT SENSING
 
-1. **Fetch:** Use the system tool `kit_jira_get_ticket(ticketId: "{{args}}")` to retrieve Summary, Description, and Acceptance Criteria.
-2. **Context (No Hardcoding):** Use your shell tool to run `ls -1A | head -n 15` to list the root directory files. Infer the tech stack based on what you see (e.g., package.json, go.mod, composer.json). Do not assume any specific language.
-3. **Persistence:** Save the raw ticket data strictly to `.gemini-kit/tmp/tickets/{{args}}.md`. Ensure the directory exists first by running `mkdir -p .gemini-kit/tmp/tickets`.
+1. **Input Normalization:** Analyze the `Target Input`. Extract ONLY the Jira Issue Key [TICKET_ID] (e.g., `PROJ-123` matching the regex `[A-Z]+-[0-9]+`).
+2. **Fetch:** Use the system tool `kit_jira_get_ticket(ticketId: "{{TICKET_ID}}")` to retrieve Summary, Description, and Acceptance Criteria.
+3. **Context (No Hardcoding):** Use your shell tool to run `ls -1A | head -n 15` to list the root directory files. Infer the tech stack based on what you see (e.g., package.json, go.mod, composer.json). Do not assume any specific language.
+4. **Persistence:** Save the raw ticket data strictly to `.gemini-kit/tmp/tickets/{{TICKET_ID}}.md`. Ensure the directory exists first by running `mkdir -p .gemini-kit/tmp/tickets`.
 
 ## 2. ORCHESTRATION LOGIC (THE GOD OBJECT & QUALITY GATE)
 
@@ -31,7 +32,7 @@ You MUST output ONLY the Orchestration Report. Do NOT output conversational fill
 
 Use EXACTLY this template:
 
-### 🎟️ Orchestration Report: {{args}}
+### 🎟️ Orchestration Report: {{TICKET_ID}}
 
 - **Type:** [Classified Intent or INCOMPLETE_REQUIREMENT]
 - **Quality Audit:** [PASSED | FAILED - Missing Acceptance Criteria]
@@ -39,8 +40,8 @@ Use EXACTLY this template:
 
 ### 🚀 Recommended Next Action
 
-[If Quality PASSED]: Run `/[plan | code] @.gemini-kit/tmp/tickets/{{args}}.md`
-[If Quality FAILED]: Run `/brainstorm @.gemini-kit/tmp/tickets/{{args}}.md` to define requirements, and answer these specific questions:
+[If Quality PASSED]: Run `/[plan | code] @.gemini-kit/tmp/tickets/{{TICKET_ID}}.md`
+[If Quality FAILED]: Run `/brainstorm @.gemini-kit/tmp/tickets/{{TICKET_ID}}.md` to define requirements, and answer these specific questions:
 
 1. [Missing critical info 1]
 2. [Missing critical info 2]
