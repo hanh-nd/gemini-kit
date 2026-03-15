@@ -39,11 +39,10 @@ mkdir -p skills/<skill-name>/docs
 # 2. Scaffold Master Bootstrapper
 
 ## cat << 'EOF' > skills/<skill-name>/SKILL.md
-
+---
 name: <skill-name>
 description: <short-description>
 version: 1.0.0
-
 ---
 
 # 🛠️ Skill: <Skill Title>
