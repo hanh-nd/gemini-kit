@@ -19,7 +19,6 @@ vi.mock('../tools/security.js', () => ({
   findFilesAsync: vi.fn().mockResolvedValue(['index.ts', 'utils.ts']),
   safeGit: vi.fn().mockReturnValue('abc123 commit 1'),
   sanitize: vi.fn((x: string) => x),
-  homeDir: '/.geminit-kit/handoffs/test-home',
 }));
 
 vi.mock('../tools/integration.js', () => ({

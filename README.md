@@ -4,14 +4,14 @@
 
 [![Version](https://img.shields.io/badge/version-4.0.0-blue.svg)](https://github.com/nth5693/gemini-kit/releases)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-291%20passed-brightgreen.svg)]()
+[![Tests](https://img.shields.io/badge/tests-44%20passed-brightgreen.svg)]()
 [![Agents](https://img.shields.io/badge/AI%20Agents-5-purple.svg)]()
 [![Skills](https://img.shields.io/badge/Skills-8-orange.svg)]()
-[![Commands](https://img.shields.io/badge/Commands-14-yellow.svg)]()
+[![Commands](https://img.shields.io/badge/Commands-13-yellow.svg)]()
 
 ### 🎯 Transform Your Terminal into an AI Engineering Team
 
-**Gemini-Kit** is an extension for [Gemini CLI](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) that brings **5 specialized AI agents** and **14 commands** to help you code 10x faster.
+**Gemini-Kit** is an extension for [Gemini CLI](https://github.com/google-gemini/gemini-cli) that brings **5 specialized AI agents** and **13 core commands** to help you code 10x faster.
 
 [🚀 Quick Start](#-quick-start) • [🤖 Agents](#-agents) • [🛠️ Skills](#️-skills) • [⌨️ Commands](#️-commands)
 
@@ -40,17 +40,14 @@
 | ---------------- | ----- | ------------------------------------------------------ |
 | 🤖 **AI Agents** | 5     | Specialized roles (Scout, Planner, Coder, Reviewer...) |
 | 🛠️ **Skills**    | 8     | Knowledge modules (React, Security, Testing...)        |
-| ⌨️ **Commands**  | 14    | Slash commands for every task                          |
+| ⌨️ **Commands**  | 13    | Slash commands for every task                          |
 | 🔒 **Security**  | 30+   | Secret detection patterns                              |
 | 📜 **Scripts**   | 2     | Core automation scripts                                |
 
 ### Key Features
 
 - **🧠 Learning System**: AI learns from your feedback. Correct once, it remembers forever
-- **🎯 Multi-agent Orchestration**: Orchestrator coordinates multiple agents for complex tasks
-- **💾 Auto-checkpoint**: Automatic Git backup before changes
 - **🔒 Security Hooks**: Real-time blocking of secrets (30+ patterns)
-- **📢 Notifications**: Discord & Telegram integration
 
 ---
 
@@ -98,13 +95,13 @@ gemini
 
 Gemini-Kit includes 5 specialized agents. Use `/help` to see full details for each.
 
-| Agent            | Purpose                                                    |
-| ---------------- | ---------------------------------------------------------- |
-| **Scout**        | Terrain mapper. Explores codebase structure and context.   |
-| **Planner**      | Architect. Creates detailed implementation blueprints.     |
-| **Coder**        | Builder. Writes clean, production-ready code.              |
-| **Reviewer**     | Quality gate. Performs deep-dive technical audits.         |
-| **Brainstormer** | Strategic thinker. Explores design trade-offs.             |
+| Agent            | Purpose                                                  |
+| ---------------- | -------------------------------------------------------- |
+| **Scout**        | Terrain mapper. Explores codebase structure and context. |
+| **Planner**      | Architect. Creates detailed implementation blueprints.   |
+| **Coder**        | Builder. Writes clean, production-ready code.            |
+| **Reviewer**     | Quality gate. Performs deep-dive technical audits.       |
+| **Brainstormer** | Strategic thinker. Explores design trade-offs.           |
 
 ---
 
@@ -125,21 +122,20 @@ Modular capabilities that can be activated on-demand:
 
 ## ⌨️ Commands
 
-| Command           | Purpose                                              |
-| ----------------- | ---------------------------------------------------- |
-| `/scout`          | Explore and map codebase structure                   |
-| `/plan`           | Create detailed implementation plans                 |
-| `/code`           | Implement features based on a plan                   |
-| `/review-pr`      | Review a Pull Request                                |
-| `/review-changes` | Review local working tree changes                    |
-| `/ticket`         | Start workflow from a Jira ticket                    |
-| `/brainstorm`     | Strategic design trade-offs                          |
-| `/do`             | Auto-orchestrate complex tasks                       |
-| `/session`        | Manage team sessions                                 |
-| `/mcp`            | Manage MCP tool configuration                        |
-| `/skill`          | Load specialized expertise                           |
-| `/kit-setup`      | Initialize Gemini-Kit in a new repo                  |
-| `/help`           | List available commands and roles                    |
+| Command           | Purpose                              |
+| ----------------- | ------------------------------------ |
+| `/scout`          | Explore and map codebase structure   |
+| `/plan`           | Create detailed implementation plans |
+| `/code`           | Implement features based on a plan   |
+| `/review-pr`      | Review a Pull Request                |
+| `/review-changes` | Review local working tree changes    |
+| `/ticket`         | Start workflow from a Jira ticket    |
+| `/brainstorm`     | Strategic design trade-offs          |
+| `/do`             | Auto-orchestrate complex tasks       |
+| `/mcp`            | Manage MCP tool configuration        |
+| `/skill`          | Load specialized expertise           |
+| `/kit-setup`      | Initialize Gemini-Kit in a new repo  |
+| `/help`           | List available commands and roles    |
 
 ---
 
@@ -147,11 +143,11 @@ Modular capabilities that can be activated on-demand:
 
 | Metric   | Value        |
 | -------- | ------------ |
-| Tests    | 291 passing  |
+| Tests    | 44 passing   |
 | Lint     | 0 errors     |
 | Agents   | 5            |
 | Skills   | 8 categories |
-| Commands | 14           |
+| Commands | 13           |
 | Scripts  | 2            |
 | Coverage | ~81%         |
 

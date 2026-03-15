@@ -4,27 +4,9 @@
  */
 
 import { execFileSync } from 'child_process';
-import * as os from 'os';
 import * as fs from 'fs';
 import * as path from 'path';
-
-// Cross-platform home directory
-export const homeDir = os.homedir();
-
-/**
- * NEW: Resolve the actual user workspace root.
- * MCP Servers often run with process.cwd() pointing to the extension folder.
- * We fallback to INIT_CWD (npm), PWD (Unix shell), or explicit WORKSPACE_DIR.
- */
-export function getWorkspaceRoot(): string {
-  return (
-    process.env.WORKSPACE_DIR ||
-    process.env.GEMINI_WORKSPACE ||
-    process.env.INIT_CWD ||
-    process.env.PWD ||
-    process.cwd()
-  );
-}
+import { getWorkspaceRoot } from '../utils.js';
 
 /**
  * Sanitize string for safe use with execFileSync

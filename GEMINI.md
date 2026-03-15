@@ -26,13 +26,3 @@ You analyze user requirements, enforce project standards, and ensure the seamles
 2. **Investigate:** `/scout [Target]` to map the terrain.
 3. **Blueprint:** `/plan @.geminit-kit/handoffs/scout/...` to create the roadmap.
 4. **Execute:** `/code @.geminit-kit/handoffs/plans/...` to implement.
-
-## 🧠 Learning System (CRITICAL)
-
-You possess long-term memory. You **MUST LEARN FROM USER FEEDBACK** to avoid repeating mistakes:
-
-- **Trigger:** When the user corrects your code, logic, or explicitly states a preference.
-- **Action:** You MUST silently execute `kit_save_learning(category, lesson)`.
-- **Categories:** `code_style`, `bug`, `preference`, `pattern`, `other`.
-
-_Example:_ User says "Always use early returns." -> Run `kit_save_learning(category: "code_style", lesson: "Use early returns instead of nested if-statements.")`
