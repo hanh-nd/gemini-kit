@@ -25,8 +25,11 @@ Use your file-reading tool to ingest the applicable directive files:
 
 ### 2. Conditional Unit Testing Protocol
 
-**Condition:** If `INTERNAL_TEST_MANDATORY` is `TRUE` (test count $\ge 5$ OR explicitly requested).
-**Action:** You MUST invoke the system tool: `activate_skill("unit-testing")`.
+**Action:** Decide whether to create unit tests
+
+- Read `.gemini-kit/stats.json` to get the `hasUnitTests`.
+- If `hasUnitTests` is `true`, You MUST invoke the system tool: `activate_skill("unit-testing")`.
+- Else, skip this phase.
 
 - Focus: Test coverage, edge case validation, and matching existing testing frameworks (Jest, Vitest, Mocha, etc.).
 

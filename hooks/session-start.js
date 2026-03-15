@@ -109,7 +109,10 @@ async function updateProjectStats() {
   stats.sessions++;
 
   // Update test count
-  stats.testCount = countTests(projectDir);
+  const testCount = countTests(projectDir);
+  if (testCount > 5) {
+    stats.hasUnitTests = true;
+  }
 
   fs.writeFileSync(statsPath, JSON.stringify(stats, null, 2));
 }

@@ -8,14 +8,6 @@ prompt = """
 
 ---
 
-## ⚠️ Step 0: CREATE CHECKPOINT (MANDATORY)
-**BEFORE DOING ANYTHING**, you MUST secure the current state:
-1. Call `kit_create_checkpoint(name: "{{args}}")` to save the current codebase state.
-2. Remember the returned **Checkpoint ID**.
-3. If any step in your pipeline fails critically, you will use this ID to rollback.
-
----
-
 ## Step 1: Analyze Task & Environment
 You are the Orchestrator. Design a precise execution pipeline based ONLY on AVAILABLE tools. DO NOT hallucinate commands.
 
@@ -33,21 +25,7 @@ You are the Orchestrator. Design a precise execution pipeline based ONLY on AVAI
 
 ---
 
-## 🔄 Step 3: ROLLBACK RULES (Safety Net)
-During the execution of your pipeline, if ANY of the following occur, you **MUST** call `kit_restore_checkpoint`:
-1. ❌ Tests generated fail and cannot be fixed after 2 attempts.
-2. ❌ The build or compiler throws critical errors after `/code`.
-3. ❌ The user explicitly types "rollback", "undo", or "abort".
-4. ❌ `/plan` detects that the required fix is too destructive and risky to proceed.
-
-**Post-Rollback Protocol:**
-- Notify the user that the system state has been restored.
-- Explain the exact failure (e.g., "Unit tests failed on edge cases").
-- Suggest an alternative `/plan` or ask for human intervention.
-
----
-
-## Step 4: Announce & Execute
+## Step 3: Announce & Execute
 
 Analyze the task "{{args}}" and output your decision using EXACTLY this format:
 

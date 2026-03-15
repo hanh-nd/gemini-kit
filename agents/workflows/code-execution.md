@@ -12,11 +12,6 @@ You are executing the Code Implementation Pipeline. You MUST process the impleme
 
 1. **Mandate:** Before writing code, you must understand the target and the constraints.
 2. **Action:** Read the `Target Input` (Implementation Plan). If the input is a file path, use `read_file` to ingest its content.
-3. **Scoring:** You must determine the `test_count` to decide the rigor of verification.
-   - Read `.gemini-kit/stats.json` to get the `testCount`.
-   - Use the `testCount` value as your `test_count`.
-   - If `test_count >= 5`: Set `INTERNAL_TEST_MANDATORY = TRUE`.
-   - Else: Set `INTERNAL_TEST_MANDATORY = FALSE`.
 
 ## Phase 2: Targeted Context Ingestion
 
@@ -32,11 +27,14 @@ You are executing the Code Implementation Pipeline. You MUST process the impleme
 
 ## Phase 4: Quality Gate & Testing (Conditional)
 
-1. **Action:** If `INTERNAL_TEST_MANDATORY` is `TRUE`, load `skills/unit-testing/SKILL.md`.
-2. **Implementation:**
+1. **Action:** Decide whether to create unit tests
+   - Read `.gemini-kit/stats.json` to get the `hasUnitTests`.
+   - If `hasUnitTests` is `true`, load `skills/unit-testing/SKILL.md`.
+   - Else, skip this phase.
+2. **Bypass Rule:** If the user ask to skip test generation, skip this phase but log a "Testing Skipped" note in the summary.
+3. **Implementation:**
    - Create or update `.test` or `.spec` files for the modified logic.
    - Ensure the tests cover the primary success path and at least two edge cases defined in the Plan.
-3. **Bypass Rule:** If the user ask to skip test generation, skip this phase but log a "Testing Skipped" note in the summary.
 
 ## Phase 5: Validation & Synthesis
 

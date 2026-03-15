@@ -51,7 +51,13 @@ export function registerGitTools(server: McpServer): void {
         const checkpointId = `kit-${timestamp}-${safeName}`;
 
         safeGit(['add', '-A']);
-        safeGit(['commit', '-m', `checkpoint: ${sanitize(name)}`, '--allow-empty']);
+        safeGit([
+          'commit',
+          '-m',
+          `chore: checkpoint ${sanitize(name)}`,
+          '--allow-empty',
+          '--no-verify',
+        ]);
         safeGit(['tag', checkpointId]);
 
         return {
