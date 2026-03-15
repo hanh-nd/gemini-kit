@@ -11,8 +11,6 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 
 // Import modular tool registrations
-import { registerGitTools } from './tools/git.js';
-import { registerKnowledgeTools } from './tools/knowledge.js';
 import { registerIntegrationTools } from './tools/integration.js';
 import { registerCoreTools } from './tools/core.js';
 
@@ -25,8 +23,6 @@ const server = new McpServer({
 // REGISTER MODULAR TOOLS
 // ═══════════════════════════════════════════════════════════════
 
-registerGitTools(server); // Checkpoint, restore
-registerKnowledgeTools(server); // Learning, diff, search tools
 registerIntegrationTools(server); // GitHub, Jira tools
 registerCoreTools(server); // Extension info, skills, prompts
 

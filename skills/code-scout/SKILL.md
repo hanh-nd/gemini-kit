@@ -14,15 +14,15 @@ You have ingested the raw code files. Before writing the report, you MUST load t
 Use your file-reading tool to ingest EXACTLY ONE of the following deep-dive directive files:
 
 - **Condition A (Intent is OVERVIEW):**
-  Read `skills/code-scout/docs/01-overview-strategy.md`
+  Read `skills/code-scout/references/01-overview-strategy.md`
   _(Focuses on tech stack extraction, folder boundaries, and global configs)_
 
 - **Condition B (Intent is MODULE_DEEPDIVE):**
-  Read `skills/code-scout/docs/02-module-deepdive.md`
+  Read `skills/code-scout/references/02-module-deepdive.md`
   _(Focuses on identifying domain logic, data models, and module-specific services)_
 
 - **Condition C (Intent is DATA_FLOW):**
-  Read `skills/code-scout/docs/03-dataflow-tracing.md`
+  Read `skills/code-scout/references/03-dataflow-tracing.md`
   _(Focuses on tracing execution paths from Entry Point -> Controller -> Service -> State/DB, including Alias resolutions)_
 
 Do NOT proceed with the synthesis until you have read the applicable constraint file.

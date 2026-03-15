@@ -22,26 +22,12 @@ vi.mock('../tools/security.js', () => ({
   homeDir: '/.geminit-kit/handoffs/test-home',
 }));
 
-// Mock modular tool modules
-vi.mock('../tools/git.js', () => ({
-  registerGitTools: vi.fn(),
-  checkGitAvailable: vi.fn().mockReturnValue({ available: true, version: 'git 2.40' }),
-}));
-
-vi.mock('../tools/knowledge.js', () => ({
-  registerKnowledgeTools: vi.fn(),
-}));
-
 vi.mock('../tools/integration.js', () => ({
   registerIntegrationTools: vi.fn(),
 }));
 
 vi.mock('../tools/core.js', () => ({
   registerCoreTools: vi.fn(),
-}));
-
-vi.mock('../tools/orchestrator.js', () => ({
-  initOrchestrator: vi.fn(),
 }));
 
 // Mock MCP server

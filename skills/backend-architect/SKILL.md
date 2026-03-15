@@ -34,7 +34,7 @@ Evaluate the proposed or existing design against the following pillars:
 
 ### Phase 3: Synthesis & Documentation
 
-Provide actionable blueprints or refactoring advice. Reference specialized docs in `docs/` for deep-dives.
+Provide actionable blueprints or refactoring advice. Reference specialized references in `references/` for deep-dives.
 
 ## 📚 Specialized Knowledge Base
 

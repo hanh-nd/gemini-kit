@@ -13,26 +13,12 @@ vi.mock('fs', () => ({
     readFileSync: vi.fn(),
 }));
 
-// Mock modular tool modules
-vi.mock('../tools/git.js', () => ({
-    registerGitTools: vi.fn(),
-    checkGitAvailable: vi.fn().mockReturnValue({ available: true, version: 'git 2.40' }),
-}));
-
-vi.mock('../tools/knowledge.js', () => ({
-    registerKnowledgeTools: vi.fn(),
-}));
-
 vi.mock('../tools/integration.js', () => ({
     registerIntegrationTools: vi.fn(),
 }));
 
 vi.mock('../tools/core.js', () => ({
     registerCoreTools: vi.fn(),
-}));
-
-vi.mock('../tools/orchestrator.js', () => ({
-    initOrchestrator: vi.fn(),
 }));
 
 describe('Kit Server - getFileExtensions logic', () => {

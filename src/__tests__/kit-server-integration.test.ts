@@ -19,14 +19,6 @@ vi.mock('@modelcontextprotocol/sdk/server/stdio.js', () => ({
 }));
 
 // Mock all tool registration modules
-vi.mock('../tools/git.js', () => ({
-    registerGitTools: vi.fn(),
-}));
-
-vi.mock('../tools/knowledge.js', () => ({
-    registerKnowledgeTools: vi.fn(),
-}));
-
 vi.mock('../tools/integration.js', () => ({
     registerIntegrationTools: vi.fn(),
 }));
@@ -50,17 +42,7 @@ describe('Kit Server Integration', () => {
     });
 
     describe('Tool Registration', () => {
-        it('should register git tools', async () => {
-            const { registerGitTools } = await import('../tools/git.js');
-            expect(registerGitTools).toBeDefined();
-            expect(typeof registerGitTools).toBe('function');
-        });
 
-        it('should register knowledge tools', async () => {
-            const { registerKnowledgeTools } = await import('../tools/knowledge.js');
-            expect(registerKnowledgeTools).toBeDefined();
-            expect(typeof registerKnowledgeTools).toBe('function');
-        });
 
         it('should register integration tools', async () => {
             const { registerIntegrationTools } = await import('../tools/integration.js');
@@ -79,16 +61,6 @@ describe('Kit Server Integration', () => {
         it('should have StdioServerTransport available', async () => {
             const { StdioServerTransport } = await import('@modelcontextprotocol/sdk/server/stdio.js');
             expect(StdioServerTransport).toBeDefined();
-        });
-    });
-
-    describe('Error Handling', () => {
-        it('should handle missing tool modules gracefully', async () => {
-            // Test that our mock structure works
-            const { registerGitTools } = await import('../tools/git.js');
-
-            // Should not throw when called with mock
-            expect(() => registerGitTools({} as never)).not.toThrow();
         });
     });
 });

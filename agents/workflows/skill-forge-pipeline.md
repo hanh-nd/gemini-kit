@@ -24,7 +24,7 @@ The `planner` is provided with the final Requirement Spec from Phase 1.
 
 **Action:**
 
-1. The `planner` acts as the Architect. It must design the content for the Master Bootstrapper (`skills/<skill-name>/SKILL.md`) and any necessary sub-documents (`docs/*.md`) based on the spec.
+1. The `planner` acts as the Architect. It must design the content for the Master Bootstrapper (`skills/<skill-name>/SKILL.md`) and any necessary sub-documents (`references/*.md`) based on the spec.
 2. The `planner` MUST NOT output the markdown files loosely. It MUST generate exactly ONE executable bash script block using `mkdir` and `cat << 'EOF'` to physically scaffold the files.
 
 **Formatting Enforcement:**
@@ -34,7 +34,7 @@ The `planner` MUST format the generation exactly like this:
 
 # 1. Create directories
 
-mkdir -p skills/<skill-name>/docs
+mkdir -p skills/<skill-name>/references
 
 # 2. Scaffold Master Bootstrapper
 
