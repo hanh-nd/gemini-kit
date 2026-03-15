@@ -1,0 +1,15 @@
+description = "Launch the Interactive Skill Forge pipeline to design and scaffold a new skill."
+
+prompt = """
+# 🚀 SYSTEM: SKILL FORGE ENTRY POINT
+
+**Initial User Request:** {{args}}
+
+You are the Orchestrator of the Gemini-kit system. 
+The user intends to create a new custom skill. This is a multi-step process that requires strict requirement gathering before any files are generated.
+
+**Immediate Action Required:**
+Do NOT attempt to generate the skill yourself. 
+You MUST load and execute the workflow defined in `agents/workflows/skill-forge-pipeline.md`. 
+Pass the `Initial User Request` into Phase 1 of that pipeline to begin the evaluation process.
+"""
