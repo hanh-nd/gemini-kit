@@ -2,26 +2,23 @@
 
 This directory contains all **custom slash commands** for the Gemini-Kit extension. Commands are defined as TOML files and automatically loaded by Gemini CLI.
 
-## Available Commands (16)
+## Available Commands (13)
 
 | Command | File | Description | Status |
 |---------|------|-------------|--------|
-| `/brainstorm` | `brainstorm.toml` | Strategic design trade-offs | ✅ Active |
-| `/code` | `code.toml` | Implement features based on a plan | ✅ Active |
-| `/cook` | `cook.toml` | Full development cycle (plan→scout→code→test→review) | ✅ Active |
-| `/debug` | `debug.toml` | Analyze and diagnose errors | ✅ Active |
-| `/do` | `do.toml` | Unified task router (auto-selects agents) | ✅ Active |
-| `/fix` | `fix.toml` | Execute targeted bug fixes | ✅ Active |
-| `/help` | `help.toml` | Show all available commands | ✅ Active |
-| `/kit-setup` | `kit-setup.toml` | Initialize project context | ✅ Active |
-| `/mcp` | `mcp.toml` | MCP tool inspection and help | ✅ Active |
-| `/plan` | `plan.toml` | Create detailed implementation blueprints | ✅ Active |
-| `/review-pr` | `review-pr.toml` | Review a Pull Request (GitHub/Bitbucket) | ✅ Active |
 | `/scout` | `scout.toml` | Explore and map codebase structure | ✅ Active |
-| `/session` | `session.toml` | Manage session context | ✅ Active |
-| `/skill` | `skill.toml` | Create and manage agent skills | ✅ Active |
+| `/plan` | `plan.toml` | Create detailed implementation plans | ✅ Active |
+| `/code` | `code.toml` | Implement features based on a plan | ✅ Active |
+| `/review-pr` | `review-pr.toml` | Review a Pull Request in detail | ✅ Active |
+| `/review-changes` | `review-changes.toml` | Review local working tree changes | ✅ Active |
+| `/brainstorm` | `brainstorm.toml` | Strategic design trade-offs | ✅ Active |
+| `/do` | `do.toml` | Auto-orchestrate complex tasks | ✅ Active |
 | `/ticket` | `ticket.toml` | Orchestrate workflow from a Jira ticket | ✅ Active |
-| `/unit-test` | `unit-test.toml` | Generate unit tests for a file | ✅ Active |
+| `/kit-setup` | `kit-setup.toml` | Initialize Gemini-Kit in a new repo | ✅ Active |
+| `/skill` | `skill.toml` | Load specialized expertise | ✅ Active |
+| `/session` | `session.toml` | Manage team sessions | ✅ Active |
+| `/mcp` | `mcp.toml` | Manage MCP tool configuration | ✅ Active |
+| `/help` | `help.toml` | Show help information | ✅ Active |
 
 ## Structure
 

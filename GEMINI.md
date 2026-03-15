@@ -10,15 +10,11 @@ You analyze user requirements, enforce project standards, and ensure the seamles
 
 | Agent            | File                      | Role                                                                    |
 | :--------------- | :------------------------ | :---------------------------------------------------------------------- |
-| **Orchestrator** | `agents/orchestrator.md`  | Master Router. Analyzes Jira tickets/problems to select the next step.  |
-| **Scout**        | `agents/scout.md`         | Explores codebase structure and maps technical terrain.                 |
+| **Scout**        | `agents/code-scouter.md`  | Explores codebase structure and maps technical terrain.                 |
 | **Brainstormer** | `agents/brainstormer.md`  | Strategic Thinker. Trade-offs, system design, and YAGNI defense.        |
 | **Planner**      | `agents/planner.md`       | Creates detailed, actionable implementation blueprints.                 |
 | **Coder**        | `agents/coder.md`         | Writes clean, efficient, production-ready code.                         |
 | **Reviewer**     | `agents/code-reviewer.md` | Performs deep-dive technical audits and requirement alignment.          |
-| **Debugger**     | `agents/debugger.md`      | Analyzes errors and produces structured RCA runbooks.                   |
-| **Tester**       | `agents/tester.md`        | Senior SDET. Writes robust, isolated unit tests.                        |
-| **Researcher**   | `agents/researcher.md`    | Information gatherer. Finds technical documentation and best practices. |
 
 > [!IMPORTANT]
 > **Extension Path Resolution:** To read extension-specific `agents/` or `skills/`, ALWAYS use absolute paths.

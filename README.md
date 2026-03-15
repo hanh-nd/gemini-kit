@@ -5,13 +5,13 @@
 [![Version](https://img.shields.io/badge/version-4.0.0-blue.svg)](https://github.com/nth5693/gemini-kit/releases)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/tests-291%20passed-brightgreen.svg)]()
-[![Agents](https://img.shields.io/badge/AI%20Agents-9-purple.svg)]()
-[![Skills](https://img.shields.io/badge/Skills-7-orange.svg)]()
-[![Commands](https://img.shields.io/badge/Commands-16-yellow.svg)]()
+[![Agents](https://img.shields.io/badge/AI%20Agents-5-purple.svg)]()
+[![Skills](https://img.shields.io/badge/Skills-8-orange.svg)]()
+[![Commands](https://img.shields.io/badge/Commands-13-yellow.svg)]()
 
 ### 🎯 Transform Your Terminal into an AI Engineering Team
 
-**Gemini-Kit** is an extension for [Gemini CLI](https://github.com/google-gemini/gemini-cli) that brings **9 specialized AI agents** and **16 commands** to help you code 10x faster.
+**Gemini-Kit** is an extension for [Gemini CLI](https://github.com/google-gemini/gemini-cli) that brings **5 specialized AI agents** and **13 commands** to help you code 10x faster.
 
 [🚀 Quick Start](#-quick-start) • [🤖 Agents](#-agents) • [🛠️ Skills](#️-skills) • [⌨️ Commands](#️-commands)
 
@@ -38,11 +38,11 @@
 
 | Feature          | Count | Description                                            |
 | ---------------- | ----- | ------------------------------------------------------ |
-| 🤖 **AI Agents** | 9     | Specialized roles (Scout, Planner, Coder, Reviewer...) |
-| 🛠️ **Skills**    | 7     | Knowledge modules (React, Security, Testing...)        |
-| ⌨️ **Commands**  | 16    | Slash commands for every task                          |
+| 🤖 **AI Agents** | 5     | Specialized roles (Scout, Planner, Coder, Reviewer...) |
+| 🛠️ **Skills**    | 8     | Knowledge modules (React, Security, Testing...)        |
+| ⌨️ **Commands**  | 13    | Slash commands for every task                          |
 | 🔒 **Security**  | 30+   | Secret detection patterns                              |
-| 📜 **Scripts**   | 3     | Core automation scripts                                |
+| 📜 **Scripts**   | 2     | Core automation scripts                                |
 
 ### Key Features
 
@@ -96,18 +96,14 @@ gemini
 
 ## 🤖 Agents
 
-Gemini-Kit includes 8 specialized agents. Use `/help` to see full details for each.
+Gemini-Kit includes 5 specialized agents. Use `/help` to see full details for each.
 
 | Agent            | Purpose                                                    |
 | ---------------- | ---------------------------------------------------------- |
-| **Orchestrator** | Master router. Analyzes tickets to select the next agent.  |
 | **Scout**        | Terrain mapper. Explores codebase structure and context.   |
 | **Planner**      | Architect. Creates detailed implementation blueprints.     |
 | **Coder**        | Builder. Writes clean, production-ready code.              |
 | **Reviewer**     | Quality gate. Performs deep-dive technical audits.         |
-| **Debugger**     | Problem solver. Analyzes errors and produces RCA runbooks. |
-| **Tester**       | Senior SDET. Writes robust, isolated unit tests.           |
-| **Researcher**   | Information gatherer. Finds technical documentation.       |
 | **Brainstormer** | Strategic thinker. Explores design trade-offs.             |
 
 ---
@@ -116,29 +112,34 @@ Gemini-Kit includes 8 specialized agents. Use `/help` to see full details for ea
 
 Modular capabilities that can be activated on-demand:
 
-- `code-review`: Technical audit checklists
-- `code-fix`: Minimal-scope bug fixing
+- `code-review`: Technical audit checklists and PR reviews
+- `code-scout`: Advanced codebase exploration and mapping
+- `coding-common`: Clean code rules and implementation conventions
 - `unit-testing`: Test generation and verification
 - `backend-architect`: Scalable API and DB design
 - `brainstorming`: Requirement validation and strategic design
-- `requirements-alignment`: Acceptance Criteria verification
 - `security`: Secure coding and secret auditing
+- `static-code-analysis`: Rule-based code quality auditing
 
 ---
 
 ## ⌨️ Commands
 
-| Command       | Purpose                              |
-| ------------- | ------------------------------------ |
-| `/scout`      | Explore and map codebase structure   |
-| `/plan`       | Create detailed implementation plans |
-| `/code`       | Implement features based on a plan   |
-| `/review-pr`  | Review a Pull Request                |
-| `/debug`      | Analyze and diagnose errors          |
-| `/fix`        | Execute targeted bug fixes           |
-| `/unit-test`  | Generate unit tests for a file       |
-| `/ticket`     | Start workflow from a Jira ticket    |
-| `/brainstorm` | Strategic design trade-offs          |
+| Command           | Purpose                                              |
+| ----------------- | ---------------------------------------------------- |
+| `/scout`          | Explore and map codebase structure                   |
+| `/plan`           | Create detailed implementation plans                 |
+| `/code`           | Implement features based on a plan                   |
+| `/review-pr`      | Review a Pull Request                                |
+| `/review-changes` | Review local working tree changes                    |
+| `/ticket`         | Start workflow from a Jira ticket                    |
+| `/brainstorm`     | Strategic design trade-offs                          |
+| `/do`             | Auto-orchestrate complex tasks                       |
+| `/session`        | Manage team sessions                                 |
+| `/mcp`            | Manage MCP tool configuration                        |
+| `/skill`          | Load specialized expertise                           |
+| `/kit-setup`      | Initialize Gemini-Kit in a new repo                  |
+| `/help`           | List available commands and roles                    |
 
 ---
 
@@ -148,10 +149,10 @@ Modular capabilities that can be activated on-demand:
 | -------- | ------------ |
 | Tests    | 291 passing  |
 | Lint     | 0 errors     |
-| Agents   | 9            |
-| Skills   | 7 categories |
-| Commands | 16           |
-| Scripts  | 3            |
+| Agents   | 5            |
+| Skills   | 8 categories |
+| Commands | 13           |
+| Scripts  | 2            |
 | Coverage | ~81%         |
 
 ---

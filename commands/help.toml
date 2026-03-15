@@ -24,61 +24,46 @@ If {{args}} is "hooks", explain the 5 lifecycle hooks.
 {{else}}
 # 🧰 Gemini-Kit Help
 
-## 📋 Available Commands (23)
+## 📋 Available Commands (13)
 
-### 🔧 Core Workflow
+### 🏗️ Engineering Workflow
 | Command | Description |
 |---------|-------------|
-| `/plan` | Create implementation plan with approval |
-| `/cook` | Execute changes with auto-checkpoint |
-| `/scout` | Search and analyze codebase |
-| `/code` | Implement features |
-| `/test` | Generate and run tests |
-| `/debug` | Diagnose and fix bugs |
-| `/review` | Code review |
+| `/scout` | Explore and map codebase structure |
+| `/plan` | Create detailed implementation plans |
+| `/code` | Implement features based on a plan |
+| `/review-pr` | Review a Pull Request in detail |
+| `/review-changes` | Review local working tree changes |
+| `/brainstorm` | Strategic design trade-offs |
 
-### 🔗 Integrations
+### 🚀 Orchestration & Project
 | Command | Description |
 |---------|-------------|
-| `/pr` | Create GitHub Pull Request |
-| `/review-pr` | Review PR in detail |
-| `/ticket` | Get Jira/GitHub issue |
-| `/git` | Git operations |
+| `/do` | Auto-orchestrate complex tasks |
+| `/ticket` | Start workflow from a Jira ticket |
+| `/kit-setup` | Initialize Gemini-Kit in a new repo |
+| `/skill` | Load specialized expertise |
 
-### 📝 Content & Docs
+### 🛠️ System & Utility
 | Command | Description |
 |---------|-------------|
-| `/docs` | Generate documentation |
-| `/copywrite` | Content writing |
-| `/journal` | Dev journal |
-
-### 💡 Research & Design
-| Command | Description |
-|---------|-------------|
-| `/brainstorm` | Brainstorm ideas |
-| `/research` | Deep research |
-| `/design` | UI/UX design |
-| `/db` | Database operations |
-| `/project` | Project management |
-
-### 🛡️ Special
-| Command | Description |
-|---------|-------------|
-| `/code-preview` | Dry-run mode (preview only) |
+| `/session` | Manage team sessions |
+| `/mcp` | Manage MCP tool configuration |
+| `/help` | Show this help information |
 
 ---
 
-## 🛠️ MCP Tools (17)
-Type `/kit tools` to see all tools.
+## 🛠️ MCP Tools
+Type `/mcp` to manage MCP tool configuration.
 
-## 🔗 Hooks (5)
-Type `/kit hooks` to see lifecycle hooks.
+## 🔗 Skills
+Type `/skill` to see and load specialized knowledge modules.
 
 ---
 
-**Usage:** `/kit <command>` for detailed help
-**Example:** `/kit plan` or `/kit cook`
+**Usage:** `/help <command>` for detailed help
+**Example:** `/help plan` or `/help code`
 
-**GitHub:** https://github.com/nth5693/gemini-kit
+**GitHub:** https://github.com/hanh-nd/gemini-kit
 {{/if}}
 """
