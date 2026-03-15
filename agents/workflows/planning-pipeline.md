@@ -34,5 +34,6 @@ You MUST execute the planning process strictly sequentially.
 
 ## Phase 5: Persistence & Handoff
 
+- **Constraint Check:** Verify that no source code has been modified during the session.
 - **Action:** Save the final Blueprint to `.gemini-kit/tmp/plans/plan-[timestamp]-[feature].md`.
 - **Constraint:** This plan file acts as the Explicit Context for the `/code` Agent in the subsequent step. You must await explicit user approval (e.g., "Approve") before generating the handoff command: `/code @.gemini-kit/tmp/plans/...`.

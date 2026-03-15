@@ -1,26 +1,47 @@
-description = "Orchestrate workflow by analyzing a Jira ticket (The Entry Point)"
+description = "Orchestrate workflow by analyzing a Jira ticket (Higher-Order Router)"
 
-# Architecture: Command (Fetcher) -> Agent (Orchestrator) -> Routing
 prompt = """
+
 # 🎟️ SYSTEM: TICKET-DRIVEN ORCHESTRATION
 
 **Ticket ID:** {{args}}
 
-## 1. DATA ACQUISITION
-1. **Fetch:** Use `kit_jira_get_ticket(ticketId: "{{args}}")` to retrieve Summary, Description, and Acceptance Criteria.
-2. **Context:** Read `package.json` to identify the tech stack.
-3. **Persistence:** Save the raw ticket data to `.geminit-kit/tmp/tickets/{{args}}.md`.
+## 1. DATA ACQUISITION & ENVIRONMENT SENSING
 
-## 2. ORCHESTRATION ENGINE
-Load the routing logic from: `agents/orchestrator.md`
+1. **Fetch:** Use the system tool `kit_jira_get_ticket(ticketId: "{{args}}")` to retrieve Summary, Description, and Acceptance Criteria.
+2. **Context (No Hardcoding):** Use your shell tool to run `ls -1A | head -n 15` to list the root directory files. Infer the tech stack based on what you see (e.g., package.json, go.mod, composer.json). Do not assume any specific language.
+3. **Persistence:** Save the raw ticket data strictly to `.gemini-kit/tmp/tickets/{{args}}.md`. Ensure the directory exists first by running `mkdir -p .gemini-kit/tmp/tickets`.
 
-## 3. INSTRUCTIONS
-1. **Intent Classification:** Analyze if the ticket is a Bug, Feature, Refactor, or Architecture change.
-2. **Complexity Assessment:** Determine if it needs a Brainstorm (Strategic) or can go straight to a Plan (Execution).
-3. **Skill activation:** Analyze the ticket intent (Bug, Feature, Refactor). Rely on the system's native skill registry to identify and activate which specialized skills (e.g., `brainstorming`, `requirements-alignment`) are required to process this ticket effectively.
+## 2. ORCHESTRATION LOGIC (THE GOD OBJECT & QUALITY GATE)
 
-## 4. EXECUTION & FORMATTING (CRITICAL)
-Analyze the ticket and determine the routing logic. 
-You MUST strictly follow the execution logic and the exact "Output Format" defined in `agents/orchestrator.md`. 
-Do NOT output anything other than the Orchestration Report and the mandatory Next Step command.
-"""
+You are the Master Orchestrator and Quality Gatekeeper.
+
+1. **Ticket Quality Audit:** Before classifying, evaluate the fetched ticket data.
+   - Does it have clear 'Acceptance Criteria'?
+   - Is the 'Description' actionable or just a vague idea?
+
+2. **Routing & Clarification Rules:**
+   - **Quality FAILED (Vague/Incomplete):** If the ticket lacks clear Acceptance Criteria or technical boundaries, DO NOT route to `/plan` or `/code`. You MUST route to `/brainstorm` and explicitly list 3-5 technical questions the user needs to answer to clarify the requirements.
+   - **Quality PASSED (Feature/Complex Bug):** Route to `/plan`.
+   - **Quality PASSED (Trivial Bug/Minor Refactor):** Route to `/code`.
+
+## 3. EXECUTION & FORMATTING (CRITICAL)
+
+You MUST output ONLY the Orchestration Report. Do NOT output conversational filler, thoughts, or unrequested markdown.
+
+Use EXACTLY this template:
+
+### 🎟️ Orchestration Report: {{args}}
+
+- **Type:** [Classified Intent or INCOMPLETE_REQUIREMENT]
+- **Quality Audit:** [PASSED | FAILED - Missing Acceptance Criteria]
+- **Summary:** [1-sentence technical summary]
+
+### 🚀 Recommended Next Action
+
+[If Quality PASSED]: Run `/[plan | code] @.gemini-kit/tmp/tickets/{{args}}.md`
+[If Quality FAILED]: Run `/brainstorm @.gemini-kit/tmp/tickets/{{args}}.md` to define requirements, and answer these specific questions:
+
+1. [Missing critical info 1]
+2. [Missing critical info 2]
+   """

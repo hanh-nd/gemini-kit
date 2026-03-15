@@ -27,6 +27,7 @@ You MUST execute the brainstorming process strictly sequentially through the fol
 
 ## Phase 2: Persistence & Handoff
 
+- **Constraint Check:** Verify that no source code has been modified during the session.
 - **Action:** Transition to **State 2: Final Verdict State**.
 - **Persistence:** Save the finalized decision, including the ASCII diagram and reasoning, to `.gemini-kit/tmp/brainstorms/brainstorm-[timestamp]-[slug].md`.
 - **Handoff:** Output the routing command to hand off to the Planner agent.
